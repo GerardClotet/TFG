@@ -17,13 +17,13 @@ public class Player : MonoBehaviour
     private PLAYER_STATE playerState = PLAYER_STATE.IDLE;
 
     [Header("Movement Stats")]
-    [SerializeField] private float playerSpeed = 1;
+    [SerializeField] private float playerSpeed = 10;
 
 
     private void Awake()
     {
         Instance = this; //Check if there is a better way than using singleton
-        GetComponent<UserInputManager>().EnablePlayerInput(); //temporary execution order doesn't work properly
+      
     }
 
     public void OnMoveInput(float x, float y)
@@ -65,10 +65,10 @@ public class Player : MonoBehaviour
     {
         switch(state)
         {
-            case PLAYER_STATE.IDLE: //requests idle
+            case PLAYER_STATE.MOVE: //requests idle
                 ChangeState(PLAYER_STATE.MOVE);
                 break;
-            case PLAYER_STATE.MOVE:
+            case PLAYER_STATE.IDLE:
                 ChangeState(PLAYER_STATE.IDLE);
                 break;
         }

@@ -28,7 +28,10 @@ public class UserInputManager : MonoBehaviour
     {
        // EnablePlayerInput();
     }
-
+    private void Start()
+    {
+        EnablePlayerInput();
+    }
 
     public void EnablePlayerInput()
     {
