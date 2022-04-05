@@ -23,7 +23,22 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         Instance = this; //Check if there is a better way than using singleton
-      
+        Application.quitting += TestCSV;
+    }
+
+    private void TestCSV()
+    {
+        CSVManager.CreateReport();
+        CSVManager.AppendToReport(
+            new string[5]
+            {
+                "juan",
+                UnityEngine.Random.Range(0,11).ToString(),
+                UnityEngine.Random.Range(0,11).ToString(),
+                UnityEngine.Random.Range(0,11).ToString(),
+                UnityEngine.Random.Range(0,11).ToString()
+            }
+        );
     }
 
     public void OnMoveInput(float x, float y)
@@ -56,7 +71,13 @@ public class Player : MonoBehaviour
             Vector3 dst = transform.position + new Vector3(v2.x, 0, 0) * playerSpeed * Time.deltaTime;
             transform.position = dst;
         }
-       
+    }
+
+
+    //jump + move?
+    private void Jump()//maybe a coroutine?
+    {
+
     }
 
     //here we check if we can properly change player state
