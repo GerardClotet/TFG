@@ -20,6 +20,9 @@ public class UserInputManager : MonoBehaviour
 
     PLAYER_STATE_InputEvent requestChangeStateEvent;
 
+
+    //CTEST
+    UnityEvent CSVEvent;
     private void Awake()
     {
         userActionInput = new User();
@@ -35,6 +38,12 @@ public class UserInputManager : MonoBehaviour
 
     public void EnablePlayerInput()
     {
+        ///TEST
+        CSVEvent = new UnityEvent();
+        CSVEvent.AddListener(PlayFabManager.Instance.TestFunction);
+        userActionInput.Player.Jump.started += context => CSVEvent.Invoke();
+        ////////////
+
         moveInputEvent = new Vector2InputEvent();
         jumpEvent = new UnityEvent();
         dashEvent = new UnityEvent();

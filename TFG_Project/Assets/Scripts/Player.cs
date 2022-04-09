@@ -23,22 +23,6 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         Instance = this; //Check if there is a better way than using singleton
-        Application.quitting += TestCSV;
-    }
-
-    private void TestCSV()
-    {
-        CSVManager.CreateReport();
-        CSVManager.AppendToReport(
-            new string[5]
-            {
-                "juan",
-                UnityEngine.Random.Range(0,11).ToString(),
-                UnityEngine.Random.Range(0,11).ToString(),
-                UnityEngine.Random.Range(0,11).ToString(),
-                UnityEngine.Random.Range(0,11).ToString()
-            }
-        );
     }
 
     public void OnMoveInput(float x, float y)
@@ -46,7 +30,6 @@ public class Player : MonoBehaviour
         leftStick.x = x;
         leftStick.y = y;
     }
-
 
     private void Update()
     {
@@ -73,7 +56,6 @@ public class Player : MonoBehaviour
         }
     }
 
-
     //jump + move?
     private void Jump()//maybe a coroutine?
     {
@@ -99,5 +81,4 @@ public class Player : MonoBehaviour
     {
         playerState = state; 
     }
-    
 }

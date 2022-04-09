@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.IO;
 using System;
+using System.Collections.Generic;
 
 public class CSVManager 
 {
@@ -56,6 +57,58 @@ public class CSVManager
             finalString += reportSeparator + GetTimeStamp();
             sw.WriteLine(finalString);
         }
+    }
+
+    public static void AppendToReportSingleString(string CSString)
+    {
+        VerifyDirectory();
+        VerifyFile();
+        using (StreamWriter sw = File.AppendText(GetFilePath()))
+        {
+            sw.WriteLine(CSString);
+        }
+    }
+
+    /// <summary>
+    /// Line to upload a single report to Playfab
+    /// </summary>
+    /// <param name="strings"></param>
+    /// <returns></returns>
+    public static string GetCommaSeparatedString(string[] strings) 
+    {
+        string finalString = "";
+
+        for (int i = 0; i < strings.Length; i++)
+        {
+            if (finalString != "")
+            {
+                finalString += reportSeparator;
+            }
+            finalString += strings[i];
+        }
+        finalString += reportSeparator + GetTimeStamp();
+        return finalString;
+    }
+
+    public static List<string[]> ReadFileCSV()
+    {
+        StreamReader sr = null;
+
+        if (File.Exists(GetFilePath()))
+        {
+            sr = new StreamReader(File.OpenRead(GetFilePath()));
+            List<string[]> csv = new List<string[]>();
+
+            while(!sr.EndOfStream)
+            {
+                string line = sr.ReadLine();
+                string[] values = line.Split(',');
+                csv.Add(values);
+            }
+            csv.Reverse();
+            return csv;
+        }
+        else return null;
     }
     #endregion
 
