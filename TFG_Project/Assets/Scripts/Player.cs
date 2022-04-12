@@ -12,17 +12,37 @@ public enum PLAYER_STATE
 }
 public class Player : MonoBehaviour
 {
-    public static Player Instance { get; private set; }
     private Vector2 leftStick;
     private PLAYER_STATE playerState = PLAYER_STATE.IDLE;
 
     [Header("Movement Stats")]
     [SerializeField] private float playerSpeed = 10;
 
-
+    private UserInputManager inputManager;
     private void Awake()
     {
-        Instance = this; //Check if there is a better way than using singleton
+        inputManager = UserInputManager.Instance;
+    }
+
+    private void OnEnable()
+    {
+        if (inputManager)
+        {
+            inputManager.moveInputEvent += OnMoveInput;
+            inputManager.requestChangeStateEvent += RequestChangePlayerState;
+            inputManager.jumpEvent += Jump;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (inputManager)
+        {
+            inputManager.moveInputEvent -= OnMoveInput;
+            inputManager.requestChangeStateEvent -= RequestChangePlayerState;
+            inputManager.jumpEvent -= Jump;
+        }
+        leftStick = Vector2.zero;
     }
 
     public void OnMoveInput(float x, float y)

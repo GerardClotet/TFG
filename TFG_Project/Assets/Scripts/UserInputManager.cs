@@ -5,59 +5,48 @@ using UnityEngine.Events;
 using System;
 using UnityEngine.InputSystem;
 
-//Modify events parameters through making child classes of UnityEvent
-[Serializable] public class Vector2InputEvent : UnityEvent<float, float> { }
-[Serializable] public class PLAYER_STATE_InputEvent : UnityEvent<PLAYER_STATE> { }
 
+/// <summary>
+/// Handles & triggers the events related to inputs
+/// </summary>
 public class UserInputManager : MonoBehaviour
 {
-    
-    //Events
-    Vector2InputEvent moveInputEvent;
-    UnityEvent jumpEvent;
-    UnityEvent dashEvent;
+    public static UserInputManager Instance { get; private set; }
+
+    /// <summary>
+    /// Use public static Func<T> if we want a delegate that returns a value
+    /// </summary>
+    public Action<float, float> moveInputEvent; //gets input but doesn't return anything. It's like a delegate
+    public Action<PLAYER_STATE> requestChangeStateEvent;
+    public Action jumpEvent;
+    public static Action dashEvent;
+
     User userActionInput;
 
-    PLAYER_STATE_InputEvent requestChangeStateEvent;
-
-
-    //CTEST
-    UnityEvent CSVEvent;
     private void Awake()
     {
+        Instance = this;
         userActionInput = new User();
     }
+
     private void OnEnable() //This is done in OnEnable func because  maybe que wantit to desable 
     {
-       // EnablePlayerInput();
+       EnablePlayerInput();
     }
-    private void Start()
+
+    private void OnDisable()
     {
-        EnablePlayerInput();
+        DisablePlayerInput();
     }
 
     public void EnablePlayerInput()
     {
-        ///TEST
-        CSVEvent = new UnityEvent();
-        CSVEvent.AddListener(PlayFabManager.Instance.TestFunction);
-        userActionInput.Player.Jump.started += context => CSVEvent.Invoke();
-        ////////////
-
-        moveInputEvent = new Vector2InputEvent();
-        jumpEvent = new UnityEvent();
-        dashEvent = new UnityEvent();
-        requestChangeStateEvent = new PLAYER_STATE_InputEvent();
-
-
-        moveInputEvent.AddListener(Player.Instance.OnMoveInput);
-        requestChangeStateEvent.AddListener(Player.Instance.RequestChangePlayerState);
         //sets the player input map active
         userActionInput.Player.Enable();
 
         //move
         userActionInput.Player.Move.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.MOVE);
-        userActionInput.Player.Move.performed += OnMovePerformed;
+        userActionInput.Player.Move.performed += context => moveInputEvent.Invoke(context.ReadValue<Vector2>().x, context.ReadValue<Vector2>().y);
         userActionInput.Player.Move.canceled += context => requestChangeStateEvent.Invoke(PLAYER_STATE.IDLE);
         //jump
         userActionInput.Player.Jump.performed += context => jumpEvent.Invoke();
@@ -65,11 +54,15 @@ public class UserInputManager : MonoBehaviour
         userActionInput.Player.Dash.performed += context => dashEvent.Invoke();
     }
 
-
-    private void OnMovePerformed(InputAction.CallbackContext context)
+    public void DisablePlayerInput()
     {
-        Vector2 moveInput = context.ReadValue<Vector2>();
-        moveInputEvent.Invoke(moveInput.x, moveInput.y);
+        userActionInput.Player.Move.started -= context => requestChangeStateEvent(PLAYER_STATE.MOVE);
+        userActionInput.Player.Move.performed -= context => moveInputEvent(context.ReadValue<Vector2>().x, context.ReadValue<Vector2>().y);
+        userActionInput.Player.Move.canceled -= context => requestChangeStateEvent(PLAYER_STATE.IDLE);
+        userActionInput.Player.Jump.performed -= context => jumpEvent();
+        userActionInput.Player.Dash.performed -= context => dashEvent();
+        userActionInput.Player.Disable();
+        
     }
 
     //for single float events
