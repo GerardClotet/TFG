@@ -29,7 +29,7 @@ public class UserInputManager : MonoBehaviour
         userActionInput = new User();
     }
 
-    private void OnEnable() //This is done in OnEnable func because  maybe que wantit to desable 
+    private void OnEnable() 
     {
        EnablePlayerInput();
     }
@@ -62,12 +62,5 @@ public class UserInputManager : MonoBehaviour
         userActionInput.Player.Jump.performed -= context => jumpEvent();
         userActionInput.Player.Dash.performed -= context => dashEvent();
         userActionInput.Player.Disable();
-        
     }
-
-    //for single float events
-    //private void onPushPerformed(InputAction.CallbackContext context)
-    //{
-    //    pushInputEvent.Invoke(context.ReadValue<float>());
-    //}
 }
