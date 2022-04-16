@@ -19,6 +19,7 @@ public class UserInputManager : MonoBehaviour
     public Action<float, float> moveInputEvent; //gets input but doesn't return anything. It's like a delegate
     public Action<PLAYER_STATE> requestChangeStateEvent;
     public Action jumpEvent;
+    public Action jumpCanceled;
     public static Action dashEvent;
 
     User userActionInput;
@@ -49,18 +50,21 @@ public class UserInputManager : MonoBehaviour
         userActionInput.Player.Move.performed += context => moveInputEvent.Invoke(context.ReadValue<Vector2>().x, context.ReadValue<Vector2>().y);
         userActionInput.Player.Move.canceled += context => requestChangeStateEvent.Invoke(PLAYER_STATE.IDLE);
         //jump
+        userActionInput.Player.Jump.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.JUMP);
         userActionInput.Player.Jump.performed += context => jumpEvent.Invoke();
+        userActionInput.Player.Jump.canceled += context => jumpCanceled.Invoke();
+        //userActionInput.Player.Jump.WasPerformedThisFrame ?
         //dash
         userActionInput.Player.Dash.performed += context => dashEvent.Invoke();
     }
 
     public void DisablePlayerInput()
     {
-        userActionInput.Player.Move.started -= context => requestChangeStateEvent(PLAYER_STATE.MOVE);
-        userActionInput.Player.Move.performed -= context => moveInputEvent(context.ReadValue<Vector2>().x, context.ReadValue<Vector2>().y);
-        userActionInput.Player.Move.canceled -= context => requestChangeStateEvent(PLAYER_STATE.IDLE);
-        userActionInput.Player.Jump.performed -= context => jumpEvent();
-        userActionInput.Player.Dash.performed -= context => dashEvent();
+        //userActionInput.Player.Move.started -= context => requestChangeStateEvent(PLAYER_STATE.MOVE);
+        //userActionInput.Player.Move.performed -= context => moveInputEvent(context.ReadValue<Vector2>().x, context.ReadValue<Vector2>().y);
+        //userActionInput.Player.Move.canceled -= context => requestChangeStateEvent(PLAYER_STATE.IDLE);
+        //userActionInput.Player.Jump.performed -= context => jumpEvent();
+        //userActionInput.Player.Dash.performed -= context => dashEvent();
         userActionInput.Player.Disable();
     }
 }

@@ -349,7 +349,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &367687954
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -437,7 +437,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e93bff74681b9e43995e30bf414e8eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  plaftormLayer:
+    serializedVersion: 2
+    m_Bits: 64
   playerSpeed: 10
+  fallLongMult: 0.85
+  fallShortMult: 1.55
+  jumpVel: 5
 --- !u!114 &367687958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -642,7 +648,7 @@ GameObject:
   - component: {fileID: 758879077}
   - component: {fileID: 758879076}
   - component: {fileID: 758879075}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Floor (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -750,7 +756,7 @@ GameObject:
   - component: {fileID: 776654073}
   - component: {fileID: 776654072}
   - component: {fileID: 776654071}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1241,7 +1247,7 @@ GameObject:
   - component: {fileID: 1791709911}
   - component: {fileID: 1791709910}
   - component: {fileID: 1791709909}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Floor (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
