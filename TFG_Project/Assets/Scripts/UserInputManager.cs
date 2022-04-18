@@ -21,7 +21,7 @@ public class UserInputManager : MonoBehaviour
     public Action jumpEvent;
     public Action jumpCanceled;
     public static Action dashEvent;
-
+    public Action jumpStarted;
     User userActionInput;
 
     private void Awake()
@@ -49,8 +49,10 @@ public class UserInputManager : MonoBehaviour
         userActionInput.Player.Move.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.MOVE);
         userActionInput.Player.Move.performed += context => moveInputEvent.Invoke(context.ReadValue<Vector2>().x, context.ReadValue<Vector2>().y);
         userActionInput.Player.Move.canceled += context => requestChangeStateEvent.Invoke(PLAYER_STATE.IDLE);
+        userActionInput.Player.Move.canceled += context => moveInputEvent.Invoke(context.ReadValue<Vector2>().x,context.ReadValue<Vector2>().y);
         //jump
         userActionInput.Player.Jump.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.JUMP);
+        userActionInput.Player.Jump.started += context => jumpStarted.Invoke();
         userActionInput.Player.Jump.performed += context => jumpEvent.Invoke();
         userActionInput.Player.Jump.canceled += context => jumpCanceled.Invoke();
         //userActionInput.Player.Jump.WasPerformedThisFrame ?

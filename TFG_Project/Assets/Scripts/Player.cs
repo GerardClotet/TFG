@@ -20,16 +20,20 @@ public class Player : MonoBehaviour
     [SerializeField]    private LayerMask plaftormLayer;
 
     [Header("Movement Stats")]
-    [SerializeField]    private float playerSpeed = 10;
-    [Range(0, 5f)]  [SerializeField] private float fallLongMult = 0.85f;
-    [Range(0, 5f)]  [SerializeField] private float fallShortMult = 1.55f;
-    [Range(4f,10f)] [SerializeField] private float jumpVel = 5f;
+    [SerializeField] private float playerSpeed = 10;
+    [SerializeField] private float playerHorizontalMaxVelocity = 10f;    
+    [SerializeField] private float cancelRate = 100f;
+    [SerializeField] private float jumpHeight = 5f;
+    [SerializeField] private float jumpButtonTime = 0.5f;
+    [SerializeField] private float fallingGravityScale = 10f;
 
     private     Rigidbody2D rigidBody2D;
     private     BoxCollider2D boxCollider2D;
     private     UserInputManager inputManager;
     private     bool jumpHeld = false;
-
+    private     float jumpTime = 0f;
+    private     bool jumping = false;
+    private     float defaulGravityScale = 1f; 
     private void Awake()
     {
         inputManager = UserInputManager.Instance;
@@ -45,6 +49,7 @@ public class Player : MonoBehaviour
             inputManager.requestChangeStateEvent += RequestChangePlayerState;
             inputManager.jumpEvent += JumpPerformed;
             inputManager.jumpCanceled += JumpCancel;
+            inputManager.jumpStarted = JumpStarted;
         }
     }
 
@@ -59,6 +64,10 @@ public class Player : MonoBehaviour
         leftStick = Vector2.zero;
     }
 
+    public void JumpStarted()
+    {
+        jumping = true;
+    }
     public void OnMoveInput(float x, float y)
     {
         leftStick.x = x;
@@ -67,15 +76,29 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(jumpTime);
+        if(jumping)
+        {
+            jumpTime += Time.deltaTime;
+
+
+            if(jumpTime >= jumpButtonTime)
+            {
+                jumping = false;
+            }
+        }
+
         if (playerState == PLAYER_STATE.ON_AIR && IsGrounded())
         {
+            jumpTime = 0f;
+            rigidBody2D.gravityScale = defaulGravityScale;
             if (leftStick != Vector2.zero)
             {
                 playerState = PLAYER_STATE.MOVE;
             }
             else
             {
-                playerState = PLAYER_STATE.IDLE; //or move idk
+                playerState = PLAYER_STATE.IDLE;
             }
         }
     }
@@ -83,7 +106,7 @@ public class Player : MonoBehaviour
 
     private bool IsGrounded()
     {
-        float extraHeightText = 0.09f;
+        float extraHeightText = 0.01f;
         RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, plaftormLayer);
         Color rayColor;
         if (raycastHit.collider != null)
@@ -118,23 +141,25 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.JUMP:
-                rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, 1 * jumpVel);
+                float jumpForce = Mathf.Sqrt(jumpHeight * -2 * (Physics2D.gravity.y * rigidBody2D.gravityScale));
+                rigidBody2D.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
                 Move(leftStick);
                 playerState = PLAYER_STATE.ON_AIR;
                 break;
+
             case PLAYER_STATE.DASH:
                 break;
 
             case PLAYER_STATE.ON_AIR:
                 Move(leftStick);
-                if (jumpHeld && rigidBody2D.velocity.y > 0)
+                if(!jumpHeld && jumping && rigidBody2D.velocity.y > 0)
                 {
-                    rigidBody2D.velocity += Vector2.up * Physics2D.gravity.y * (fallLongMult - 1) * Time.fixedDeltaTime;
+                    rigidBody2D.AddForce(Vector2.down * cancelRate);
                 }
-                //else if (!jumpHeld && rigidBody2D.velocity.y > 0)
-                //{
-                //    rigidBody2D.velocity += Vector2.up * Physics2D.gravity.y * (fallShortMult - 1) * Time.fixedDeltaTime;
-                //}
+                else if(rigidBody2D.velocity.y < 0)
+                {
+                    rigidBody2D.gravityScale = fallingGravityScale;
+                }
                 break;
         }
     }
@@ -145,22 +170,24 @@ public class Player : MonoBehaviour
         {
             //Vector3 dst = transform.position + new Vector3(v2.x, 0, 0) * playerSpeed * Time.deltaTime;
             //transform.position = dst;
-            rigidBody2D.velocity += new Vector2(v2.x,0)*playerSpeed *Time.deltaTime;
+
+            if(playerHorizontalMaxVelocity > Mathf.Abs(rigidBody2D.velocity.x))
+                rigidBody2D.velocity += new Vector2(v2.x,0)*playerSpeed *Time.deltaTime;
         }
     }
 
     //jump + move?
     private void JumpPerformed()//maybe a coroutine?
     {
-        Debug.Log("performed");
         jumpHeld = true;
     }
 
     private void JumpCancel()
     {
-        Debug.Log("Canceled");
         jumpHeld = false;
     }
+
+
     //here we check if we can properly change player state
     //This is called when InputActions are cancelled
     public void RequestChangePlayerState(PLAYER_STATE state)
@@ -183,7 +210,7 @@ public class Player : MonoBehaviour
             case PLAYER_STATE.JUMP:
                 if (playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.JUMP)
                 {
-                   // Debug.Log(playerState.ToString());
+                    jumping = true;
                     playerState = state;
                 }
                 break;
