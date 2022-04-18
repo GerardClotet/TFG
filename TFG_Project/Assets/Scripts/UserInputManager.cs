@@ -52,10 +52,8 @@ public class UserInputManager : MonoBehaviour
         userActionInput.Player.Move.canceled += context => moveInputEvent.Invoke(context.ReadValue<Vector2>().x,context.ReadValue<Vector2>().y);
         //jump
         userActionInput.Player.Jump.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.JUMP);
-        userActionInput.Player.Jump.started += context => jumpStarted.Invoke();
         userActionInput.Player.Jump.performed += context => jumpEvent.Invoke();
         userActionInput.Player.Jump.canceled += context => jumpCanceled.Invoke();
-        //userActionInput.Player.Jump.WasPerformedThisFrame ?
         //dash
         userActionInput.Player.Dash.performed += context => dashEvent.Invoke();
     }

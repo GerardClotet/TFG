@@ -49,7 +49,6 @@ public class Player : MonoBehaviour
             inputManager.requestChangeStateEvent += RequestChangePlayerState;
             inputManager.jumpEvent += JumpPerformed;
             inputManager.jumpCanceled += JumpCancel;
-            inputManager.jumpStarted = JumpStarted;
         }
     }
 
@@ -64,10 +63,6 @@ public class Player : MonoBehaviour
         leftStick = Vector2.zero;
     }
 
-    public void JumpStarted()
-    {
-        jumping = true;
-    }
     public void OnMoveInput(float x, float y)
     {
         leftStick.x = x;
@@ -91,6 +86,7 @@ public class Player : MonoBehaviour
         if (playerState == PLAYER_STATE.ON_AIR && IsGrounded())
         {
             jumpTime = 0f;
+            jumping = false;
             rigidBody2D.gravityScale = defaulGravityScale;
             if (leftStick != Vector2.zero)
             {
@@ -100,6 +96,10 @@ public class Player : MonoBehaviour
             {
                 playerState = PLAYER_STATE.IDLE;
             }
+        }
+        else if(playerState != PLAYER_STATE.ON_AIR && !IsGrounded())
+        {
+            playerState = PLAYER_STATE.ON_AIR;
         }
     }
 
