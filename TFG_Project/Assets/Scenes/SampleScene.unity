@@ -342,7 +342,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 5
+  m_LinearDrag: 10
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
@@ -440,11 +440,12 @@ MonoBehaviour:
   plaftormLayer:
     serializedVersion: 2
     m_Bits: 64
-  playerSpeed: 100
-  playerHorizontalMaxVelocity: 10
+  playerSpeed: 87.73
+  playerHorizontalMaxVelocity: 6
   cancelRate: 100
-  jumpHeight: 5
-  jumpButtonTime: 0.5
+  jumpHeight: 15
+  jumpButtonTime: 0.2
+  fallingGravityScale: 8
 --- !u!114 &367687958
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -71,7 +71,6 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(jumpTime);
         if(jumping)
         {
             jumpTime += Time.deltaTime;
@@ -106,7 +105,7 @@ public class Player : MonoBehaviour
 
     private bool IsGrounded()
     {
-        float extraHeightText = 0.01f;
+        float extraHeightText = 0.05f;
         RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, plaftormLayer);
         Color rayColor;
         if (raycastHit.collider != null)
@@ -152,11 +151,12 @@ public class Player : MonoBehaviour
 
             case PLAYER_STATE.ON_AIR:
                 Move(leftStick);
-                if(!jumpHeld && jumping && rigidBody2D.velocity.y > 0)
+                if (!jumpHeld && jumping && rigidBody2D.velocity.y > 0)
                 {
+                    Debug.Log("In here");
                     rigidBody2D.AddForce(Vector2.down * cancelRate);
                 }
-                else if(rigidBody2D.velocity.y < 0)
+                if (rigidBody2D.velocity.y <= 0)
                 {
                     rigidBody2D.gravityScale = fallingGravityScale;
                 }
