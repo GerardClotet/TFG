@@ -25,13 +25,14 @@ public class Player : MonoBehaviour
     [Header("Movement Stats")]
     [SerializeField] private float playerSpeed = 10;
     [SerializeField] private float playerHorizontalMaxVelocity = 10f;    
-    [SerializeField] private float cancelRate = 100f;
+    [SerializeField] private float cancelRateJump = 100f;
     [SerializeField] private float jumpHeight = 5f;
     [SerializeField] private float jumpButtonTime = 0.5f;
     [SerializeField] private float fallingGravityScale = 10f;
     [SerializeField] private float bounceImpulse = 5f;
     [Range(0.5f,1f)] [SerializeField] private float bounceInclination = 0.5f;
     [Range(-10,-0.1f)][SerializeField] private float grabDownfallVelocity = -1f;
+    [SerializeField] private float cancelRateBounce = 30f;
 
     private     Rigidbody2D rigidBody2D;
     private     BoxCollider2D boxCollider2D;
@@ -79,6 +80,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(rigidBody2D.velocity);
         if(jumping)
         {
             jumpTime += Time.deltaTime;
@@ -90,7 +92,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (playerState == PLAYER_STATE.ON_AIR && IsGrounded() || playerState == PLAYER_STATE.GRAB_WALL && IsGrounded()) //Not sure, TODO Comprobació més neta, no pasant a cada frame al Update
+        if (playerState == PLAYER_STATE.ON_AIR && IsGrounded() || playerState == PLAYER_STATE.GRAB_WALL && IsGrounded() || playerState == PLAYER_STATE.BOUNCE_AIR && IsGrounded()) //Not sure, TODO Comprobació més neta, no pasant a cada frame al Update
         {
             jumpTime = 0f;
             jumping = false;
@@ -104,7 +106,7 @@ public class Player : MonoBehaviour
                 playerState = PLAYER_STATE.IDLE;
             }
         }
-        else if(playerState != PLAYER_STATE.ON_AIR && !IsGrounded() && playerState != PLAYER_STATE.GRAB_WALL && playerState != PLAYER_STATE.BOUNCE) //TODO Fer que la comprobació sigui de una forma més neta
+        else if(playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.GRAB_WALL && playerState != PLAYER_STATE.BOUNCE && !IsGrounded() && playerState != PLAYER_STATE.BOUNCE_AIR) //TODO Fer que la comprobació sigui de una forma més neta
         {
             playerState = PLAYER_STATE.ON_AIR;
         }
@@ -130,9 +132,6 @@ public class Player : MonoBehaviour
         return raycastHit.collider != null;
     }
 
-    /// <summary>
-    /// physics related
-    /// </summary>
     private void FixedUpdate()
     {
 
@@ -154,12 +153,12 @@ public class Player : MonoBehaviour
 
 
             case PLAYER_STATE.ON_AIR:
-                Move(leftStick);
+                MoveOnAir(leftStick);
                 if (!jumpHeld && jumping && rigidBody2D.velocity.y > 0)
                 {
-                    rigidBody2D.AddForce(Vector2.down * cancelRate);
+                    rigidBody2D.AddForce(Vector2.down * cancelRateJump);
                 }
-                if (rigidBody2D.velocity.y <= 0)
+                else if (rigidBody2D.velocity.y <= 0 && rigidBody2D.gravityScale != fallingGravityScale)
                 {
                     rigidBody2D.gravityScale = fallingGravityScale;
                 }
@@ -174,7 +173,23 @@ public class Player : MonoBehaviour
                 Move(leftStick);
                 rigidBody2D.AddForce(new Vector2(grabNormal.x, bounceInclination)*bounceImpulse);
                 grabNormal = Vector2.zero;
-                playerState = PLAYER_STATE.ON_AIR;
+                playerState = PLAYER_STATE.BOUNCE_AIR;
+                break;
+
+            case PLAYER_STATE.BOUNCE_AIR:
+                MoveOnAir(leftStick);
+                if (rigidBody2D.velocity.y > 0)
+                {
+                    rigidBody2D.AddForce(Vector2.down * cancelRateBounce); 
+                }
+                else if(rigidBody2D.gravityScale != fallingGravityScale)
+                {
+                    rigidBody2D.gravityScale = fallingGravityScale;
+                }
+                //else 
+                //{
+                //    MoveOnAir(leftStick);
+                //}
                 break;
 
             case PLAYER_STATE.DASH:
@@ -186,11 +201,23 @@ public class Player : MonoBehaviour
     {
         if(v2 != Vector2.zero && v2 != null)
         {
-            //Vector3 dst = transform.position + new Vector3(v2.x, 0, 0) * playerSpeed * Time.deltaTime;
-            //transform.position = dst;
+            if (playerHorizontalMaxVelocity > Mathf.Abs(rigidBody2D.velocity.x))
+            {
+                float x = v2.x > 0 ? 1 : -1;
+                rigidBody2D.velocity += new Vector2(x, 0) * playerSpeed * Time.deltaTime;
+            }
+        }
+    }
 
-            if(playerHorizontalMaxVelocity > Mathf.Abs(rigidBody2D.velocity.x))
-                rigidBody2D.velocity += new Vector2(v2.x,0)*playerSpeed *Time.deltaTime;
+    private void MoveOnAir(Vector2 v2)
+    {
+        if (v2 != Vector2.zero && v2 != null)
+        {
+            if (playerHorizontalMaxVelocity > Mathf.Abs(rigidBody2D.velocity.x))
+            {
+                float x = v2.x > 0 ? 1 : -1;
+                rigidBody2D.velocity += new Vector2(x, 0) * (playerSpeed/1.4f) * Time.deltaTime;
+            }
         }
     }
 
@@ -234,7 +261,7 @@ public class Player : MonoBehaviour
         {
             if(playerState == PLAYER_STATE.GRAB_WALL)
             {
-                playerState = PLAYER_STATE.ON_AIR;
+                playerState = jumping ? PLAYER_STATE.ON_AIR : PLAYER_STATE.BOUNCE_AIR;
             }
         }
     }
@@ -245,7 +272,7 @@ public class Player : MonoBehaviour
         switch(state)
         {
             case PLAYER_STATE.MOVE: //requests idle
-                if (playerState != PLAYER_STATE.JUMP && playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.GRAB_WALL && playerState != PLAYER_STATE.BOUNCE)
+                if (playerState == PLAYER_STATE.IDLE)
                 {
                     leftStick = Vector2.zero;
                     playerState = state;
@@ -253,7 +280,7 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.IDLE:
-                if (playerState != PLAYER_STATE.JUMP && playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.GRAB_WALL && playerState != PLAYER_STATE.BOUNCE)
+                if (playerState == PLAYER_STATE.MOVE)
                 {
                     playerState = state;
                 }
@@ -267,7 +294,7 @@ public class Player : MonoBehaviour
                     return;
                 }
 
-                if (playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.JUMP)
+                if (playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.JUMP && playerState != PLAYER_STATE.BOUNCE_AIR)
                 {
                     jumping = true;
                     playerState = state;
