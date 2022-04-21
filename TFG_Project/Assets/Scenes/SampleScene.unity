@@ -450,6 +450,8 @@ MonoBehaviour:
   bounceInclination: 1
   grabDownfallVelocity: -0.8
   cancelRateBounce: 17.4
+  dashHoldTime: 0.284
+  dashImpulse: 80
 --- !u!114 &367687958
 MonoBehaviour:
   m_ObjectHideFlags: 0
