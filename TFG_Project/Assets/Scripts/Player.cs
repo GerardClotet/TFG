@@ -10,6 +10,7 @@ public enum PLAYER_STATE
     JUMP,
     HOLD_DASH,
     DASH,
+    ON_AIR_DASH,
     ON_AIR,
     GRAB_WALL,
     BOUNCE,
@@ -36,7 +37,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float cancelRateBounce = 30f;
     [Range(0.01f, 1f)] [SerializeField] private float dashHoldTime = 0.5f;
     [SerializeField] private float dashImpulse = 500f;
-
+    [SerializeField] private float cancelRateDash = 40f;
 
     private     Rigidbody2D rigidBody2D;
     private     BoxCollider2D boxCollider2D;
@@ -47,7 +48,6 @@ public class Player : MonoBehaviour
     private     float defaulGravityScale = 1f;
     private     Vector2 grabNormal = Vector2.zero;
     private     bool canDash = true;
-    private     bool dashTimeOut = false;
     private     float auxDashHoldTime = 0f;
 
     private void Awake()
@@ -89,7 +89,6 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(playerState);
         if(jumping)
         {
             jumpTime += Time.deltaTime;
@@ -100,76 +99,64 @@ public class Player : MonoBehaviour
                 jumping = false;
             }
         }
-        if(IsGrounded())
-        {
-            if(playerState == PLAYER_STATE.ON_AIR || playerState == PLAYER_STATE.GRAB_WALL || playerState == PLAYER_STATE.BOUNCE_AIR)
-            {
-                canDash = true;
-                jumpTime = 0f;
-                jumping = false;
-                rigidBody2D.gravityScale = defaulGravityScale;
-                if (leftStick != Vector2.zero)
-                {
-                    playerState = PLAYER_STATE.MOVE;
-                }
-                else
-                {
-                    playerState = PLAYER_STATE.IDLE;
-                }
-            }
-        }
-        else if(playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.GRAB_WALL && playerState != PLAYER_STATE.BOUNCE && playerState != PLAYER_STATE.BOUNCE_AIR && playerState != PLAYER_STATE.HOLD_DASH && playerState != PLAYER_STATE.DASH)
-        {
-            playerState = PLAYER_STATE.ON_AIR;
-        }
 
-        if(canDash == false && playerState == PLAYER_STATE.HOLD_DASH)
+        if (canDash == false && playerState == PLAYER_STATE.HOLD_DASH)
         {
             auxDashHoldTime += Time.deltaTime;
 
-            if(auxDashHoldTime >= dashHoldTime)
+            if (auxDashHoldTime >= dashHoldTime)
             {
                 auxDashHoldTime = 0f;
                 playerState = PLAYER_STATE.DASH;
             }
         }
-        //if (playerState == PLAYER_STATE.ON_AIR && IsGrounded() || playerState == PLAYER_STATE.GRAB_WALL && IsGrounded() || playerState == PLAYER_STATE.BOUNCE_AIR && IsGrounded()) //Not sure, TODO Comprobació més neta, no pasant a cada frame al Update
-        //{
-        //    jumpTime = 0f;
-        //    jumping = false;
-        //    rigidBody2D.gravityScale = defaulGravityScale;
-        //    if (leftStick != Vector2.zero)
-        //    {
-        //        playerState = PLAYER_STATE.MOVE;
-        //    }
-        //    else
-        //    {
-        //        playerState = PLAYER_STATE.IDLE;
-        //    }
-        //}
-        //else if(playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.GRAB_WALL && playerState != PLAYER_STATE.BOUNCE && !IsGrounded() && playerState != PLAYER_STATE.BOUNCE_AIR) //TODO Fer que la comprobació sigui de una forma més neta
-        //{
-        //    playerState = PLAYER_STATE.ON_AIR;
-        //}
+
+        if (IsGrounded())
+        {
+            if(playerState == PLAYER_STATE.ON_AIR /*|| playerState == PLAYER_STATE.GRAB_WALL*/ || playerState == PLAYER_STATE.BOUNCE_AIR || playerState == PLAYER_STATE.ON_AIR_DASH)
+            {
+                GroundedReset();
+            }
+        }
+        else if (playerState == PLAYER_STATE.IDLE || playerState == PLAYER_STATE.MOVE) //TODO Si está en un collider bounce pero a sobre entra igualment aqui, no hi hauria d'entrar
+        {
+            playerState = PLAYER_STATE.ON_AIR;
+
+        }
     }
 
+    private void GroundedReset()
+    {
+        canDash = true;
+        jumpTime = 0f;
+        jumping = false;
+        rigidBody2D.gravityScale = defaulGravityScale;
+        if (leftStick != Vector2.zero)
+        {
+            playerState = PLAYER_STATE.MOVE;
+        }
+        else
+        {
+            playerState = PLAYER_STATE.IDLE;
+        }
+    }
 
     private bool IsGrounded()
     {
         float extraHeightText = 0.05f;
         RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, plaftormLayer);
-        //Color rayColor;
-        //if (raycastHit.collider != null)
-        //{
-        //    rayColor = Color.green;
-        //}
-        //else
-        //{
-        //    rayColor = Color.red;
-        //}
-        //Debug.DrawRay(boxCollider2D.bounds.center + new Vector3(boxCollider2D.bounds.extents.x, 0), Vector2.down * (boxCollider2D.bounds.extents.y + extraHeightText), rayColor);
-        //Debug.DrawRay(boxCollider2D.bounds.center - new Vector3(boxCollider2D.bounds.extents.x, 0), Vector2.down * (boxCollider2D.bounds.extents.y + extraHeightText), rayColor);
-        //Debug.DrawRay(boxCollider2D.bounds.center - new Vector3(boxCollider2D.bounds.extents.x, boxCollider2D.bounds.extents.y + extraHeightText), Vector2.right * (boxCollider2D.bounds.extents.y + extraHeightText), rayColor);
+        Color rayColor;
+        if (raycastHit.collider != null)
+        {
+            rayColor = Color.green;
+        }
+        else
+        {
+            rayColor = Color.red;
+        }
+        Debug.DrawRay(boxCollider2D.bounds.center + new Vector3(boxCollider2D.bounds.extents.x, 0), Vector2.down * (boxCollider2D.bounds.extents.y + extraHeightText), rayColor);
+        Debug.DrawRay(boxCollider2D.bounds.center - new Vector3(boxCollider2D.bounds.extents.x, 0), Vector2.down * (boxCollider2D.bounds.extents.y + extraHeightText), rayColor);
+        Debug.DrawRay(boxCollider2D.bounds.center - new Vector3(boxCollider2D.bounds.extents.x, boxCollider2D.bounds.extents.y + extraHeightText), Vector2.right * (boxCollider2D.bounds.extents.y + extraHeightText), rayColor);
         return raycastHit.collider != null;
     }
 
@@ -212,16 +199,16 @@ public class Player : MonoBehaviour
 
             case PLAYER_STATE.BOUNCE:
                 Move(leftStick);
-                rigidBody2D.AddForce(new Vector2(grabNormal.x, bounceInclination)*bounceImpulse);
+                rigidBody2D.AddForce(new Vector2(grabNormal.x, bounceInclination)*bounceImpulse,ForceMode2D.Impulse);
                 grabNormal = Vector2.zero;
                 playerState = PLAYER_STATE.BOUNCE_AIR;
                 break;
 
             case PLAYER_STATE.BOUNCE_AIR:
                 MoveOnAir(leftStick);
-                if (rigidBody2D.velocity.y > 0)
+                if (rigidBody2D.velocity.y > 0 && Mathf.Abs(rigidBody2D.velocity.x) > 0)
                 {
-                    rigidBody2D.AddForce(Vector2.down * cancelRateBounce); 
+                    rigidBody2D.AddForce(new Vector2(Mathf.Sign(rigidBody2D.velocity.x), -1) * cancelRateBounce);
                 }
                 else if(rigidBody2D.gravityScale != fallingGravityScale)
                 {
@@ -244,7 +231,18 @@ public class Player : MonoBehaviour
             case PLAYER_STATE.DASH:
 
                 rigidBody2D.AddForce(leftStick.normalized * dashImpulse, ForceMode2D.Impulse);
-                playerState = PLAYER_STATE.ON_AIR;
+                playerState = PLAYER_STATE.ON_AIR_DASH;
+                break;
+
+            case PLAYER_STATE.ON_AIR_DASH:
+                if(rigidBody2D.velocity.y >0 && Mathf.Abs(rigidBody2D.velocity.x) > 0)
+                {
+                    rigidBody2D.AddForce(new Vector2(Mathf.Sign(rigidBody2D.velocity.x), -1) * cancelRateDash);
+                }
+                else if (rigidBody2D.gravityScale != fallingGravityScale)
+                {
+                    rigidBody2D.gravityScale = fallingGravityScale;
+                }
                 break;
         }
     }
@@ -253,7 +251,12 @@ public class Player : MonoBehaviour
     {
         if(v2 != Vector2.zero && v2 != null)
         {
-            if (playerHorizontalMaxVelocity > Mathf.Abs(rigidBody2D.velocity.x))
+            if (playerHorizontalMaxVelocity > Mathf.Abs(rigidBody2D.velocity.x) && playerState == PLAYER_STATE.MOVE)
+            {
+                float x = v2.x > 0 ? 1 : -1;
+                rigidBody2D.velocity += new Vector2(x, 0) * playerSpeed * Time.deltaTime;
+            }
+            else
             {
                 float x = v2.x > 0 ? 1 : -1;
                 rigidBody2D.velocity += new Vector2(x, 0) * playerSpeed * Time.deltaTime;
@@ -288,6 +291,15 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.layer == 7)
         {
+            if (collision.GetContact(0).normal.y == 1)
+            {
+                if (playerState != PLAYER_STATE.MOVE && playerState != PLAYER_STATE.IDLE)
+                {
+                    GroundedReset();
+                    return;
+                }
+                else return;
+            }
 
             if (rigidBody2D.gravityScale != defaulGravityScale)
             {
@@ -300,10 +312,17 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.layer == 7)
         {
-            grabNormal = collision.GetContact(0).normal;
-            if (playerState != PLAYER_STATE.GRAB_WALL && playerState != PLAYER_STATE.BOUNCE)
+            if (collision.GetContact(0).normal.y == 1)
             {
-                RequestChangePlayerState(PLAYER_STATE.GRAB_WALL);
+                return;
+            }
+            else
+            {
+                grabNormal = collision.GetContact(0).normal;
+                if (playerState != PLAYER_STATE.GRAB_WALL && playerState != PLAYER_STATE.BOUNCE)
+                {
+                    RequestChangePlayerState(PLAYER_STATE.GRAB_WALL);
+                }
             }
         }
     }
@@ -374,7 +393,7 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.HOLD_DASH:
-                if (playerState != PLAYER_STATE.HOLD_DASH && canDash == true || playerState != PLAYER_STATE.DASH)
+                if (playerState != PLAYER_STATE.HOLD_DASH && canDash == true)
                 {
                     //canDash = false;
                     playerState = state;

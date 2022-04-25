@@ -56,6 +56,8 @@ public class UserInputManager : MonoBehaviour
         userActionInput.Player.Jump.canceled += context => jumpCanceled.Invoke();
         //dash
         userActionInput.Player.Dash.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.HOLD_DASH);
+        userActionInput.Player.Dash.started += context => dashEvent.Invoke();
+
         //userActionInput.Player.Dash.performed += context => dashEvent.Invoke();
 
     }

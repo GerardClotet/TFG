@@ -440,18 +440,19 @@ MonoBehaviour:
   plaftormLayer:
     serializedVersion: 2
     m_Bits: 64
-  playerSpeed: 150
-  playerHorizontalMaxVelocity: 10
+  playerSpeed: 100
+  playerHorizontalMaxVelocity: 8
   cancelRateJump: 100
   jumpHeight: 30
   jumpButtonTime: 0.3
   fallingGravityScale: 11.2
-  bounceImpulse: 1158
+  bounceImpulse: 45
   bounceInclination: 1
   grabDownfallVelocity: -0.8
-  cancelRateBounce: 17.4
-  dashHoldTime: 0.284
-  dashImpulse: 80
+  cancelRateBounce: 30
+  dashHoldTime: 0.2
+  dashImpulse: 60
+  cancelRateDash: 40
 --- !u!114 &367687958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1474,6 +1475,7 @@ GameObject:
   - component: {fileID: 1901660684}
   - component: {fileID: 1901660683}
   - component: {fileID: 1901660685}
+  - component: {fileID: 1901660686}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1519,6 +1521,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd510d54305d3b5458df5e672b996e3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1901660686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901660682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43c318279f7ad6e4d8961951cb5d8ff3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lowF: 0
+  highF: 0
 --- !u!1 &1940541651
 GameObject:
   m_ObjectHideFlags: 0
