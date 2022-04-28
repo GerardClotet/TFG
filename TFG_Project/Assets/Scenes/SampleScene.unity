@@ -440,17 +440,20 @@ MonoBehaviour:
   plaftormLayer:
     serializedVersion: 2
     m_Bits: 64
+  bounceLayer:
+    serializedVersion: 2
+    m_Bits: 128
   playerSpeed: 100
   playerHorizontalMaxVelocity: 8
   cancelRateJump: 100
   jumpHeight: 30
   jumpButtonTime: 0.3
   fallingGravityScale: 11.2
-  bounceImpulse: 45
+  bounceImpulse: 30
   bounceInclination: 1
   grabDownfallVelocity: -0.8
   cancelRateBounce: 30
-  dashHoldTime: 0.2
+  dashHoldTime: 0.15
   dashImpulse: 60
   cancelRateDash: 40
 --- !u!114 &367687958

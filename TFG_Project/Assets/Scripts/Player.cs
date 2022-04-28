@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
 
     [Header("Layer")]
     [SerializeField]    private LayerMask plaftormLayer;
+    [SerializeField]    private LayerMask bounceLayer;
 
     [Header("Movement Stats")]
     [SerializeField] private float playerSpeed = 10;
@@ -45,7 +46,7 @@ public class Player : MonoBehaviour
     private     bool jumpHeld = false;
     private     float jumpTime = 0f;
     private     bool jumping = false;
-    private     float defaulGravityScale = 1f;
+    private     float defaultGravityScale = 1f;
     private     Vector2 grabNormal = Vector2.zero;
     private     bool canDash = true;
     private     float auxDashHoldTime = 0f;
@@ -89,6 +90,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(playerState);
         if(jumping)
         {
             jumpTime += Time.deltaTime;
@@ -113,15 +115,18 @@ public class Player : MonoBehaviour
 
         if (IsGrounded())
         {
-            if(playerState == PLAYER_STATE.ON_AIR /*|| playerState == PLAYER_STATE.GRAB_WALL*/ || playerState == PLAYER_STATE.BOUNCE_AIR || playerState == PLAYER_STATE.ON_AIR_DASH)
+            if(playerState == PLAYER_STATE.ON_AIR || playerState == PLAYER_STATE.BOUNCE_AIR || playerState == PLAYER_STATE.ON_AIR_DASH)
+            {
+                GroundedReset();
+            }
+            else if(playerState == PLAYER_STATE.GRAB_WALL)
             {
                 GroundedReset();
             }
         }
-        else if (playerState == PLAYER_STATE.IDLE || playerState == PLAYER_STATE.MOVE) //TODO Si está en un collider bounce pero a sobre entra igualment aqui, no hi hauria d'entrar
+        else if (playerState == PLAYER_STATE.IDLE || playerState == PLAYER_STATE.MOVE) 
         {
             playerState = PLAYER_STATE.ON_AIR;
-
         }
     }
 
@@ -130,7 +135,7 @@ public class Player : MonoBehaviour
         canDash = true;
         jumpTime = 0f;
         jumping = false;
-        rigidBody2D.gravityScale = defaulGravityScale;
+        rigidBody2D.gravityScale = defaultGravityScale;
         if (leftStick != Vector2.zero)
         {
             playerState = PLAYER_STATE.MOVE;
@@ -144,20 +149,9 @@ public class Player : MonoBehaviour
     private bool IsGrounded()
     {
         float extraHeightText = 0.05f;
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, plaftormLayer);
-        Color rayColor;
-        if (raycastHit.collider != null)
-        {
-            rayColor = Color.green;
-        }
-        else
-        {
-            rayColor = Color.red;
-        }
-        Debug.DrawRay(boxCollider2D.bounds.center + new Vector3(boxCollider2D.bounds.extents.x, 0), Vector2.down * (boxCollider2D.bounds.extents.y + extraHeightText), rayColor);
-        Debug.DrawRay(boxCollider2D.bounds.center - new Vector3(boxCollider2D.bounds.extents.x, 0), Vector2.down * (boxCollider2D.bounds.extents.y + extraHeightText), rayColor);
-        Debug.DrawRay(boxCollider2D.bounds.center - new Vector3(boxCollider2D.bounds.extents.x, boxCollider2D.bounds.extents.y + extraHeightText), Vector2.right * (boxCollider2D.bounds.extents.y + extraHeightText), rayColor);
-        return raycastHit.collider != null;
+        RaycastHit2D raycastHitFloor = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, plaftormLayer);
+        RaycastHit2D raycastHitPlatform = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, bounceLayer);
+        return raycastHitFloor.collider != null || raycastHitPlatform.collider != null;
     }
 
     private void FixedUpdate()
@@ -198,14 +192,13 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.BOUNCE:
-                Move(leftStick);
                 rigidBody2D.AddForce(new Vector2(grabNormal.x, bounceInclination)*bounceImpulse,ForceMode2D.Impulse);
                 grabNormal = Vector2.zero;
                 playerState = PLAYER_STATE.BOUNCE_AIR;
                 break;
 
             case PLAYER_STATE.BOUNCE_AIR:
-                MoveOnAir(leftStick);
+                Move(leftStick);
                 if (rigidBody2D.velocity.y > 0 && Mathf.Abs(rigidBody2D.velocity.x) > 0)
                 {
                     rigidBody2D.AddForce(new Vector2(Mathf.Sign(rigidBody2D.velocity.x), -1) * cancelRateBounce);
@@ -229,7 +222,6 @@ public class Player : MonoBehaviour
                 }
                 break;
             case PLAYER_STATE.DASH:
-
                 rigidBody2D.AddForce(leftStick.normalized * dashImpulse, ForceMode2D.Impulse);
                 playerState = PLAYER_STATE.ON_AIR_DASH;
                 break;
@@ -243,6 +235,7 @@ public class Player : MonoBehaviour
                 {
                     rigidBody2D.gravityScale = fallingGravityScale;
                 }
+                MoveOnAir(leftStick);
                 break;
         }
     }
@@ -271,7 +264,7 @@ public class Player : MonoBehaviour
             if (playerHorizontalMaxVelocity > Mathf.Abs(rigidBody2D.velocity.x))
             {
                 float x = v2.x > 0 ? 1 : -1;
-                rigidBody2D.velocity += new Vector2(x, 0) * (playerSpeed/1.4f) * Time.deltaTime;
+                rigidBody2D.velocity += new Vector2(x, 0) * (playerSpeed*1.4f) * Time.deltaTime;
             }
         }
     }
@@ -301,9 +294,9 @@ public class Player : MonoBehaviour
                 else return;
             }
 
-            if (rigidBody2D.gravityScale != defaulGravityScale)
+            if (rigidBody2D.gravityScale != defaultGravityScale)
             {
-                rigidBody2D.gravityScale = defaulGravityScale;
+                rigidBody2D.gravityScale = defaultGravityScale;
             }
             RequestChangePlayerState(PLAYER_STATE.GRAB_WALL);
         }
@@ -314,6 +307,11 @@ public class Player : MonoBehaviour
         {
             if (collision.GetContact(0).normal.y == 1)
             {
+                //if (playerState != PLAYER_STATE.MOVE && playerState != PLAYER_STATE.IDLE)
+                //{
+                //    GroundedReset();
+                //    return;
+                //}
                 return;
             }
             else
@@ -326,6 +324,7 @@ public class Player : MonoBehaviour
             }
         }
     }
+
     private void OnCollisionExit2D(Collision2D collision)
     {
         if(collision.gameObject.layer == 7)
