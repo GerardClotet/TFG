@@ -90,6 +90,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(playerState);
         if(jumping)
         {
             jumpTime += Time.deltaTime;
@@ -112,14 +113,16 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (IsGrounded())
+        if (IsGrounded(plaftormLayer))
         {
-            if(playerState == PLAYER_STATE.ON_AIR || playerState == PLAYER_STATE.BOUNCE_AIR || playerState == PLAYER_STATE.ON_AIR_DASH)
+            if(playerState == PLAYER_STATE.ON_AIR || playerState == PLAYER_STATE.BOUNCE_AIR || playerState == PLAYER_STATE.ON_AIR_DASH )
             {
                 GroundedReset();
             }
             else if(playerState == PLAYER_STATE.GRAB_WALL)
             {
+                GroundedReset();
+
                 if (leftStick != Vector2.zero)
                 {
                     playerState = PLAYER_STATE.MOVE;
@@ -132,7 +135,10 @@ public class Player : MonoBehaviour
         }
         else if (playerState == PLAYER_STATE.IDLE || playerState == PLAYER_STATE.MOVE) 
         {
-            playerState = PLAYER_STATE.ON_AIR;
+            if (!IsGrounded(bounceLayer))
+            {
+                playerState = PLAYER_STATE.ON_AIR;
+            }
         }
     }
 
@@ -152,10 +158,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    private bool IsGrounded()
+    private bool IsGrounded(LayerMask layer)
     {
         float extraHeightText = 0.05f;
-        RaycastHit2D raycastHitFloor = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, plaftormLayer);
+        RaycastHit2D raycastHitFloor = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, layer);
        // RaycastHit2D raycastHitPlatform = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, bounceLayer);
         return raycastHitFloor.collider != null;
     }
@@ -175,8 +181,9 @@ public class Player : MonoBehaviour
             case PLAYER_STATE.JUMP:
                 float jumpForce = Mathf.Sqrt(jumpHeight * -2 * (Physics2D.gravity.y * rigidBody2D.gravityScale));
                 rigidBody2D.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
-                Move(leftStick);
-                playerState = PLAYER_STATE.ON_AIR;
+                //Move(leftStick);
+                RequestChangePlayerState(PLAYER_STATE.ON_AIR);
+               // playerState = PLAYER_STATE.ON_AIR;
                 break;
 
 
@@ -193,18 +200,18 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.GRAB_WALL:
-                rigidBody2D.velocity += new Vector2(0, grabDownfallVelocity);
-                Move(leftStick);
+                //rigidBody2D.velocity += new Vector2(0, grabDownfallVelocity);
+                //MoveOnAir(leftStick);
                 break;
 
             case PLAYER_STATE.BOUNCE:
                 rigidBody2D.AddForce(new Vector2(grabNormal.x, bounceInclination)*bounceImpulse,ForceMode2D.Impulse);
                 grabNormal = Vector2.zero;
+
                 playerState = PLAYER_STATE.BOUNCE_AIR;
                 break;
 
             case PLAYER_STATE.BOUNCE_AIR:
-                Move(leftStick);
                 if (rigidBody2D.velocity.y > 0 && Mathf.Abs(rigidBody2D.velocity.x) > 0)
                 {
                     rigidBody2D.AddForce(new Vector2(Mathf.Sign(rigidBody2D.velocity.x), -1) * cancelRateBounce);
@@ -213,19 +220,20 @@ public class Player : MonoBehaviour
                 {
                     rigidBody2D.gravityScale = fallingGravityScale;
                 }
-                //else 
-                //{
-                //    MoveOnAir(leftStick);
-                //}
+                else
+                {
+                    MoveOnAir(leftStick);
+                }
                 break;
 
             case PLAYER_STATE.HOLD_DASH:
                     rigidBody2D.velocity = Vector2.zero;
                     rigidBody2D.gravityScale = 0f;
                 break;
+
             case PLAYER_STATE.DASH:
                 rigidBody2D.AddForce(leftStick.normalized * dashImpulse, ForceMode2D.Impulse);
-                playerState = PLAYER_STATE.ON_AIR_DASH;
+                RequestChangePlayerState(PLAYER_STATE.ON_AIR_DASH);
                 break;
 
             case PLAYER_STATE.ON_AIR_DASH:
@@ -251,11 +259,11 @@ public class Player : MonoBehaviour
                 float x = v2.x > 0 ? 1 : -1;
                 rigidBody2D.velocity += new Vector2(x, 0) * playerSpeed * Time.deltaTime;
             }
-            else
-            {
-                float x = v2.x > 0 ? 1 : -1;
-                rigidBody2D.velocity += new Vector2(x, 0) * playerSpeed * Time.deltaTime;
-            }
+            //else
+            //{
+            //    float x = v2.x > 0 ? 1 : -1;
+            //    rigidBody2D.velocity += new Vector2(x, 0) * playerSpeed * Time.deltaTime;
+            //}
         }
     }
 
@@ -318,8 +326,23 @@ public class Player : MonoBehaviour
             }
             else
             {
-                grabNormal = collision.GetContact(0).normal;
-                if (playerState != PLAYER_STATE.GRAB_WALL && playerState != PLAYER_STATE.BOUNCE && playerState != PLAYER_STATE.HOLD_DASH)
+                if(playerState == PLAYER_STATE.GRAB_WALL)
+                {
+                    grabNormal = collision.GetContact(0).normal;
+                    if(leftStick.x >0 && grabNormal.x <0)
+                    {
+
+                    }
+                    else if(leftStick.x < 0 && grabNormal.x > 0)
+                    {
+
+                    }
+                    else
+                    {
+                        rigidBody2D.velocity += new Vector2(0, grabDownfallVelocity);
+                    }
+                }
+                else
                 {
                     RequestChangePlayerState(PLAYER_STATE.GRAB_WALL);
                 }
@@ -340,7 +363,6 @@ public class Player : MonoBehaviour
 
     private void DashStarted()
     {
-        Debug.Log("Dash Started");
     }
 
     //here we check if we can properly change player state
@@ -372,7 +394,7 @@ public class Player : MonoBehaviour
                     return;
                 }
 
-                if (playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.JUMP && playerState != PLAYER_STATE.BOUNCE_AIR)
+                if (playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.JUMP && playerState != PLAYER_STATE.BOUNCE_AIR && playerState != PLAYER_STATE.HOLD_DASH && playerState != PLAYER_STATE.ON_AIR_DASH)
                 {
                     jumping = true;
                     playerState = state;
@@ -380,7 +402,7 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.GRAB_WALL:
-                if(playerState != PLAYER_STATE.MOVE && playerState != PLAYER_STATE.IDLE && playerState != PLAYER_STATE.BOUNCE)
+                if(playerState != PLAYER_STATE.MOVE && playerState != PLAYER_STATE.IDLE && playerState != PLAYER_STATE.BOUNCE && playerState != PLAYER_STATE.DASH && playerState != PLAYER_STATE.HOLD_DASH)
                 {
                     playerState = state;
                 }
@@ -397,6 +419,22 @@ public class Player : MonoBehaviour
                 if (playerState != PLAYER_STATE.HOLD_DASH && canDash == true)
                 {
                     canDash = false;
+                    playerState = state;
+                }
+                break;
+
+            case PLAYER_STATE.ON_AIR_DASH:
+
+                if(playerState != PLAYER_STATE.JUMP || playerState != PLAYER_STATE.ON_AIR)
+                {
+                    playerState = state;
+                }
+                break;
+
+            case PLAYER_STATE.ON_AIR:
+
+                if (playerState != PLAYER_STATE.HOLD_DASH && playerState != PLAYER_STATE.DASH && playerState != PLAYER_STATE.ON_AIR_DASH)
+                {
                     playerState = state;
                 }
                 break;
