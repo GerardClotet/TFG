@@ -90,7 +90,6 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(playerState);
         if(jumping)
         {
             jumpTime += Time.deltaTime;
@@ -121,7 +120,14 @@ public class Player : MonoBehaviour
             }
             else if(playerState == PLAYER_STATE.GRAB_WALL)
             {
-                GroundedReset();
+                if (leftStick != Vector2.zero)
+                {
+                    playerState = PLAYER_STATE.MOVE;
+                }
+                else
+                {
+                    playerState = PLAYER_STATE.IDLE;
+                }
             }
         }
         else if (playerState == PLAYER_STATE.IDLE || playerState == PLAYER_STATE.MOVE) 
@@ -150,8 +156,8 @@ public class Player : MonoBehaviour
     {
         float extraHeightText = 0.05f;
         RaycastHit2D raycastHitFloor = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, plaftormLayer);
-        RaycastHit2D raycastHitPlatform = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, bounceLayer);
-        return raycastHitFloor.collider != null || raycastHitPlatform.collider != null;
+       // RaycastHit2D raycastHitPlatform = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, bounceLayer);
+        return raycastHitFloor.collider != null;
     }
 
     private void FixedUpdate()
@@ -214,12 +220,8 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.HOLD_DASH:
-                if (canDash)
-                {
-                    canDash = false;
                     rigidBody2D.velocity = Vector2.zero;
                     rigidBody2D.gravityScale = 0f;
-                }
                 break;
             case PLAYER_STATE.DASH:
                 rigidBody2D.AddForce(leftStick.normalized * dashImpulse, ForceMode2D.Impulse);
@@ -307,17 +309,17 @@ public class Player : MonoBehaviour
         {
             if (collision.GetContact(0).normal.y == 1)
             {
-                //if (playerState != PLAYER_STATE.MOVE && playerState != PLAYER_STATE.IDLE)
-                //{
-                //    GroundedReset();
-                //    return;
-                //}
+                if (playerState != PLAYER_STATE.MOVE && playerState != PLAYER_STATE.IDLE && playerState != PLAYER_STATE.HOLD_DASH && playerState != PLAYER_STATE.DASH)
+                {
+                    GroundedReset();
+                    return;
+                }
                 return;
             }
             else
             {
                 grabNormal = collision.GetContact(0).normal;
-                if (playerState != PLAYER_STATE.GRAB_WALL && playerState != PLAYER_STATE.BOUNCE)
+                if (playerState != PLAYER_STATE.GRAB_WALL && playerState != PLAYER_STATE.BOUNCE && playerState != PLAYER_STATE.HOLD_DASH)
                 {
                     RequestChangePlayerState(PLAYER_STATE.GRAB_WALL);
                 }
@@ -394,7 +396,7 @@ public class Player : MonoBehaviour
             case PLAYER_STATE.HOLD_DASH:
                 if (playerState != PLAYER_STATE.HOLD_DASH && canDash == true)
                 {
-                    //canDash = false;
+                    canDash = false;
                     playerState = state;
                 }
                 break;
