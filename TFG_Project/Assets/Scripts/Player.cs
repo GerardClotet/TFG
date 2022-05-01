@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float cancelRateJump = 100f;
     [SerializeField] private float jumpHeight = 5f;
     [SerializeField] private float jumpButtonTime = 0.5f;
+    [SerializeField] private float coyoteJumpTime = 0.2f;
     [SerializeField] private float fallingGravityScale = 10f;
     [SerializeField] private float bounceImpulse = 5f;
     [Range(0.5f,1f)] [SerializeField] private float bounceInclination = 0.5f;
@@ -42,14 +43,15 @@ public class Player : MonoBehaviour
     [Tooltip("Value that is MULTIPLIED with the playerSpeed")]
     [Range(0.01f, 1f)] [SerializeField] private float onAirFriction = 1.0f;
 
+
     private     Rigidbody2D rigidBody2D;
     private     BoxCollider2D boxCollider2D;
     private     UserInputManager inputManager;
-    private     CameraShake camShake;
 
     private     bool jumpHeld = false;
     private     float jumpTime = 0f;
     private     bool jumping = false;
+    private     float coyoteJumpCounter;
     private     float defaultGravityScale = 1f;
     private     Vector2 grabNormal = Vector2.zero;
     private     bool canDash = true;
@@ -60,10 +62,10 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        coyoteJumpCounter = coyoteJumpTime;
         inputManager = UserInputManager.Instance;
         rigidBody2D = GetComponent<Rigidbody2D>();
         boxCollider2D = GetComponent<BoxCollider2D>();
-        camShake = Camera.main.GetComponent<CameraShake>();
     }
 
     private void OnEnable()
@@ -147,6 +149,10 @@ public class Player : MonoBehaviour
                 playerState = PLAYER_STATE.ON_AIR;
             }
         }
+        else if (coyoteJumpCounter > 0)
+        {
+            coyoteJumpCounter -= Time.deltaTime;
+        }
     }
 
     private void GroundedReset()
@@ -155,16 +161,13 @@ public class Player : MonoBehaviour
         jumpTime = 0f;
         jumping = false;
         rigidBody2D.gravityScale = defaultGravityScale;
+        coyoteJumpCounter = coyoteJumpTime;
         if (leftStick != Vector2.zero)
         {
             playerState = PLAYER_STATE.MOVE;
         }
         else
         {
-            //if (!stopCoroutineActive)
-            //{
-            //    StartCoroutine(StopPlayerHorizontalMovement());
-            //}
             playerState = PLAYER_STATE.IDLE;
         }
     }
@@ -173,7 +176,6 @@ public class Player : MonoBehaviour
     {
         float extraHeightText = 0.05f;
         RaycastHit2D raycastHitFloor = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, layer);
-       // RaycastHit2D raycastHitPlatform = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, bounceLayer);
         return raycastHitFloor.collider != null;
     }
 
@@ -190,11 +192,13 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.JUMP:
+                if(rigidBody2D.gravityScale != defaultGravityScale)
+                {
+                    rigidBody2D.gravityScale = defaultGravityScale;
+                }
                 float jumpForce = Mathf.Sqrt(jumpHeight * -2 * (Physics2D.gravity.y * rigidBody2D.gravityScale));
                 rigidBody2D.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
-                //Move(leftStick);
                 RequestChangePlayerState(PLAYER_STATE.ON_AIR);
-               // playerState = PLAYER_STATE.ON_AIR;
                 break;
 
 
@@ -211,8 +215,6 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.GRAB_WALL:
-                //rigidBody2D.velocity += new Vector2(0, grabDownfallVelocity);
-                //MoveOnAir(leftStick);
                 break;
 
             case PLAYER_STATE.BOUNCE:
@@ -271,11 +273,6 @@ public class Player : MonoBehaviour
                 float x = v2.x > 0 ? 1 : -1;
                 rigidBody2D.velocity += new Vector2(x, 0) * playerSpeed * Time.deltaTime;
             }
-            //else
-            //{
-            //    float x = v2.x > 0 ? 1 : -1;
-            //    rigidBody2D.velocity += new Vector2(x, 0) * playerSpeed * Time.deltaTime;
-            //}
         }
     }
 
@@ -291,8 +288,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    //jump + move?
-    private void JumpPerformed()//maybe a coroutine?
+    private void JumpPerformed()
     {
         jumpHeld = true;
     }
@@ -331,7 +327,10 @@ public class Player : MonoBehaviour
             {
                 if (playerState != PLAYER_STATE.MOVE && playerState != PLAYER_STATE.IDLE && playerState != PLAYER_STATE.HOLD_DASH && playerState != PLAYER_STATE.DASH)
                 {
-                    GroundedReset();
+                    if (rigidBody2D.velocity.y < 0)
+                    {
+                        GroundedReset();
+                    }
                     return;
                 }
                 return;
@@ -341,11 +340,7 @@ public class Player : MonoBehaviour
                 if(playerState == PLAYER_STATE.GRAB_WALL)
                 {
                     grabNormal = collision.GetContact(0).normal;
-                    if(leftStick.x <0 && grabNormal.x <0)
-                    {
-                        MoveOnAir(leftStick);
-                    }
-                    else if(leftStick.x > 0 && grabNormal.x > 0)
+                    if(leftStick.x <0 && grabNormal.x <0 || leftStick.x > 0 && grabNormal.x > 0)
                     {
                         MoveOnAir(leftStick);
                     }
@@ -414,8 +409,10 @@ public class Player : MonoBehaviour
                     return;
                 }
 
-                if (playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.JUMP && playerState != PLAYER_STATE.BOUNCE_AIR && playerState != PLAYER_STATE.HOLD_DASH && playerState != PLAYER_STATE.ON_AIR_DASH)
+                if (playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.JUMP && playerState != PLAYER_STATE.BOUNCE_AIR && playerState !=
+                    PLAYER_STATE.HOLD_DASH && playerState != PLAYER_STATE.ON_AIR_DASH || coyoteJumpCounter > 0)
                 {
+                    coyoteJumpCounter = -1;
                     jumping = true;
                     playerState = state;
                 }
@@ -463,13 +460,11 @@ public class Player : MonoBehaviour
 
     IEnumerator StopPlayerHorizontalMovement() //TODO
     {
-        Debug.Log("Coroutine Start");
         stopCoroutineActive = true;
         float startVel = rigidBody2D.velocity.x;
         float reduceStep = startVel / 50f;
         while (Mathf.Abs(rigidBody2D.velocity.x) > 0)
         {
-            Debug.Log("Coroutine Iterate");
             reduceStep += 0.5f * Time.fixedDeltaTime;
             float nVel = Mathf.Lerp(rigidBody2D.velocity.x, 0, reduceStep);
             rigidBody2D.velocity = new Vector2(nVel, rigidBody2D.velocity.y);

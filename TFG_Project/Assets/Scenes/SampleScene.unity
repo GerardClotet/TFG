@@ -574,6 +574,7 @@ MonoBehaviour:
   cancelRateJump: 100
   jumpHeight: 30
   jumpButtonTime: 0.3
+  coyoteJumpTime: 0.15
   fallingGravityScale: 15
   bounceImpulse: 30
   bounceInclination: 1
@@ -1969,7 +1970,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!61 &1791709909
 BoxCollider2D:
