@@ -59,6 +59,7 @@ public class Player : MonoBehaviour
     private     bool stopCoroutineActive = false;
 
     public Action dashAction;
+    public Action groundedAction;
 
     private void Awake()
     {
@@ -157,6 +158,7 @@ public class Player : MonoBehaviour
 
     private void GroundedReset()
     {
+        groundedAction.Invoke();
         canDash = true;
         jumpTime = 0f;
         jumping = false;
@@ -462,11 +464,11 @@ public class Player : MonoBehaviour
     {
         stopCoroutineActive = true;
         float startVel = rigidBody2D.velocity.x;
-        float reduceStep = startVel / 50f;
+        float reduceStep = startVel / 1000f;
         while (Mathf.Abs(rigidBody2D.velocity.x) > 0)
         {
-            reduceStep += 0.5f * Time.fixedDeltaTime;
-            float nVel = Mathf.Lerp(rigidBody2D.velocity.x, 0, reduceStep);
+            reduceStep += reduceStep;
+            float nVel = Mathf.Lerp(startVel, 0, Mathf.Abs(reduceStep));
             rigidBody2D.velocity = new Vector2(nVel, rigidBody2D.velocity.y);
             yield return null;
         }
