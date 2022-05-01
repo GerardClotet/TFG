@@ -22,17 +22,23 @@ public class Rumbler : MonoBehaviour
             {
                 case InputDeviceChange.Added:
                     //gamepad = GetGamepad();
-                    
+                    Time.timeScale = 1f;
                     break;
 
                 case InputDeviceChange.Removed:
-                    //Debug.Log("Removed " + device);
+                    Time.timeScale = 0;
                     break;
             }
         };
         player.dashAction += StartDashRumble;
         player.groundedAction += GroundRumble;
         Application.quitting += StopRumble;
+    }
+
+
+    private void OnApplicationPause(bool pause)
+    {
+        StopRumble();   
     }
 
     private Gamepad GetGamepad()
@@ -42,7 +48,7 @@ public class Rumbler : MonoBehaviour
 
     void GroundRumble()
     {
-        StartCoroutine(ConstantRumbleOverTime(0.7f, 1.0f,0.2f));
+        StartCoroutine(ConstantRumbleOverTime(0.7f, 1.0f,0.1f));
     }
 
     void StartDashRumble()
