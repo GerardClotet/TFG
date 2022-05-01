@@ -45,6 +45,8 @@ public class Player : MonoBehaviour
     private     Rigidbody2D rigidBody2D;
     private     BoxCollider2D boxCollider2D;
     private     UserInputManager inputManager;
+    private     CameraShake camShake;
+
     private     bool jumpHeld = false;
     private     float jumpTime = 0f;
     private     bool jumping = false;
@@ -54,11 +56,14 @@ public class Player : MonoBehaviour
     private     float auxDashHoldTime = 0f;
     private     bool stopCoroutineActive = false;
 
+    public Action dashAction;
+
     private void Awake()
     {
         inputManager = UserInputManager.Instance;
         rigidBody2D = GetComponent<Rigidbody2D>();
         boxCollider2D = GetComponent<BoxCollider2D>();
+        camShake = Camera.main.GetComponent<CameraShake>();
     }
 
     private void OnEnable()
@@ -239,6 +244,7 @@ public class Player : MonoBehaviour
 
             case PLAYER_STATE.DASH:
                 rigidBody2D.AddForce(leftStick.normalized * dashImpulse, ForceMode2D.Impulse);
+                dashAction.Invoke();
                 RequestChangePlayerState(PLAYER_STATE.ON_AIR_DASH);
                 break;
 
