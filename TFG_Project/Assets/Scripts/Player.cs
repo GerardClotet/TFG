@@ -39,6 +39,8 @@ public class Player : MonoBehaviour
     [Range(0.01f, 1f)] [SerializeField] private float dashHoldTime = 0.5f;
     [SerializeField] private float dashImpulse = 500f;
     [SerializeField] private float cancelRateDash = 40f;
+    [Tooltip("Value that is MULTIPLIED with the playerSpeed")]
+    [Range(0.01f, 1f)] [SerializeField] private float onAirFriction = 1.0f;
 
     private     Rigidbody2D rigidBody2D;
     private     BoxCollider2D boxCollider2D;
@@ -50,6 +52,7 @@ public class Player : MonoBehaviour
     private     Vector2 grabNormal = Vector2.zero;
     private     bool canDash = true;
     private     float auxDashHoldTime = 0f;
+    private     bool stopCoroutineActive = false;
 
     private void Awake()
     {
@@ -90,7 +93,6 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(playerState);
         if(jumping)
         {
             jumpTime += Time.deltaTime;
@@ -154,6 +156,10 @@ public class Player : MonoBehaviour
         }
         else
         {
+            //if (!stopCoroutineActive)
+            //{
+            //    StartCoroutine(StopPlayerHorizontalMovement());
+            //}
             playerState = PLAYER_STATE.IDLE;
         }
     }
@@ -212,7 +218,7 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.BOUNCE_AIR:
-                if (rigidBody2D.velocity.y > 0 && Mathf.Abs(rigidBody2D.velocity.x) > 0)
+                if (rigidBody2D.velocity.y > 0 /*&& Mathf.Abs(rigidBody2D.velocity.x) > 0*/)
                 {
                     rigidBody2D.AddForce(new Vector2(Mathf.Sign(rigidBody2D.velocity.x), -1) * cancelRateBounce);
                 }
@@ -274,7 +280,7 @@ public class Player : MonoBehaviour
             if (playerHorizontalMaxVelocity > Mathf.Abs(rigidBody2D.velocity.x))
             {
                 float x = v2.x > 0 ? 1 : -1;
-                rigidBody2D.velocity += new Vector2(x, 0) * (playerSpeed*1.4f) * Time.deltaTime;
+                rigidBody2D.velocity += new Vector2(x, 0) * (playerSpeed*onAirFriction) * Time.deltaTime;
             }
         }
     }
@@ -329,13 +335,13 @@ public class Player : MonoBehaviour
                 if(playerState == PLAYER_STATE.GRAB_WALL)
                 {
                     grabNormal = collision.GetContact(0).normal;
-                    if(leftStick.x >0 && grabNormal.x <0)
+                    if(leftStick.x <0 && grabNormal.x <0)
                     {
-
+                        MoveOnAir(leftStick);
                     }
-                    else if(leftStick.x < 0 && grabNormal.x > 0)
+                    else if(leftStick.x > 0 && grabNormal.x > 0)
                     {
-
+                        MoveOnAir(leftStick);
                     }
                     else
                     {
@@ -369,12 +375,16 @@ public class Player : MonoBehaviour
     //This is called when InputActions are cancelled
     public void RequestChangePlayerState(PLAYER_STATE state)
     {
+        if(state != PLAYER_STATE.IDLE && stopCoroutineActive)
+        {
+            stopCoroutineActive = false;
+            StopAllCoroutines();
+        }
         switch(state)
         {
-            case PLAYER_STATE.MOVE: //requests idle
+            case PLAYER_STATE.MOVE: 
                 if (playerState == PLAYER_STATE.IDLE)
                 {
-                    leftStick = Vector2.zero;
                     playerState = state;
                 }
                 break;
@@ -382,12 +392,16 @@ public class Player : MonoBehaviour
             case PLAYER_STATE.IDLE:
                 if (playerState == PLAYER_STATE.MOVE)
                 {
+                    if(!stopCoroutineActive)
+                    {
+                        StartCoroutine(StopPlayerHorizontalMovement());
+                    }
+                    leftStick = Vector2.zero;
                     playerState = state;
                 }
                 break;
 
             case PLAYER_STATE.JUMP:
-
                 if(playerState == PLAYER_STATE.GRAB_WALL)
                 {
                     playerState = PLAYER_STATE.BOUNCE;
@@ -439,5 +453,23 @@ public class Player : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    IEnumerator StopPlayerHorizontalMovement() //TODO
+    {
+        Debug.Log("Coroutine Start");
+        stopCoroutineActive = true;
+        float startVel = rigidBody2D.velocity.x;
+        float reduceStep = startVel / 50f;
+        while (Mathf.Abs(rigidBody2D.velocity.x) > 0)
+        {
+            Debug.Log("Coroutine Iterate");
+            reduceStep += 0.5f * Time.fixedDeltaTime;
+            float nVel = Mathf.Lerp(rigidBody2D.velocity.x, 0, reduceStep);
+            rigidBody2D.velocity = new Vector2(nVel, rigidBody2D.velocity.y);
+            yield return null;
+        }
+        stopCoroutineActive = false;
+        yield return null;
     }
 }
