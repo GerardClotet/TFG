@@ -22,12 +22,36 @@ public class UserInputManager : MonoBehaviour
     public Action jumpCanceled;
     public Action dashEvent;
     public Action jumpStarted;
+    public Action <object> openMenu;
+    public Action closeMenu;
     User userActionInput;
 
     private void Awake()
     {
         Instance = this;
         userActionInput = new User();
+        EnablePlayerInput();
+
+        //move
+        userActionInput.Player.Move.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.MOVE);
+        userActionInput.Player.Move.performed += context => moveInputEvent.Invoke(context.ReadValue<Vector2>().x, context.ReadValue<Vector2>().y);
+        userActionInput.Player.Move.canceled += context => requestChangeStateEvent.Invoke(PLAYER_STATE.IDLE);
+        userActionInput.Player.Move.canceled += context => moveInputEvent.Invoke(context.ReadValue<Vector2>().x, context.ReadValue<Vector2>().y);
+        //jump
+        userActionInput.Player.Jump.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.JUMP);
+        userActionInput.Player.Jump.performed += context => jumpEvent.Invoke();
+        userActionInput.Player.Jump.canceled += context => jumpCanceled.Invoke();
+        //dash
+        userActionInput.Player.Dash.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.HOLD_DASH);
+        userActionInput.Player.Dash.started += context => dashEvent.Invoke();
+
+        //userActionInput.Player.Dash.performed += context => dashEvent.Invoke();
+        //Start
+        userActionInput.Player.Menu.started += context => openMenu.Invoke(context);
+        userActionInput.UI.Start.started += context => closeMenu.Invoke();
+
+
+        openMenu += func => { Debug.Log("Disable & enable"); DisablePlayerInput(); EnableUiInput(); };
     }
 
     private void OnEnable() 
@@ -42,24 +66,7 @@ public class UserInputManager : MonoBehaviour
 
     public void EnablePlayerInput()
     {
-        //sets the player input map active
         userActionInput.Player.Enable();
-
-        //move
-        userActionInput.Player.Move.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.MOVE);
-        userActionInput.Player.Move.performed += context => moveInputEvent.Invoke(context.ReadValue<Vector2>().x, context.ReadValue<Vector2>().y);
-        userActionInput.Player.Move.canceled += context => requestChangeStateEvent.Invoke(PLAYER_STATE.IDLE);
-        userActionInput.Player.Move.canceled += context => moveInputEvent.Invoke(context.ReadValue<Vector2>().x,context.ReadValue<Vector2>().y);
-        //jump
-        userActionInput.Player.Jump.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.JUMP);
-        userActionInput.Player.Jump.performed += context => jumpEvent.Invoke();
-        userActionInput.Player.Jump.canceled += context => jumpCanceled.Invoke();
-        //dash
-        userActionInput.Player.Dash.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.HOLD_DASH);
-        userActionInput.Player.Dash.started += context => dashEvent.Invoke();
-
-        //userActionInput.Player.Dash.performed += context => dashEvent.Invoke();
-
     }
 
     public void DisablePlayerInput()
@@ -70,5 +77,15 @@ public class UserInputManager : MonoBehaviour
         //userActionInput.Player.Jump.performed -= context => jumpEvent();
         //userActionInput.Player.Dash.performed -= context => dashEvent();
         userActionInput.Player.Disable();
+    }
+
+    public void EnableUiInput()
+    {
+        userActionInput.UI.Enable();
+    }
+
+    public void DisableUiInput()
+    {
+        userActionInput.UI.Disable();
     }
 }

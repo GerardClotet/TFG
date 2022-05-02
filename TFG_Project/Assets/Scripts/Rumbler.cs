@@ -16,22 +16,9 @@ public class Rumbler : MonoBehaviour
     [SerializeField] private Player player;
     private void Awake()
     {
-        InputSystem.onDeviceChange += (device, change) =>
-        {
-            switch (change)
-            {
-                case InputDeviceChange.Added:
-                    //gamepad = GetGamepad();
-                    Time.timeScale = 1f;
-                    break;
-
-                case InputDeviceChange.Removed:
-                    Time.timeScale = 0;
-                    break;
-            }
-        };
         player.dashAction += StartDashRumble;
         player.groundedAction += GroundRumble;
+        UserInputManager.Instance.openMenu += context => { Debug.Log("Stop rumble"); StopRumble(); };
         Application.quitting += StopRumble;
     }
 
