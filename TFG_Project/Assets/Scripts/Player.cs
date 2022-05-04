@@ -57,7 +57,8 @@ public class Player : MonoBehaviour
     private     bool canDash = true;
     private     float auxDashHoldTime = 0f;
     private     bool stopCoroutineActive = false;
-
+    private     Vector3 spawnPos = Vector3.zero;
+    
     public Action dashAction;
     public Action groundedAction;
 
@@ -411,8 +412,7 @@ public class Player : MonoBehaviour
                     return;
                 }
 
-                if (playerState != PLAYER_STATE.ON_AIR && playerState != PLAYER_STATE.JUMP && playerState != PLAYER_STATE.BOUNCE_AIR && playerState !=
-                    PLAYER_STATE.HOLD_DASH && playerState != PLAYER_STATE.ON_AIR_DASH || coyoteJumpCounter > 0)
+                if (playerState == PLAYER_STATE.MOVE || playerState == PLAYER_STATE.IDLE || coyoteJumpCounter > 0)
                 {
                     coyoteJumpCounter = -1;
                     jumping = true;
@@ -474,5 +474,18 @@ public class Player : MonoBehaviour
         }
         stopCoroutineActive = false;
         yield return null;
+    }
+    
+    public void SetSpawnPoint(Vector3 pos)
+    {
+        SpawnPos = pos;
+    }
+    
+    private void ResetPlayer()
+    {
+        StopCoroutine(StopPlayerHorizontalMovement());
+        GroundedReset();
+        this.transform.position = Spawnpos;
+        rigidBody2D.velocity = Vector2.zero;
     }
 }
