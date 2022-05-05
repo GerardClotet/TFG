@@ -58,7 +58,12 @@ public class Player : MonoBehaviour
     private     float auxDashHoldTime = 0f;
     private     bool stopCoroutineActive = false;
     private     Vector3 spawnPos = Vector3.zero;
-    
+
+    private static int s_PlatformLayer = 6;
+    private static int s_BounceLayer = 7;
+    private static int s_DieLayer = 8;
+
+
     public Action dashAction;
     public Action groundedAction;
 
@@ -102,10 +107,11 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(playerState);
+
         if(jumping)
         {
             jumpTime += Time.deltaTime;
-
 
             if(jumpTime >= jumpButtonTime)
             {
@@ -303,7 +309,7 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 7)
+        if (collision.gameObject.layer == s_BounceLayer)
         {
             if (collision.GetContact(0).normal.y == 1)
             {
@@ -322,9 +328,18 @@ public class Player : MonoBehaviour
             RequestChangePlayerState(PLAYER_STATE.GRAB_WALL);
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == s_DieLayer)
+        {
+            ResetPlayer();
+        }
+    }
+
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 7)
+        if (collision.gameObject.layer == s_BounceLayer)
         {
             if (collision.GetContact(0).normal.y == 1)
             {
@@ -362,7 +377,7 @@ public class Player : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if(collision.gameObject.layer == 7)
+        if(collision.gameObject.layer == s_BounceLayer)
         {
             if(playerState == PLAYER_STATE.GRAB_WALL)
             {
@@ -384,6 +399,7 @@ public class Player : MonoBehaviour
             stopCoroutineActive = false;
             StopAllCoroutines();
         }
+
         switch(state)
         {
             case PLAYER_STATE.MOVE: 
@@ -421,7 +437,7 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.GRAB_WALL:
-                if(playerState != PLAYER_STATE.MOVE && playerState != PLAYER_STATE.IDLE && playerState != PLAYER_STATE.BOUNCE && playerState != PLAYER_STATE.DASH && playerState != PLAYER_STATE.HOLD_DASH)
+                if(playerState == PLAYER_STATE.BOUNCE_AIR || playerState == PLAYER_STATE.ON_AIR || playerState == PLAYER_STATE.ON_AIR_DASH)
                 {
                     playerState = state;
                 }
@@ -443,7 +459,6 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.ON_AIR_DASH:
-
                 if(playerState != PLAYER_STATE.JUMP || playerState != PLAYER_STATE.ON_AIR)
                 {
                     playerState = state;
@@ -478,14 +493,27 @@ public class Player : MonoBehaviour
     
     public void SetSpawnPoint(Vector3 pos)
     {
-        SpawnPos = pos;
+        spawnPos = pos;
     }
     
     private void ResetPlayer()
     {
         StopCoroutine(StopPlayerHorizontalMovement());
-        GroundedReset();
-        this.transform.position = Spawnpos;
+
+        canDash = true;
+        jumpTime = 0f;
+        jumping = false;
+        rigidBody2D.gravityScale = defaultGravityScale;
+        coyoteJumpCounter = coyoteJumpTime;
+        if (leftStick != Vector2.zero)
+        {
+            playerState = PLAYER_STATE.MOVE;
+        }
+        else
+        {
+            playerState = PLAYER_STATE.IDLE;
+        }
+        transform.position = spawnPos;
         rigidBody2D.velocity = Vector2.zero;
     }
 }

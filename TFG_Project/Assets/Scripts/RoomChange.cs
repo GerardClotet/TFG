@@ -5,9 +5,8 @@ using Cinemachine;
 public class RoomChange : MonoBehaviour
 {
 
-    [SerializeField]
-    private CinemachineVirtualCamera virtualCam;
-    private Transform spawnPoint;
+    [SerializeField] private CinemachineVirtualCamera virtualCam;
+    [SerializeField] private Transform spawnPoint;
     
     private void OnTriggerEnter2D(Collider2D collision)
     {

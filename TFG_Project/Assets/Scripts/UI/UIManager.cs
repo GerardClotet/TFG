@@ -23,10 +23,8 @@ public class UIManager : MonoBehaviour
             switch (change)
             {
                 case InputDeviceChange.Added:
-                    //gamepad = GetGamepad();
                     if(DisconnectedController != null)
                     {
-                        //DisconnectedController.SetActive(false);
                         HideDeviceDisconnectedScreen();
                     }
                     break;
@@ -75,7 +73,6 @@ public class UIManager : MonoBehaviour
                     )));
         primaryButton.Select();
     }
-
 
     private void OnGUI()
     {
