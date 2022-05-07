@@ -13,19 +13,14 @@ public enum RUMBLE_PATTERN
 }
 public class Rumbler : MonoBehaviour
 {
-    [SerializeField] private Player player;
     private void Awake()
     {
-        player.dashAction += StartDashRumble;
-        player.groundedAction += GroundRumble;
-        UserInputManager.Instance.openMenu += context => { Debug.Log("Stop rumble"); StopRumble(); };
+        Player.Instance.dashAction += StartDashRumble;
+        Player.Instance.groundedAction += GroundRumble;
+        Player.Instance.endGame += StopRumble;
+        Player.Instance.endGame += StopAllCoroutines;
+        UserInputManager.Instance.openMenu += context => {StopRumble();};
         Application.quitting += StopRumble;
-    }
-
-
-    private void OnApplicationPause(bool pause)
-    {
-        StopRumble();   
     }
 
     private Gamepad GetGamepad()

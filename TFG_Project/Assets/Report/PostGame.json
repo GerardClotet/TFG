@@ -1,0 +1,28 @@
+{
+  
+  "questions": [
+    {
+      "question": "Quina part t'ha agradat més del joc?",
+      "answers": [
+        "La dificultad",
+        "La exploració",
+        "El moviment"
+      ]
+    },
+    {
+      "question": "Que t'ha frustrat més?",
+      "answers": [
+        "La duració del joc",
+        "Les vegades que he mort",
+        "La música"
+      ]
+    },
+    {
+      "question": "El joc anava massa ràpid?",
+      "answers": [
+        "Si",
+        "No"
+      ]
+    }
+  ]
+}

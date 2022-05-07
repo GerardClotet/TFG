@@ -10,27 +10,32 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject DisconnectedController;
     [SerializeField] private GameObject PausePanel;
     [SerializeField] private Button primaryButton;
+    [SerializeField] private GameObject postGamePanel;
 
     private List<Button> menuButtonList = new List<Button>();
-
+    private TestClass questions;
+    private GameObject questionsPrefab;
+    private GameObject questionButtonPrefab;
+    private int questionCounter = 0;
     private void Awake()
     {
+        Player.Instance.endGame += PostGameState;
+
         UserInputManager.Instance.openMenu += func => OpenMenu(); 
         UserInputManager.Instance.closeMenu += OnResumeButtonClicked;
-
         InputSystem.onDeviceChange += (device, change) =>
         {
             switch (change)
             {
                 case InputDeviceChange.Added:
-                    if(DisconnectedController != null)
+                    if(DisconnectedController != null && !postGamePanel.activeInHierarchy)
                     {
                         HideDeviceDisconnectedScreen();
                     }
                     break;
 
                 case InputDeviceChange.Removed:
-                    if (DisconnectedController != null)
+                    if (DisconnectedController != null && !postGamePanel.activeInHierarchy)
                     {
                         DisconnectedController.SetActive(true);
                         ShowDeviceDisconenctedScreen();
@@ -39,6 +44,9 @@ public class UIManager : MonoBehaviour
             }
         };
 
+        questions = JSONManager.ReadJson();
+        questionButtonPrefab = Resources.Load<GameObject>("QuestionButton");
+        questionsPrefab = Resources.Load<GameObject>("Question");
         menuButtonList = PausePanel.GetComponentsInChildren<Button>().ToList();
     }
 
@@ -56,7 +64,7 @@ public class UIManager : MonoBehaviour
             func => LeanTween.moveLocalY(DisconnectedController, -1084, 0.05f).setIgnoreTimeScale(true).setOnComplete(
             func => DisconnectedController.SetActive(false)));
 
-        if (!PausePanel.activeInHierarchy)
+        if (!PausePanel.activeInHierarchy || !postGamePanel.activeInHierarchy)
         {
             Time.timeScale = 1f;
         }
@@ -64,6 +72,9 @@ public class UIManager : MonoBehaviour
 
     private void OpenMenu()
     {
+        if (postGamePanel.activeInHierarchy)
+            return;
+
         Time.timeScale = 0f;
         PausePanel.SetActive(true);
         LeanTween.move(PausePanel.GetComponent<RectTransform>(), Vector3.zero, 0.1f).setIgnoreTimeScale(true).setOnComplete(
@@ -81,6 +92,9 @@ public class UIManager : MonoBehaviour
 
     public void OnResumeButtonClicked()
     {
+        if (postGamePanel.activeInHierarchy)
+            return;
+
         UserInputManager.Instance.DisableUiInput();
 
         LeanTween.move(menuButtonList[2].GetComponent<RectTransform>(), new Vector3(-301f, menuButtonList[2].transform.localPosition.y, 0), 0.1f).setIgnoreTimeScale(true).setEaseOutCirc().setOnComplete(
@@ -100,6 +114,58 @@ public class UIManager : MonoBehaviour
                         }))));
     }
 
+
+    public void PostGameState()
+    {
+        Time.timeScale = 0f;
+        UserInputManager.Instance.DisablePlayerInput();
+        UserInputManager.Instance.EnableUiInput();
+
+        PausePanel.SetActive(false);
+        DisconnectedController.SetActive(false);
+        postGamePanel.SetActive(true);
+
+        LeanTween.move(postGamePanel.GetComponent<RectTransform>(), Vector3.zero, 0.1f).setIgnoreTimeScale(true);
+        InputField inputField = postGamePanel.GetComponentInChildren<InputField>();
+        inputField.onEndEdit.AddListener(delegate 
+        {
+            ReportGatherer.Instance.SetReportGatherer(inputField.text);
+            LeanTween.move(inputField.GetComponent<RectTransform>(), new Vector3(1000f, inputField.transform.localPosition.y, 0), 0.1f).setIgnoreTimeScale(true).setEaseOutCirc().setOnComplete(
+                func => { inputField.gameObject.SetActive(false); TestMode();});
+        });       
+        
+    }
+
+    private void TestMode()
+    {
+        if(questionCounter < questions.questions.Length)
+        {
+            var currQuestion = Instantiate(questionsPrefab, gameObject.transform);
+            currQuestion.GetComponent<Text>().text = questions.questions[questionCounter].question;
+            for(int i = 0; i < questions.questions[questionCounter].answers.Length; i++ )
+            {
+                if(i ==0)
+                {
+                    currQuestion.GetComponentInChildren<Button>().GetComponentInChildren<Text>().text = questions.questions[questionCounter].answers[i];
+                    currQuestion.GetComponentInChildren<Button>().Select();
+                }
+                else
+                {
+                    var currButton = Instantiate(questionButtonPrefab, currQuestion.transform);
+                    currButton.GetComponentInChildren<Text>().text = questions.questions[questionCounter].answers[i];
+                    currButton.gameObject.transform.position += new Vector3(0, -70f * i, 0);
+                }
+            }
+            currQuestion.GetComponent<QuestionHandler>().SetDelegates();
+            questionCounter++;
+        }
+    }
+
+    public void TestButtonCallback(int answer, GameObject go)
+    {
+        Debug.Log(answer);
+        LeanTween.moveLocalY(go, -600, 0.3f).setIgnoreTimeScale(true).setOnComplete(func => { Destroy(go); TestMode();});
+    }
     public void OnQuitButtonClicked()
     {
         Application.Quit();
