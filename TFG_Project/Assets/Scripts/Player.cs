@@ -18,6 +18,8 @@ public enum PLAYER_STATE
 }
 public class Player : MonoBehaviour
 {
+    public static Player Instance { get; private set; }
+
     private Vector2 leftStick;
     private PLAYER_STATE playerState = PLAYER_STATE.IDLE;
 
@@ -36,6 +38,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float bounceImpulse = 5f;
     [Range(0.5f,1f)] [SerializeField] private float bounceInclination = 0.5f;
     [Range(-10,-0.1f)][SerializeField] private float grabDownfallVelocity = -1f;
+    [SerializeField] private float bounceDistance = 10;
     [SerializeField] private float cancelRateBounce = 30f;
     [Range(0.01f, 1f)] [SerializeField] private float dashHoldTime = 0.5f;
     [SerializeField] private float dashImpulse = 500f;
@@ -59,20 +62,23 @@ public class Player : MonoBehaviour
     private     bool stopCoroutineActive = false;
     private     Vector3 spawnPos = Vector3.zero;
 
-    private static int s_PlatformLayer = 6;
+    //private static int s_PlatformLayer = 6;
     private static int s_BounceLayer = 7;
     private static int s_DieLayer = 8;
-
+    private static int s_FinishLayer = 9;
 
     public Action dashAction;
     public Action groundedAction;
-
+    public Action endGame;
+    public Action dieAction;
     private void Awake()
     {
+        Instance = this;
         coyoteJumpCounter = coyoteJumpTime;
         inputManager = UserInputManager.Instance;
         rigidBody2D = GetComponent<Rigidbody2D>();
         boxCollider2D = GetComponent<BoxCollider2D>();
+        dieAction += ResetPlayer;
     }
 
     private void OnEnable()
@@ -107,8 +113,6 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(playerState);
-
         if(jumping)
         {
             jumpTime += Time.deltaTime;
@@ -227,7 +231,9 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.BOUNCE:
-                rigidBody2D.AddForce(new Vector2(grabNormal.x, bounceInclination)*bounceImpulse,ForceMode2D.Impulse);
+                float bounceForce = Mathf.Sqrt(bounceDistance * -2 * (Physics2D.gravity.y * rigidBody2D.gravityScale));
+
+                rigidBody2D.AddForce(new Vector2(grabNormal.x, bounceInclination)*bounceForce,ForceMode2D.Impulse);
                 grabNormal = Vector2.zero;
 
                 playerState = PLAYER_STATE.BOUNCE_AIR;
@@ -235,7 +241,11 @@ public class Player : MonoBehaviour
 
             case PLAYER_STATE.BOUNCE_AIR:
                 if (rigidBody2D.velocity.y > 0 /*&& Mathf.Abs(rigidBody2D.velocity.x) > 0*/)
-                {
+                { 
+                    if(Mathf.Abs(rigidBody2D.velocity.x) < 1.5f)
+                    {
+                        rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, -0.5f);
+                    }
                     rigidBody2D.AddForce(new Vector2(Mathf.Sign(rigidBody2D.velocity.x), -1) * cancelRateBounce);
                 }
                 else if(rigidBody2D.gravityScale != fallingGravityScale)
@@ -294,6 +304,11 @@ public class Player : MonoBehaviour
                 float x = v2.x > 0 ? 1 : -1;
                 rigidBody2D.velocity += new Vector2(x, 0) * (playerSpeed*onAirFriction) * Time.deltaTime;
             }
+            else if(Mathf.Sign(playerHorizontalMaxVelocity) != Mathf.Sign(rigidBody2D.velocity.x))
+            {
+                float x = v2.x > 0 ? 1 : -1;
+                rigidBody2D.velocity += new Vector2(x, 0) * (playerSpeed * onAirFriction) * Time.deltaTime;
+            }
         }
     }
 
@@ -333,7 +348,11 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.layer == s_DieLayer)
         {
-            ResetPlayer();
+            dieAction.Invoke();
+        }
+        else if(collision.gameObject.layer == s_FinishLayer )
+        {
+            endGame.Invoke();
         }
     }
 

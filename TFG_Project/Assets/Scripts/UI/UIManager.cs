@@ -157,12 +157,16 @@ public class UIManager : MonoBehaviour
                 }
             }
             currQuestion.GetComponent<QuestionHandler>().SetDelegates();
-            questionCounter++;
+            return;
         }
+        //Here we make a report gatherer and end the game
+        ReportGatherer.Instance.GatherAndSendInfo();
     }
 
     public void TestButtonCallback(int answer, GameObject go)
     {
+        ReportGatherer.Instance.AddAnswerValue(questionCounter, answer);
+        questionCounter++;
         Debug.Log(answer);
         LeanTween.moveLocalY(go, -600, 0.3f).setIgnoreTimeScale(true).setOnComplete(func => { Destroy(go); TestMode();});
     }

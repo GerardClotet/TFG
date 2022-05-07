@@ -34,27 +34,14 @@ public class PlayFabManager : MonoBehaviour
         Debug.Log("Your ID is: " + result.PlayFabId);
     }
 
-    public void UploadDataCSV()
+    public void UploadDataCSV(Dictionary<string,string> dict)
     {
         //  UpdateUserDataRequest
         var request = new UpdateUserDataRequest
         {
-            Data = new Dictionary<string,string>
-            {
-                {"Report", CSVManager.GetCommaSeparatedString(
-                    new string[5]
-                    {
-                        "juan",
-                        UnityEngine.Random.Range(0,11).ToString(),
-                        UnityEngine.Random.Range(0,11).ToString(),
-                        UnityEngine.Random.Range(0,11).ToString(),
-                        UnityEngine.Random.Range(0,11).ToString()
-                    })
-                }
-            }
+            Data = dict
         };
         PlayFabClientAPI.UpdateUserData(request, OnDataSend,OnError);
-        //PlayFabClientAPI.UpdateUserData()
     }
 
 
@@ -75,33 +62,11 @@ public class PlayFabManager : MonoBehaviour
     private void OnDataSend(UpdateUserDataResult dataSend)
     {
         Debug.Log("Data has uploaded properly!");
+        Application.Quit();
     }
 
     private void OnError(PlayFabError error)
     {
         Debug.Log(error.GenerateErrorReport());
     }
-
-    public void GetDataFromAllUsers()
-    {
-
-        var request = new GetPlayerSegmentsRequest();
-        PlayFabClientAPI.GetPlayerSegments(request,GetPlayerSegmentsResults, OnError);
-    }
-
-    private void GetPlayerSegmentsResults(GetPlayerSegmentsResult result)
-    {
-        Debug.LogError(result.Segments);
-
-       // result.Segments;
-    }
-
-    ///TEST
-    public void TestFunction()
-    {
-        UploadDataCSV();
-        GetDataCSV();
-        GetDataFromAllUsers();
-    }
-    ///
 }
