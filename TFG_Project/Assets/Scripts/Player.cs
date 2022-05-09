@@ -201,7 +201,7 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.MOVE:
-                Move(leftStick);
+                Move();
                 break;
 
             case PLAYER_STATE.JUMP:
@@ -214,9 +214,8 @@ public class Player : MonoBehaviour
                 RequestChangePlayerState(PLAYER_STATE.ON_AIR);
                 break;
 
-
             case PLAYER_STATE.ON_AIR:
-                MoveOnAir(leftStick);
+                MoveOnAir();
                 if (!jumpHeld && jumping && rigidBody2D.velocity.y > 0)
                 {
                     rigidBody2D.AddForce(Vector2.down * cancelRateJump);
@@ -254,7 +253,7 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    MoveOnAir(leftStick);
+                    MoveOnAir();
                 }
                 break;
 
@@ -278,35 +277,35 @@ public class Player : MonoBehaviour
                 {
                     rigidBody2D.gravityScale = fallingGravityScale;
                 }
-                MoveOnAir(leftStick);
+                MoveOnAir();
                 break;
         }
     }
 
-    private void Move(Vector2 v2)
+    private void Move()
     {
-        if(v2 != Vector2.zero && v2 != null)
+        if(leftStick != Vector2.zero)
         {
             if (playerHorizontalMaxVelocity > Mathf.Abs(rigidBody2D.velocity.x) && playerState == PLAYER_STATE.MOVE)
             {
-                float x = v2.x > 0 ? 1 : -1;
+                float x = leftStick.x > 0 ? 1 : -1;
                 rigidBody2D.velocity += new Vector2(x, 0) * playerSpeed * Time.deltaTime;
             }
         }
     }
 
-    private void MoveOnAir(Vector2 v2)
+    private void MoveOnAir()
     {
-        if (v2 != Vector2.zero && v2 != null)
+        if (leftStick != Vector2.zero )
         {
             if (playerHorizontalMaxVelocity > Mathf.Abs(rigidBody2D.velocity.x))
             {
-                float x = v2.x > 0 ? 1 : -1;
+                float x = leftStick.x > 0 ? 1 : -1;
                 rigidBody2D.velocity += new Vector2(x, 0) * (playerSpeed*onAirFriction) * Time.deltaTime;
             }
             else if(Mathf.Sign(playerHorizontalMaxVelocity) != Mathf.Sign(rigidBody2D.velocity.x))
             {
-                float x = v2.x > 0 ? 1 : -1;
+                float x = leftStick.x > 0 ? 1 : -1;
                 rigidBody2D.velocity += new Vector2(x, 0) * (playerSpeed * onAirFriction) * Time.deltaTime;
             }
         }
@@ -379,7 +378,7 @@ public class Player : MonoBehaviour
                     grabNormal = collision.GetContact(0).normal;
                     if(leftStick.x <0 && grabNormal.x <0 || leftStick.x > 0 && grabNormal.x > 0)
                     {
-                        MoveOnAir(leftStick);
+                        MoveOnAir();
                     }
                     else
                     {

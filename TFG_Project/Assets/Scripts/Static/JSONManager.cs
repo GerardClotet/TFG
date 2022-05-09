@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 using System.IO;
-using System.Text;
 using Newtonsoft.Json;
 
 public class Question
@@ -25,14 +21,8 @@ public class JSONManager
         return JsonConvert.DeserializeObject<TestClass>(File.ReadAllText(GetFilePath()));
     }
 
-
-    static string GetDirectoryPath()
-    {
-        return Application.dataPath + "/" + reportDirectoryName;
-    }
-
     static string GetFilePath()
     {
-        return GetDirectoryPath() + "/" + reportFileName;
+        return Application.dataPath + "/" + reportDirectoryName + "/" + reportFileName;
     }
 }

@@ -131,12 +131,12 @@ public class UIManager : MonoBehaviour
         {
             ReportGatherer.Instance.SetReportGatherer(inputField.text);
             LeanTween.move(inputField.GetComponent<RectTransform>(), new Vector3(1000f, inputField.transform.localPosition.y, 0), 0.1f).setIgnoreTimeScale(true).setEaseOutCirc().setOnComplete(
-                func => { inputField.gameObject.SetActive(false); TestMode();});
+                func => { inputField.gameObject.SetActive(false); CreateQuestionAnswer();});
         });       
         
     }
 
-    private void TestMode()
+    private void CreateQuestionAnswer()
     {
         if(questionCounter < questions.questions.Length)
         {
@@ -168,7 +168,7 @@ public class UIManager : MonoBehaviour
         ReportGatherer.Instance.AddAnswerValue(questionCounter, answer);
         questionCounter++;
         Debug.Log(answer);
-        LeanTween.moveLocalY(go, -600, 0.3f).setIgnoreTimeScale(true).setOnComplete(func => { Destroy(go); TestMode();});
+        LeanTween.moveLocalY(go, -600, 0.3f).setIgnoreTimeScale(true).setOnComplete(func => { Destroy(go); CreateQuestionAnswer();});
     }
     public void OnQuitButtonClicked()
     {

@@ -31,6 +31,10 @@ public class UserInputManager : MonoBehaviour
         Instance = this;
         userActionInput = new User();
         EnablePlayerInput();
+        LinkEvents();
+    }
+    private void LinkEvents()
+    {
 
         //move
         userActionInput.Player.Move.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.MOVE);
@@ -44,16 +48,12 @@ public class UserInputManager : MonoBehaviour
         //dash
         userActionInput.Player.Dash.started += context => requestChangeStateEvent.Invoke(PLAYER_STATE.HOLD_DASH);
         userActionInput.Player.Dash.started += context => dashEvent.Invoke();
-
-        //userActionInput.Player.Dash.performed += context => dashEvent.Invoke();
         //Start
         userActionInput.Player.Menu.started += context => openMenu.Invoke(context);
         userActionInput.UI.Start.started += context => closeMenu.Invoke();
 
-
         openMenu += func => { Debug.Log("Disable & enable"); DisablePlayerInput(); EnableUiInput(); };
     }
-
     private void OnEnable() 
     {
        EnablePlayerInput();

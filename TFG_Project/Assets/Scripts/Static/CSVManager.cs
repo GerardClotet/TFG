@@ -90,6 +90,7 @@ public class CSVManager
         return finalString;
     }
 
+
     public static List<string[]> ReadFileCSV()
     {
         StreamReader sr = null;

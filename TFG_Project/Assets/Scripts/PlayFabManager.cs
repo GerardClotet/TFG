@@ -44,7 +44,6 @@ public class PlayFabManager : MonoBehaviour
         PlayFabClientAPI.UpdateUserData(request, OnDataSend,OnError);
     }
 
-
     public void GetDataCSV()
     {
         PlayFabClientAPI.GetUserData(new GetUserDataRequest { }, OnDataRecievedCSV, OnError);
