@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.IO;
 using Newtonsoft.Json;
+using System.Text;
 
 public class Question
 {
@@ -11,18 +12,13 @@ public class TestClass
 {
     public Question[] questions { get; set; }
 }
+
 public class JSONManager 
 {
     private static string reportDirectoryName = "Report";
     private static string reportFileName = "PostGame.json";
 
-    public static TestClass ReadJson()
-    {
-        return JsonConvert.DeserializeObject<TestClass>(File.ReadAllText(GetFilePath()));
-    }
+    public static TestClass ReadJson() => JsonConvert.DeserializeObject<TestClass>(File.ReadAllText(GetFilePath(), Encoding.GetEncoding("Windows-1252")));
 
-    static string GetFilePath()
-    {
-        return Application.dataPath + "/" + reportDirectoryName + "/" + reportFileName;
-    }
+    private static string GetFilePath() => Application.dataPath + "/" + reportDirectoryName + "/" + reportFileName;
 }
