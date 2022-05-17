@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MultiplierCollectible : Collectible
 {
-  
+
     public override void GetMat()
     {
     }
