@@ -71,6 +71,8 @@ public class Player : MonoBehaviour
     public Action groundedAction;
     public Action endGame;
     public Action dieAction;
+    public Action getCollectableMultiplierAction;
+
     private void Awake()
     {
         Instance = this;
@@ -534,4 +536,17 @@ public class Player : MonoBehaviour
         transform.position = spawnPos;
         rigidBody2D.velocity = Vector2.zero;
     }
+
+
+    public void ResetDashCollectable()
+    {
+        canDash = true;
+        //Todo SpawnParticles or something
+    }
+
+    public void GetCollectableMultiplier()
+    {
+        getCollectableMultiplierAction.Invoke();
+    }
+
 }

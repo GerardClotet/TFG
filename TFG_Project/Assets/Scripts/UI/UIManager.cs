@@ -129,7 +129,7 @@ public class UIManager : MonoBehaviour
         InputField inputField = postGamePanel.GetComponentInChildren<InputField>();
         inputField.onEndEdit.AddListener(delegate 
         {
-            ReportGatherer.Instance.SetReportGatherer(inputField.text);
+            ReportGatherer.Instance.SetReportGathererUserName(inputField.text);
             LeanTween.move(inputField.GetComponent<RectTransform>(), new Vector3(1000f, inputField.transform.localPosition.y, 0), 0.1f).setIgnoreTimeScale(true).setEaseOutCirc().setOnComplete(
                 func => { inputField.gameObject.SetActive(false); CreateQuestionAnswer();});
         });       

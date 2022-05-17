@@ -16,6 +16,7 @@ public class ReportGatherer : MonoBehaviour
     private int nDeaths = 0;
     private int nDash = 0;
     private string username = string.Empty;
+    private int nCollectibles = 0;
 
     private Dictionary<string,string> questionaryAnswers = new Dictionary<string,string>();
     private List<string> data = new List<string>();
@@ -28,27 +29,18 @@ public class ReportGatherer : MonoBehaviour
         inputManager.jumpEvent += JumpCounter;
         player.dieAction += DieCounter;
         inputManager.dashEvent += DashCounter;
-    }
-    
-    private void JumpCounter()
-    {
-        nJumps += 1;
+        player.getCollectableMultiplierAction += CollectibleMultiplierCounter;
     }
 
-    private void DieCounter()
-    {
-        nDeaths += 1;
-    }
+    private void JumpCounter() => nJumps += 1;
 
-    private void DashCounter()
-    {
-        nDash += 1;
-    }
+    private void DieCounter() => nDeaths += 1;
 
-    public void SetReportGatherer(string n)
-    {
-        username = n;
-    }
+    private void DashCounter() => nDash += 1;
+
+    private void CollectibleMultiplierCounter() => nCollectibles += 1;
+
+    public void SetReportGathererUserName(string n) => username = n;
 
     public void AddAnswerValue(int q, int a)
     {
