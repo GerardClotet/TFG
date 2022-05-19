@@ -14,6 +14,12 @@ public class RoomChange : MonoBehaviour
         {
             collision.gameObject.GetComponent<Player>().SetSpawnPoint(spawnPoint.position);
             virtualCam.gameObject.SetActive(true);
+
+            MultiplierCollectible collectible = GetComponentInChildren<MultiplierCollectible>();
+            if (collectible != null)
+            {
+                collectible.StartCollectible();
+            }
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -21,6 +27,12 @@ public class RoomChange : MonoBehaviour
         if (collision.CompareTag("Player") && !collision.isTrigger) //maybe do it through GetComponent<Player>()
         {
             virtualCam.gameObject.SetActive(false);
+
+            MultiplierCollectible collectible = GetComponentInChildren<MultiplierCollectible>();
+            if (collectible != null)
+            {
+                collectible.EndRoom();
+            }
         }
     }
 }

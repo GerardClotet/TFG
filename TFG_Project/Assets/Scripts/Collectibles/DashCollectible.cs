@@ -11,19 +11,12 @@ public class DashCollectible : Collectible
         throw new System.NotImplementedException();
     }
 
-    public override void OnCollision(Player player)
-    {
-        player.ResetDashCollectable();
-        StartCoroutine(DashCollectibleTimer());
-        //Make animation & when done
-        //Destroy(gameObject);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
+    public override void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.GetComponent<Player>() != null)
         {
-            OnCollision(collision.gameObject.GetComponent<Player>());
+            collision.gameObject.GetComponent<Player>().ResetDashCollectable();
+            StartCoroutine(DashCollectibleTimer());
         }
     }
 

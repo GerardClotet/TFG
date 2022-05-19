@@ -4,6 +4,6 @@ using UnityEngine;
 
 public abstract class Collectible : MonoBehaviour
 {
-    public abstract void OnCollision(Player player);
     public abstract void GetMat();
+    public abstract void OnTriggerEnter2D(Collider2D collision);
 }
