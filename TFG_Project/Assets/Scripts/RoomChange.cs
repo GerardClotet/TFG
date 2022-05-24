@@ -7,10 +7,15 @@ public class RoomChange : MonoBehaviour
 
     [SerializeField] private CinemachineVirtualCamera virtualCam;
     [SerializeField] private Transform spawnPoint;
-    
+
+    private void Awake()
+    {
+        virtualCam.m_Follow = FindObjectOfType<Player>().transform;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player") && !collision.isTrigger) //maybe do it through GetComponent<Player>()
+        if(collision.GetComponent<Player>() && !collision.isTrigger) //maybe do it through GetComponent<Player>()
         {
             collision.gameObject.GetComponent<Player>().SetSpawnPoint(spawnPoint.position);
             virtualCam.gameObject.SetActive(true);
@@ -24,7 +29,7 @@ public class RoomChange : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && !collision.isTrigger) //maybe do it through GetComponent<Player>()
+        if (collision.GetComponent<Player>() && !collision.isTrigger) //maybe do it through GetComponent<Player>()
         {
             virtualCam.gameObject.SetActive(false);
 

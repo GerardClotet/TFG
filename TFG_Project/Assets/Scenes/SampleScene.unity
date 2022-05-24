@@ -5825,10 +5825,9 @@ GameObject:
   - component: {fileID: 367687955}
   - component: {fileID: 367687954}
   - component: {fileID: 367687953}
-  - component: {fileID: 367687958}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Player
+  m_TagString: Preserve
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6059,18 +6058,6 @@ MonoBehaviour:
   dashImpulse: 40
   cancelRateDash: 40
   onAirFriction: 0.9
---- !u!114 &367687958
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 367687950}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f355782eae45164287f0efd58f42e39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &491675492
 GameObject:
   m_ObjectHideFlags: 0
@@ -6606,7 +6593,7 @@ GameObject:
   - component: {fileID: 705783548}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: Preserve
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8439,13 +8426,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1901660684}
-  - component: {fileID: 1901660683}
   - component: {fileID: 1901660685}
+  - component: {fileID: 1901660683}
   - component: {fileID: 1901660686}
   - component: {fileID: 1901660687}
+  - component: {fileID: 1901660688}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: Untagged
+  m_TagString: Preserve
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8510,6 +8498,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5bd7daa248629fd46ac977a9dfa55c20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1901660688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901660682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f355782eae45164287f0efd58f42e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1940541651
@@ -8744,6 +8744,7 @@ PolygonCollider2D:
     m_Paths:
     - - {x: 140.93282, y: 18.794508}
       - {x: -4.111003, y: 23.602715}
+      - {x: -6.3785877, y: 22.653345}
       - {x: -7.2612348, y: -5.673546}
       - {x: 113.564415, y: -20.713917}
 --- !u!4 &2032394463
@@ -8790,7 +8791,7 @@ GameObject:
   - component: {fileID: 2111364529}
   m_Layer: 0
   m_Name: EventSystem
-  m_TagString: Untagged
+  m_TagString: Preserve
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

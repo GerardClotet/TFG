@@ -41,7 +41,11 @@ public class Rumbler : MonoBehaviour
     IEnumerator ConstantRumbleOverTime(float lowF, float highF, float time)
     {
         var gamepad = GetGamepad();
-        gamepad.SetMotorSpeeds(lowF, highF);
+        if (gamepad != null)
+        {
+            gamepad.SetMotorSpeeds(lowF, highF);
+        }
+
         while (time > 0f)
         {
             time -= Time.deltaTime;

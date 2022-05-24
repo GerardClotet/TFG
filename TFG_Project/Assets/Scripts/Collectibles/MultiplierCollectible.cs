@@ -42,7 +42,7 @@ public class MultiplierCollectible : Collectible
             collision.gameObject.GetComponent<Player>().GetCollectableMultiplier();
             StartCoroutine(FollowPlayer(collision.transform));
             taken = true;
-           // Destroy(gameObject);
+            GetComponent<Collider2D>().enabled = false;
         }
     }
 
@@ -50,24 +50,27 @@ public class MultiplierCollectible : Collectible
     IEnumerator FollowPlayer(Transform player)
     {
         GetComponent<Collider2D>().enabled = false;
-        //float timer = 0;
+        float step = 0;
+        Vector3 vec = Vector3.zero;
+
         while (true)
         {
             if (Time.timeScale == 1)
             {
-                if (Mathf.Abs((player.position - transform.position).magnitude) > 2)
+                if (Mathf.Abs((player.position - transform.position).magnitude) > 3)
                 {
-                    //timer = 0;
+                    step = 0;
                     transform.position += (player.position - transform.position) * 0.06f;
                 }
-                //else if (Mathf.Abs((player.position - transform.position).magnitude) > 0.1)
+                //else if (Mathf.Abs((player.position - transform.position).magnitude) > 2f )
                 //{
-                //    timer += Time.deltaTime;
-                //    Vector3.Lerp(transform.position, player.position, timer);
+                //    step += 0.001f;
+                //    vec.x = LeanTween.easeOutBack(transform.position.x,player.position.x - (player.position.x - transform.position.x) / 2f, step);
+                //    vec.y = LeanTween.easeOutBack(transform.position.y, player.position.y - (player.position.y - transform.position.y) / 2f, step);
+                //    transform.position = vec;
                 //}
             }
             yield return null;
         }
-       
     }
 }

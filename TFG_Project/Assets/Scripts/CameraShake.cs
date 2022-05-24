@@ -41,4 +41,12 @@ public class CameraShake : MonoBehaviour
         CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 0;
     }
+
+    private void OnDestroy()
+    {
+        if(player != null)
+        {
+            player.dashAction -= DashShake;
+        }
+    }
 }

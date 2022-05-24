@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class UIManager : MonoBehaviour
 
         UserInputManager.Instance.openMenu += func => OpenMenu(); 
         UserInputManager.Instance.closeMenu += OnResumeButtonClicked;
+
+        SceneManager.activeSceneChanged += NewLevelLoaded;
+
         InputSystem.onDeviceChange += (device, change) =>
         {
             switch (change)
@@ -170,6 +174,16 @@ public class UIManager : MonoBehaviour
         Debug.Log(answer);
         LeanTween.moveLocalY(go, -600, 0.3f).setIgnoreTimeScale(true).setOnComplete(func => { Destroy(go); CreateQuestionAnswer();});
     }
+
+    private void NewLevelLoaded(Scene current, Scene next)
+    {
+        Debug.Log($"Changed from {current.name} to {next.name}");
+        Time.timeScale = 1f;
+        UserInputManager.Instance.DisableUiInput();
+        UserInputManager.Instance.EnablePlayerInput();
+        postGamePanel.SetActive(false);
+    }
+
     public void OnQuitButtonClicked()
     {
         Application.Quit();

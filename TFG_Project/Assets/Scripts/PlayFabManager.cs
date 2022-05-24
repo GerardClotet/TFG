@@ -61,6 +61,9 @@ public class PlayFabManager : MonoBehaviour
     private void OnDataSend(UpdateUserDataResult dataSend)
     {
         Debug.Log("Data has uploaded properly!");
+
+        //TODO here we must load the new scene
+        GameManager.Instance.LoadScene();
         Application.Quit();
     }
 

@@ -5,7 +5,6 @@ using UnityEngine;
 public class DashCollectible : Collectible
 {
     private static float resetFunctionTimer = 1.5f;
-
     public override void GetMat()
     {
         throw new System.NotImplementedException();
@@ -23,7 +22,9 @@ public class DashCollectible : Collectible
     IEnumerator DashCollectibleTimer()
     {
         GetComponent<Collider2D>().enabled = false;
-        GetComponent<MeshRenderer>().enabled = false;
+        GetComponent<MeshRenderer>().material.SetColor("_Color", Color.green);
+        //GetComponent<Material>().SetColor("_Color", Color.green);
+        //GetComponent<MeshRenderer>().enabled = false;
 
         float tmp_timer = 0;
         while(tmp_timer < resetFunctionTimer)
@@ -31,7 +32,8 @@ public class DashCollectible : Collectible
             tmp_timer += Time.deltaTime;
             yield return null;
         }
-        GetComponent<MeshRenderer>().enabled = true;
+        GetComponent<MeshRenderer>().material.SetColor("_Color", Color.blue);
+        //etComponent<MeshRenderer>().enabled = true;
         GetComponent<Collider2D>().enabled = true;
     }
 }
