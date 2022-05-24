@@ -8,9 +8,15 @@ public class RoomChange : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera virtualCam;
     [SerializeField] private Transform spawnPoint;
 
+    [SerializeField] private bool startPlayer = false;
     private void Awake()
     {
-        virtualCam.m_Follow = FindObjectOfType<Player>().transform;
+        Player p = FindObjectOfType<Player>();
+        if(startPlayer)
+        {
+            p.transform.position = spawnPoint.position;
+        }
+        virtualCam.m_Follow = p.transform;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -131,12 +131,23 @@ public class UIManager : MonoBehaviour
 
         LeanTween.move(postGamePanel.GetComponent<RectTransform>(), Vector3.zero, 0.1f).setIgnoreTimeScale(true);
         InputField inputField = postGamePanel.GetComponentInChildren<InputField>();
-        inputField.onEndEdit.AddListener(delegate 
+
+        if (inputField)
         {
-            ReportGatherer.Instance.SetReportGathererUserName(inputField.text);
-            LeanTween.move(inputField.GetComponent<RectTransform>(), new Vector3(1000f, inputField.transform.localPosition.y, 0), 0.1f).setIgnoreTimeScale(true).setEaseOutCirc().setOnComplete(
-                func => { inputField.gameObject.SetActive(false); CreateQuestionAnswer();});
-        });       
+            inputField.onEndEdit.AddListener(delegate
+            {
+                ReportGatherer.Instance.SetReportGathererUserName(inputField.text);
+                LeanTween.move(inputField.GetComponent<RectTransform>(), new Vector3(1000f, inputField.transform.localPosition.y, 0), 0.1f).setIgnoreTimeScale(true).setEaseOutCirc().setOnComplete(
+                    func => { inputField.gameObject.SetActive(false); CreateQuestionAnswer(); });
+            });
+        }
+        else //Meaning it's another scene and we have finished it.
+        {
+            Debug.Log(questions);
+            questions = JSONManager.ReadJson(); //TODO get proper test acording to game profile
+            questionCounter = 0;
+            CreateQuestionAnswer();
+        }
         
     }
 

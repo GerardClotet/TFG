@@ -34,7 +34,7 @@ public class PlayFabManager : MonoBehaviour
         Debug.Log("Your ID is: " + result.PlayFabId);
     }
 
-    public void UploadDataCSV(Dictionary<string,string> dict)
+    public void UploadDataCSV(Dictionary<string,string> dict)//Todo need some way of expanding the value of the key in playfab without overriding it
     {
         //  UpdateUserDataRequest
         var request = new UpdateUserDataRequest

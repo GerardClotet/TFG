@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
+using UnityEngine.SceneManagement;
+
 /// <summary>
 /// Script to gather all the data related to the player to then generate a report
 /// </summary>
@@ -30,6 +31,8 @@ public class ReportGatherer : MonoBehaviour
         player.dieAction += DieCounter;
         inputManager.dashEvent += DashCounter;
         player.getCollectableMultiplierAction += CollectibleMultiplierCounter;
+        SceneManager.activeSceneChanged += ResetScene;
+
     }
 
     private void JumpCounter() => nJumps += 1;
@@ -60,5 +63,10 @@ public class ReportGatherer : MonoBehaviour
             { username + " Report", CSVManager.GetCommaSeparatedString(data.ToArray())}
         };
         PlayFabManager.Instance.UploadDataCSV(dict);
+    }
+
+    public void ResetScene(Scene current, Scene next)
+    {
+        questionaryAnswers.Clear();
     }
 }
