@@ -15,6 +15,7 @@ public class RoomChange : MonoBehaviour
         if(startPlayer)
         {
             p.transform.position = spawnPoint.position;
+            Player.Instance.GetComponent<Collider2D>().enabled = true;
         }
         virtualCam.m_Follow = p.transform;
     }

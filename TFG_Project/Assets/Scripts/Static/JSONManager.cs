@@ -16,9 +16,9 @@ public class TestClass
 public class JSONManager 
 {
     private static string reportDirectoryName = "Report";
-    private static string reportFileName = "PostGame.json";
+    private static string[] reportsFileName = { "InitialGameTest.json", "AgressiveGameTest.json", "PassiveGameTest.json", "AchieverGameTest.json", "ExplorerGameTest.json" };
 
-    public static TestClass ReadJson() => JsonConvert.DeserializeObject<TestClass>(File.ReadAllText(GetFilePath(), Encoding.GetEncoding("Windows-1252")));
+    public static TestClass ReadJson() => JsonConvert.DeserializeObject<TestClass>(File.ReadAllText(GetFilePath(reportsFileName[(int)GameManager.Instance.currentSceneMode]), Encoding.GetEncoding("Windows-1252")));
 
-    private static string GetFilePath() => Application.dataPath + "/" + reportDirectoryName + "/" + reportFileName;
+    private static string GetFilePath(string filename) => Application.dataPath + "/" + reportDirectoryName + "/" + filename;
 }

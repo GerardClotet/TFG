@@ -119,9 +119,11 @@ public class UIManager : MonoBehaviour
     }
 
 
+
     public void PostGameState()
     {
         Time.timeScale = 0f;
+        Player.Instance.GetComponent<Collider2D>().enabled = false;
         UserInputManager.Instance.DisablePlayerInput();
         UserInputManager.Instance.EnableUiInput();
 
@@ -143,8 +145,7 @@ public class UIManager : MonoBehaviour
         }
         else //Meaning it's another scene and we have finished it.
         {
-            Debug.Log(questions);
-            questions = JSONManager.ReadJson(); //TODO get proper test acording to game profile
+            questions = JSONManager.ReadJson();
             questionCounter = 0;
             CreateQuestionAnswer();
         }
@@ -175,7 +176,7 @@ public class UIManager : MonoBehaviour
             return;
         }
         //Here we make a report gatherer and end the game
-        ReportGatherer.Instance.GatherAndSendInfo();
+        GameManager.Instance.EndScene();
     }
 
     public void TestButtonCallback(int answer, GameObject go)

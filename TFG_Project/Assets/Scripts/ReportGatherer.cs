@@ -47,17 +47,21 @@ public class ReportGatherer : MonoBehaviour
 
     public void AddAnswerValue(int q, int a)
     {
-        questionaryAnswers.Add(q.ToString(), a.ToString());
+        questionaryAnswers.Add(q.ToString(), a.ToString());//TODO treure això
         data.Add(a.ToString());
     }
 
-    public void GatherAndSendInfo()
+    public void GatherInfo()
     {
         data.Reverse();
         data.Insert(0,nJumps.ToString());
         data.Insert(0,nDeaths.ToString());
         data.Insert(0,nDash.ToString());
+    }
 
+
+    public void SendInfo()
+    {
         Dictionary<string, string> dict = new Dictionary<string, string>
         {
             { username + " Report", CSVManager.GetCommaSeparatedString(data.ToArray())}
