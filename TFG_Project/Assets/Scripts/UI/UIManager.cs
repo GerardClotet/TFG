@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject PausePanel;
     [SerializeField] private Button primaryButton;
     [SerializeField] private GameObject postGamePanel;
+    [SerializeField] private GameObject fadePanel;
 
     private List<Button> menuButtonList = new List<Button>();
     private TestClass questions;
@@ -175,8 +176,24 @@ public class UIManager : MonoBehaviour
             currQuestion.GetComponent<QuestionHandler>().SetDelegates();
             return;
         }
-        //Here we make a report gatherer and end the game
-        GameManager.Instance.EndScene();
+
+        Image img = fadePanel.GetComponent<Image>();
+        LeanTween.value(gameObject, 0, 1, 1).setIgnoreTimeScale(true).setOnUpdate((float val) =>
+        {
+            Color c = img.color;
+            c.a = val;
+            img.color = c;
+        }).setOnComplete(
+            func =>
+            {
+                GameManager.Instance.EndScene();
+                LeanTween.value(gameObject, 1, 0, 1).setIgnoreTimeScale(true).setOnUpdate((float val) =>
+                   {
+                       Color c = img.color;
+                       c.a = val;
+                       img.color = c;
+                   });
+            });
     }
 
     public void TestButtonCallback(int answer, GameObject go)

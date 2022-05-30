@@ -21,6 +21,7 @@ public class ReportGatherer : MonoBehaviour
 
     private Dictionary<string,string> questionaryAnswers = new Dictionary<string,string>();
     private List<string> data = new List<string>();
+
     void Awake()
     {
         Instance = this;
@@ -32,7 +33,6 @@ public class ReportGatherer : MonoBehaviour
         inputManager.dashEvent += DashCounter;
         player.getCollectableMultiplierAction += CollectibleMultiplierCounter;
         SceneManager.activeSceneChanged += ResetScene;
-
     }
 
     private void JumpCounter() => nJumps += 1;
