@@ -50,25 +50,28 @@ public class MultiplierCollectible : Collectible
     IEnumerator FollowPlayer(Transform player)
     {
         GetComponent<Collider2D>().enabled = false;
-        float step = 0;
-        Vector3 vec = Vector3.zero;
-
+        float startTime = Time.time;
+        float elapsedTime;
+        float stepAmount = 0f;
+        bool reset = false;
         while (true)
         {
-            if (Time.timeScale == 1)
+            if (!reset)
             {
-                if (Mathf.Abs((player.position - transform.position).magnitude) > 3)
-                {
-                    step = 0;
-                    transform.position += (player.position - transform.position) * 0.06f;
-                }
-                //else if (Mathf.Abs((player.position - transform.position).magnitude) > 2f )
-                //{
-                //    step += 0.001f;
-                //    vec.x = LeanTween.easeOutBack(transform.position.x,player.position.x - (player.position.x - transform.position.x) / 2f, step);
-                //    vec.y = LeanTween.easeOutBack(transform.position.y, player.position.y - (player.position.y - transform.position.y) / 2f, step);
-                //    transform.position = vec;
-                //}
+                elapsedTime = Time.time - startTime;
+                stepAmount = Mathf.Pow(elapsedTime, 2);
+                transform.position = Vector3.Lerp(transform.position, player.position, Mathf.MoveTowards(0, 1, stepAmount));
+            }
+
+            if(stepAmount > 1f && reset == false)
+            {
+                startTime = Time.time;
+                reset = true;
+            }
+            else if(reset == true && Mathf.Abs((player.position - transform.position).magnitude)> 2f)
+            {
+                reset = false;
+                startTime = Time.time;
             }
             yield return null;
         }

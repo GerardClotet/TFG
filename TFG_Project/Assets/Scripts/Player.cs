@@ -232,24 +232,24 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.BOUNCE:
-                float bounceForce = Mathf.Sqrt(bounceDistance * -2 * (Physics2D.gravity.y * rigidBody2D.gravityScale));
-
-                rigidBody2D.AddForce(new Vector2(grabNormal.x, bounceInclination)*bounceForce,ForceMode2D.Impulse);
+                rigidBody2D.AddForce(new Vector2(grabNormal.x, bounceInclination) * bounceImpulse, ForceMode2D.Impulse);
                 grabNormal = Vector2.zero;
 
                 playerState = PLAYER_STATE.BOUNCE_AIR;
                 break;
 
             case PLAYER_STATE.BOUNCE_AIR:
-                if (rigidBody2D.velocity.y > 0 /*&& Mathf.Abs(rigidBody2D.velocity.x) > 0*/)
-                { 
-                    if(Mathf.Abs(rigidBody2D.velocity.x) < 1.5f)
-                    {
-                        rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, -0.5f);
-                    }
-                    rigidBody2D.AddForce(new Vector2(Mathf.Sign(rigidBody2D.velocity.x), -1) * cancelRateBounce);
-                }
-                else if(rigidBody2D.gravityScale != fallingGravityScale)
+                //if (rigidBody2D.velocity.y > 0 || Mathf.Abs(rigidBody2D.velocity.x) > 0)
+                //{ 
+                //    if(Mathf.Abs(rigidBody2D.velocity.x) < 1.5f)
+                //    {
+                //        rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, -0.5f);
+                //    }
+                //    rigidBody2D.AddForce(new Vector2(Mathf.Sign(rigidBody2D.velocity.x), -1) * cancelRateBounce);
+                //}
+                //else 
+                rigidBody2D.AddForce(Vector2.down * cancelRateBounce,ForceMode2D.Force);
+                if (rigidBody2D.gravityScale != fallingGravityScale)
                 {
                     rigidBody2D.gravityScale = fallingGravityScale;
                 }
@@ -508,7 +508,6 @@ public class Player : MonoBehaviour
             yield return null;
         }
         stopCoroutineActive = false;
-        yield return null;
     }
     
     public void SetSpawnPoint(Vector3 pos)
