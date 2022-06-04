@@ -23,9 +23,6 @@ public class DashCollectible : Collectible
     {
         GetComponent<Collider2D>().enabled = false;
         GetComponent<MeshRenderer>().material.SetColor("_Color", Color.green);
-        //GetComponent<Material>().SetColor("_Color", Color.green);
-        //GetComponent<MeshRenderer>().enabled = false;
-
         float tmp_timer = 0;
         while(tmp_timer < resetFunctionTimer)
         {
@@ -33,7 +30,6 @@ public class DashCollectible : Collectible
             yield return null;
         }
         GetComponent<MeshRenderer>().material.SetColor("_Color", Color.blue);
-        //etComponent<MeshRenderer>().enabled = true;
         GetComponent<Collider2D>().enabled = true;
     }
 }

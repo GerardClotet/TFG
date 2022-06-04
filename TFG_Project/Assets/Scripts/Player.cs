@@ -50,6 +50,7 @@ public class Player : MonoBehaviour
     private     Rigidbody2D rigidBody2D;
     private     BoxCollider2D boxCollider2D;
     private     UserInputManager inputManager;
+    private     Animator playerAnimator;
 
     private     bool jumpHeld = false;
     private     float jumpTime = 0f;
@@ -62,7 +63,6 @@ public class Player : MonoBehaviour
     private     bool stopCoroutineActive = false;
     private     Vector3 spawnPos = Vector3.zero;
 
-    //private static int s_PlatformLayer = 6;
     private static int s_BounceLayer = 7;
     private static int s_DieLayer = 8;
     private static int s_FinishLayer = 9;
@@ -80,6 +80,7 @@ public class Player : MonoBehaviour
         inputManager = UserInputManager.Instance;
         rigidBody2D = GetComponent<Rigidbody2D>();
         boxCollider2D = GetComponent<BoxCollider2D>();
+        playerAnimator = GetComponentInChildren<Animator>();
         dieAction += ResetPlayer;
     }
 
@@ -169,9 +170,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void GroundedReset()
+    private void GroundedReset() 
     {
         groundedAction.Invoke();
+        playerAnimator.SetTrigger("GroundTrigger");
         canDash = true;
         jumpTime = 0f;
         jumping = false;
@@ -239,16 +241,16 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.BOUNCE_AIR:
-                //if (rigidBody2D.velocity.y > 0 || Mathf.Abs(rigidBody2D.velocity.x) > 0)
-                //{ 
-                //    if(Mathf.Abs(rigidBody2D.velocity.x) < 1.5f)
-                //    {
-                //        rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, -0.5f);
-                //    }
-                //    rigidBody2D.AddForce(new Vector2(Mathf.Sign(rigidBody2D.velocity.x), -1) * cancelRateBounce);
-                //}
-                //else 
-                rigidBody2D.AddForce(Vector2.down * cancelRateBounce,ForceMode2D.Force);
+                if (rigidBody2D.velocity.y > 0)
+                { 
+                    if(Mathf.Abs(rigidBody2D.velocity.x) < 1.5f)
+                    {
+                        rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, -0.5f);
+                    }
+                    rigidBody2D.AddForce(new Vector2(Mathf.Sign(rigidBody2D.velocity.x), -1) * cancelRateBounce);
+                    rigidBody2D.AddForce(Vector2.down * cancelRateBounce, ForceMode2D.Force);
+                }
+
                 if (rigidBody2D.gravityScale != fallingGravityScale)
                 {
                     rigidBody2D.gravityScale = fallingGravityScale;
@@ -453,6 +455,7 @@ public class Player : MonoBehaviour
                     coyoteJumpCounter = -1;
                     jumping = true;
                     playerState = state;
+                    playerAnimator.SetTrigger("JumpTrigger");
                 }
                 break;
 
