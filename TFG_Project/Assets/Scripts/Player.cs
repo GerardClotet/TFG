@@ -134,6 +134,7 @@ public class Player : MonoBehaviour
             {
                 auxDashHoldTime = 0f;
                 playerState = PLAYER_STATE.DASH;
+                playerAnimator.SetTrigger("DashTrigger");
             }
         }
 
@@ -338,9 +339,13 @@ public class Player : MonoBehaviour
                 }
                 else return;
             }
-
+            if(playerState != PLAYER_STATE.MOVE && rigidBody2D.velocity.magnitude > 3f)
+            {
+                playerAnimator.SetTrigger("CollideWall");
+            }
             if (rigidBody2D.gravityScale != defaultGravityScale)
             {
+                Debug.Log("CollisionEnter Side");
                 rigidBody2D.gravityScale = defaultGravityScale;
             }
             RequestChangePlayerState(PLAYER_STATE.GRAB_WALL);
@@ -446,6 +451,7 @@ public class Player : MonoBehaviour
             case PLAYER_STATE.JUMP:
                 if(playerState == PLAYER_STATE.GRAB_WALL)
                 {
+                    playerAnimator.SetTrigger("BounceTrigger");
                     playerState = PLAYER_STATE.BOUNCE;
                     return;
                 }
@@ -550,5 +556,4 @@ public class Player : MonoBehaviour
     {
         getCollectableMultiplierAction.Invoke();
     }
-
 }

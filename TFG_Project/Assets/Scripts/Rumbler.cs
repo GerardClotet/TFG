@@ -61,7 +61,9 @@ public class Rumbler : MonoBehaviour
         float currentHighF = highF_Initial;
         while(time >0)
         {
-            gamepad.SetMotorSpeeds(currentLowF, currentHighF);
+            if(Time.timeScale == 1)
+                gamepad.SetMotorSpeeds(currentLowF, currentHighF);
+
             currentLowF = Mathf.Lerp(lowF_Initial, lowF_Final, time);
             currentHighF = Mathf.Lerp(highF_Initial, highF_Final, time);
             time -= Time.deltaTime;
