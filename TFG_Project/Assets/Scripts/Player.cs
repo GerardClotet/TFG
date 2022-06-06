@@ -47,7 +47,12 @@ public class Player : MonoBehaviour
     [Range(0.01f, 1f)] [SerializeField] private float onAirFriction = 1.0f;
 
 
-    private     Rigidbody2D rigidBody2D;
+    [Header("Particles")]
+    [SerializeField] private ParticleSystem holdDash;
+    [SerializeField] private ParticleSystem releaseDash;
+
+
+    private Rigidbody2D rigidBody2D;
     private     BoxCollider2D boxCollider2D;
     private     UserInputManager inputManager;
     private     Animator playerAnimator;
@@ -135,6 +140,9 @@ public class Player : MonoBehaviour
                 auxDashHoldTime = 0f;
                 playerState = PLAYER_STATE.DASH;
                 playerAnimator.SetTrigger("DashTrigger");
+
+                holdDash.Stop();
+                releaseDash.Play();
             }
         }
 
@@ -345,7 +353,6 @@ public class Player : MonoBehaviour
             }
             if (rigidBody2D.gravityScale != defaultGravityScale)
             {
-                Debug.Log("CollisionEnter Side");
                 rigidBody2D.gravityScale = defaultGravityScale;
             }
             RequestChangePlayerState(PLAYER_STATE.GRAB_WALL);
@@ -482,6 +489,7 @@ public class Player : MonoBehaviour
             case PLAYER_STATE.HOLD_DASH:
                 if (playerState != PLAYER_STATE.HOLD_DASH && canDash == true)
                 {
+                    holdDash.Play();
                     canDash = false;
                     playerState = state;
                 }

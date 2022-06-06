@@ -39,7 +39,10 @@ public class CameraShake : MonoBehaviour
             yield return null;
         }
         CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-        cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 0;
+        if (cinemachineBasicMultiChannelPerlin != null)
+        {
+            cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 0;
+        }
     }
 
     private void OnDestroy()
