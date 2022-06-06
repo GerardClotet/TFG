@@ -18,6 +18,7 @@ public class ReportGatherer : MonoBehaviour
     private int nDash = 0;
     private string username = string.Empty;
     private int nCollectibles = 0;
+    private float startTime = 0;
 
     private Dictionary<string,string> questionaryAnswers = new Dictionary<string,string>();
     private List<string> data = new List<string>();
@@ -33,6 +34,7 @@ public class ReportGatherer : MonoBehaviour
         inputManager.dashEvent += DashCounter;
         player.getCollectableMultiplierAction += CollectibleMultiplierCounter;
         SceneManager.activeSceneChanged += ResetScene;
+        startTime = Time.time;
     }
 
     private void JumpCounter() => nJumps += 1;
@@ -44,6 +46,8 @@ public class ReportGatherer : MonoBehaviour
     private void CollectibleMultiplierCounter() => nCollectibles += 1;
 
     public void SetReportGathererUserName(string n) => username = n;
+
+    public void AddTime() => data.Add((Time.time - startTime).ToString());
 
     public void AddAnswerValue(int q, int a)
     {

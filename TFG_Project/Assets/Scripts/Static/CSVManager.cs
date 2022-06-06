@@ -86,7 +86,7 @@ public class CSVManager
             }
             finalString += strings[i];
         }
-        finalString += reportSeparator + GetTimeStamp();
+        //finalString += reportSeparator + GetTimeStamp();
         return finalString;
     }
 

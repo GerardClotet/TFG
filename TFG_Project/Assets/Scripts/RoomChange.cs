@@ -16,13 +16,18 @@ public class RoomChange : MonoBehaviour
         {
             p.transform.position = spawnPoint.position;
             Player.Instance.GetComponent<Collider2D>().enabled = true;
+
+            if(GetComponentInChildren<LevelEater>(true) != null)
+            {
+                GetComponentInChildren<LevelEater>(true).gameObject.SetActive(true);
+            }
         }
         virtualCam.m_Follow = p.transform;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.GetComponent<Player>() && !collision.isTrigger) //maybe do it through GetComponent<Player>()
+        if(collision.GetComponent<Player>()) //maybe do it through GetComponent<Player>()
         {
             collision.gameObject.GetComponent<Player>().SetSpawnPoint(spawnPoint.position);
             virtualCam.gameObject.SetActive(true);
@@ -32,11 +37,15 @@ public class RoomChange : MonoBehaviour
             {
                 collectible.StartCollectible();
             }
+            if (GetComponentInChildren<LevelEater>(true))
+            {
+                GetComponentInChildren<LevelEater>(true).gameObject.SetActive(true);
+            }
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<Player>() && !collision.isTrigger) //maybe do it through GetComponent<Player>()
+        if (collision.GetComponent<Player>()) 
         {
             virtualCam.gameObject.SetActive(false);
 
@@ -44,6 +53,10 @@ public class RoomChange : MonoBehaviour
             if (collectible != null)
             {
                 collectible.EndRoom();
+            }
+            if (GetComponentInChildren<LevelEater>())
+            {
+                GetComponentInChildren<LevelEater>().gameObject.SetActive(false);
             }
         }
     }
