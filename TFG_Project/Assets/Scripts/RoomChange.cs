@@ -41,6 +41,7 @@ public class RoomChange : MonoBehaviour
             {
                 GetComponentInChildren<LevelEater>(true).gameObject.SetActive(true);
             }
+            ReportGatherer.Instance.EnterRoom(this);
         }
     }
     private void OnTriggerExit2D(Collider2D collision)

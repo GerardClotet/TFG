@@ -77,6 +77,8 @@ public class Player : MonoBehaviour
     public Action endGame;
     public Action dieAction;
     public Action getCollectableMultiplierAction;
+    public Action jumpAction;
+    public Action bounceAction;
 
     private void Awake()
     {
@@ -460,6 +462,7 @@ public class Player : MonoBehaviour
                 {
                     playerAnimator.SetTrigger("BounceTrigger");
                     playerState = PLAYER_STATE.BOUNCE;
+                    jumpAction.Invoke();
                     return;
                 }
 
@@ -482,6 +485,7 @@ public class Player : MonoBehaviour
             case PLAYER_STATE.BOUNCE:
                 if(playerState == PLAYER_STATE.GRAB_WALL)
                 {
+                    bounceAction.Invoke();
                     playerState = state;
                 }
                 break;

@@ -4,16 +4,18 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
+public enum MODE
+{
+    INITIAL,
+    AGRESSIVE,
+    PASSIVE,
+    EXPLORER,
+    ACHIEVER
+}
+
 public class GameManager : MonoBehaviour
 {
-    public enum MODE
-    {
-        INITIAL,
-        AGRESSIVE,
-        PASSIVE,
-        EXPLORER,
-        ACHIEVER
-    }
+
     public static GameManager Instance;
     public MODE currentSceneMode { get; private set; }
 
@@ -37,15 +39,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        ReportGatherer.Instance.GetNewLevel(currentSceneMode);
+    }
     /// <summary>
     /// End scene only uploads data and quits game when the user has played all modes //Need to change that but for now its ok
     /// </summary>
     public void EndScene()
     {
-        ReportGatherer.Instance.GatherInfo();
         bool containedAll = !compareList.Except(modeList).Any();
         if (!containedAll)
         {
+            if(currentSceneMode == MODE.AGRESSIVE)
+            {
+                ReportGatherer.Instance.SendInfoJSON();
+                Application.Quit();
+                return;
+            }
             //TODO compute the result print charts etc and decide which scene will be loaded
             currentSceneMode = MODE.AGRESSIVE;
             modeList.Add(currentSceneMode);
@@ -53,6 +64,7 @@ public class GameManager : MonoBehaviour
             {
                 case MODE.AGRESSIVE:
                     SceneManager.LoadScene(agressiveScene);
+                    ReportGatherer.Instance.GetNewLevel(currentSceneMode);
                     break;
             }
         }
