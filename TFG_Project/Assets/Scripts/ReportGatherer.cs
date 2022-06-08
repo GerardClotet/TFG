@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
+using System;
 
 /// <summary>
 /// Script to gather all the data related to the player to then generate a report
@@ -17,6 +18,7 @@ public class ReportGatherer : MonoBehaviour
     }
     public class Level
     {
+        //TODO save test answers here
         public MODE mode { get; set; }
         public int jumps = 0;
         public int deaths = 0;
@@ -48,8 +50,6 @@ public class ReportGatherer : MonoBehaviour
         public int returnedCollectible = 0;
     }
 
-    //UserInputManager inputManager; //?
-    //Player player;
     public static ReportGatherer Instance { get; private set; }
 
     private string username = string.Empty;
@@ -73,7 +73,6 @@ public class ReportGatherer : MonoBehaviour
 
         Player.Instance.dieAction += DieCounter;
         Player.Instance.dashAction += DashCounter;
-        Player.Instance.getCollectableMultiplierAction += CollectibleMultiplierCounter;
         Player.Instance.jumpAction += JumpCounter;
         Player.Instance.endGame += AddLevelTime;
         SceneManager.activeSceneChanged += ResetScene;
@@ -84,7 +83,7 @@ public class ReportGatherer : MonoBehaviour
 
     public void GetNewLevel(MODE lvlMode)
     {
-        lvlCounter += 1;
+        lvlCounter++;
         dataGathering.levels[lvlCounter] = new Level();
         dataGathering.levels[lvlCounter].mode = lvlMode;
         dataGathering.levels[lvlCounter].rooms = new Room[FindObjectsOfType<RoomChange>().Length];
@@ -150,7 +149,7 @@ public class ReportGatherer : MonoBehaviour
         dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryWallJump += 1;
     }
 
-    private void CollectibleMultiplierCounter()
+    public void CollectibleMultiplierCounter()
     {
         dataGathering.levels[lvlCounter].totalCollectibles += 1;
         dataGathering.levels[lvlCounter].rooms[roomCounter].collectiblesGot += 1;
@@ -189,6 +188,7 @@ public class ReportGatherer : MonoBehaviour
         };
         PlayFabManager.Instance.UploadData(dict);
     }
+
     public void SendInfo()
     {
         Dictionary<string, string> dict = new Dictionary<string, string>

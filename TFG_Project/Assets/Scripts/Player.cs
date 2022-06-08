@@ -76,10 +76,14 @@ public class Player : MonoBehaviour
     public Action groundedAction;
     public Action endGame;
     public Action dieAction;
-    public Action getCollectableMultiplierAction;
     public Action jumpAction;
     public Action bounceAction;
 
+    //Test
+    public void AddRBVel(Vector2 vel)
+    {
+        rigidBody2D.velocity += vel;
+    }
     private void Awake()
     {
         Instance = this;
@@ -342,6 +346,10 @@ public class Player : MonoBehaviour
         {
             if (collision.GetContact(0).normal.y == 1)
             {
+                if (collision.gameObject.GetComponent<PlatformMove>())
+                {
+                    transform.parent = collision.transform;
+                }
                 if (playerState != PLAYER_STATE.MOVE && playerState != PLAYER_STATE.IDLE)
                 {
                     GroundedReset();
@@ -415,7 +423,11 @@ public class Player : MonoBehaviour
     {
         if(collision.gameObject.layer == s_BounceLayer)
         {
-            if(playerState == PLAYER_STATE.GRAB_WALL)
+            if (collision.gameObject.GetComponent<PlatformMove>())
+            {
+                transform.parent = null;
+            }
+            if (playerState == PLAYER_STATE.GRAB_WALL)
             {
                 playerState = jumping ? PLAYER_STATE.ON_AIR : PLAYER_STATE.BOUNCE_AIR;
             }
@@ -562,10 +574,5 @@ public class Player : MonoBehaviour
     {
         canDash = true;
         //Todo SpawnParticles or something
-    }
-
-    public void GetCollectableMultiplier()
-    {
-        getCollectableMultiplierAction.Invoke();
     }
 }

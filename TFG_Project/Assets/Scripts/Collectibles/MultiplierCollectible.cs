@@ -1,17 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MultiplierCollectible : Collectible
 {
+    [HideInInspector] public bool taken { get; private set;}
     private Vector3 startPosition;
-    private bool taken;
+    public Action countMe;
 
     public void StartCollectible()
     {
         startPosition = transform.position;
         Player.Instance.dieAction += ResetCollectible;
     }
+
     private void ResetCollectible()
     {
         StopAllCoroutines();
@@ -27,6 +30,7 @@ public class MultiplierCollectible : Collectible
 
         if (taken)
         {
+            ReportGatherer.Instance.CollectibleMultiplierCounter();
             Destroy(gameObject);
         }
     }
@@ -39,7 +43,6 @@ public class MultiplierCollectible : Collectible
     {
         if (collision.gameObject.GetComponent<Player>() != null)
         {
-            collision.gameObject.GetComponent<Player>().GetCollectableMultiplier();
             StartCoroutine(FollowPlayer(collision.transform));
             taken = true;
             GetComponent<Collider2D>().enabled = false;
