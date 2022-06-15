@@ -2,21 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlatformMove : MonoBehaviour
+public class PlatformMoveOnTouch : PlatformBase
 {
     private bool coroutineActive = false;
 
-    [Tooltip("If false goes vertical")]
-    [SerializeField] private bool horizontal = true;
-    [Tooltip("If true goes from left to right or from bottom to top. If false the opposite")]
-    [SerializeField] private bool startLeftOrBottom = true;
+    [Range(0.01f, 0.9f)] [SerializeField] private float maxIncreaseStep = 0.3f;
+    private float origin = 0;
 
-    [SerializeField] private float distance = 5f;
-    [Range(0.01f, 0.9f)] [SerializeField] private float increaseStep = 0.05f;
-
-    private float startTime = 0;
-    private float vel = 0;
-    private bool goingDown = false;
+    public void ResetPlatform()
+    {
+        StopAllCoroutines();
+        transform.position = startPosition;
+        coroutineActive = false;
+    }
+    private void Start()
+    {
+        startPosition = transform.position;
+        Player.Instance.dieAction += ResetPlatform;
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!coroutineActive && collision.gameObject.GetComponent<Player>())
@@ -26,23 +29,30 @@ public class PlatformMove : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    protected override void OnCollisionExit2D(Collision2D collision)
     {
-        //float vel = Mathf.Abs(transform.position.x - og) / Time.time -startTime;
-        if (vel != 0 && !goingDown)
+        if (!goingDown && coroutineActive)
         {
             Vector2 v = Vector2.zero;
             if (horizontal)
+            {
+                Debug.Log("x " +vel);
+                vel = (transform.position.x - origin) / (Time.time - startTime);
                 v.x = vel;
+            }
             else
+            {
+                Debug.Log("y " +vel);
+                vel = (transform.position.y - origin) / (Time.time - startTime);
                 v.y = vel;
-
-            Player.Instance.AddRBVel(v * 1.5f);
+            }
+            
+            if(v != Vector2.zero)
+                Player.Instance.AddRBVel(v);
         }
-        Debug.Log("EXit");
     }
 
-    IEnumerator MovePlatform()
+    private  IEnumerator MovePlatform()
     {
         coroutineActive = true;
         float sign = startLeftOrBottom ? 1 : -1;
@@ -54,48 +64,53 @@ public class PlatformMove : MonoBehaviour
         {
             case true:
                 startTime = Time.time;
+                origin = og;
+                float increase = increaseStep;
                 while(transform.position.x != dst)
                 {
-                    vec.x = Mathf.Lerp(og, dst, t += increaseStep);
+                    vec.x = Mathf.Lerp(og, dst, t += increaseStep * Time.timeScale);
+                    //if (increase < maxIncreaseStep)
+                    //    increase += increaseStep;
+
                     transform.position = vec;
-                    vel = (transform.position.x - og) / (Time.time - startTime);
                     yield return null;
                 }
                 t = 0;
                 startTime = Time.time;
+                origin = dst;
                 while(transform.position.x != og)
                 {
-                    vec.x = Mathf.Lerp(dst, og, t += increaseStep);
+                    vec.x = Mathf.Lerp(dst, og, t += increaseStep*Time.timeScale);
                     transform.position = vec;
-                    vel = (transform.position.x - dst) / (Time.time - startTime);
                     yield return null;
                 }
                 vel = 0f;
+                origin = 0;
                 break;
             case false:
                 startTime = Time.time;
+                origin = og;
                 while (transform.position.y != dst)
                 {
-                    vec.y = Mathf.Lerp(og, dst, t += increaseStep);
+                    vec.y = Mathf.Lerp(og, dst, t += increaseStep * Time.timeScale);
                     transform.position = vec;
-                    vel = (transform.position.y - og) / (Time.time - startTime);
                     yield return null;
                 }
                 t = 0;
                 startTime = Time.time;
                 goingDown = true;
+                origin = dst;
                 while (transform.position.y != og)
                 {
-                    vec.y = Mathf.Lerp(dst, og, t += increaseStep);
+                    vec.y = Mathf.Lerp(dst, og, t += increaseStep * Time.timeScale);
                     transform.position = vec;
-                    vel = (transform.position.y - dst) / (Time.time - startTime);
                     yield return null;
                 }
                 goingDown = false;
                 vel = 0f;
+                origin = 0;
                 break;
         }
-
         coroutineActive = false;
     }
 }

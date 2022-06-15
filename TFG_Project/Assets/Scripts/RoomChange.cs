@@ -9,6 +9,8 @@ public class RoomChange : MonoBehaviour
     [SerializeField] private Transform spawnPoint;
 
     [SerializeField] private bool startPlayer = false;
+    [Tooltip("If true this room will be counted in the report as an optional")]
+    [SerializeField] private bool optionalRoom = false;
     private void Awake()
     {
         Player p = FindObjectOfType<Player>();
@@ -27,8 +29,10 @@ public class RoomChange : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.GetComponent<Player>()) //maybe do it through GetComponent<Player>()
+        Debug.Log("Something Enter");
+        if (collision.GetComponent<Player>()) //maybe do it through GetComponent<Player>()
         {
+            Debug.Log("Player Enter");
             collision.gameObject.GetComponent<Player>().SetSpawnPoint(spawnPoint.position);
             virtualCam.gameObject.SetActive(true);
 
@@ -42,6 +46,11 @@ public class RoomChange : MonoBehaviour
                 GetComponentInChildren<LevelEater>(true).gameObject.SetActive(true);
             }
             ReportGatherer.Instance.EnterRoom(this);
+
+            foreach(PlatformPerpetualMove p in GetComponentsInChildren<PlatformPerpetualMove>())
+            {
+                p.StartMoving();
+            }
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -59,6 +68,17 @@ public class RoomChange : MonoBehaviour
             {
                 GetComponentInChildren<LevelEater>().gameObject.SetActive(false);
             }
+
+            foreach (PlatformPerpetualMove p in GetComponentsInChildren<PlatformPerpetualMove>())
+            {
+                p.ResetPlatform();
+            }
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns>Returns optionalRoom</returns>
+    public bool GetRoomStatus() => optionalRoom;
 }

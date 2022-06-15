@@ -2,10 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
+using System;
 
 public class PlayFabManager : MonoBehaviour
 {
     public static PlayFabManager Instance;
+    public Action dataSended;
     private void Awake()
     {
         Instance = this;
@@ -58,6 +60,7 @@ public class PlayFabManager : MonoBehaviour
     private void OnDataSend(UpdateUserDataResult dataSend)
     {
         Debug.Log("Data has uploaded properly!");
+        dataSended.Invoke();
     }
 
     private void OnError(PlayFabError error)

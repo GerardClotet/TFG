@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Cinemachine;
+using System;
 public class CameraShake : MonoBehaviour
 {
     private CinemachineVirtualCamera virtualCamera;
@@ -24,10 +25,18 @@ public class CameraShake : MonoBehaviour
 
     private void ShakeCamera(float intensity,float time)
     {
-        virtualCamera = cBrain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineVirtualCamera>();
-        CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-        cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = intensity;
-        StartCoroutine(ShakeCoroutine(time));
+        try
+        {
+            virtualCamera = cBrain.ActiveVirtualCamera.VirtualCameraGameObject.GetComponent<CinemachineVirtualCamera>();
+            CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = intensity;
+            StartCoroutine(ShakeCoroutine(time));
+        }
+        catch(SystemException e)
+        {
+            Debug.Log(e);
+        }
+
     }
 
     IEnumerator ShakeCoroutine(float time)

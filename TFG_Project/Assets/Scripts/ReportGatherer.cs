@@ -26,11 +26,12 @@ public class ReportGatherer : MonoBehaviour
         public int wallJump = 0;
         public int totalCollectibles = 0;
         public float totalTime = 0f;
+        public int optionalRooms = 0;
         public Room[] rooms;
     }
     public class Room
     {
-        public int totalCollectibles;
+        public bool optional = false;
         public int collectiblesGot = 0;
         public int roomDashes = 0;
         public int roomDeaths = 0;
@@ -77,6 +78,7 @@ public class ReportGatherer : MonoBehaviour
         Player.Instance.endGame += AddLevelTime;
         SceneManager.activeSceneChanged += ResetScene;
         Player.Instance.bounceAction += WallJumpCounter;
+        Player.Instance.collectibleGotAction += CollectibleGotTry;
         startLevelTime = Time.time;
         dataGathering.levels = new Level[5];
     }
@@ -86,7 +88,18 @@ public class ReportGatherer : MonoBehaviour
         lvlCounter++;
         dataGathering.levels[lvlCounter] = new Level();
         dataGathering.levels[lvlCounter].mode = lvlMode;
-        dataGathering.levels[lvlCounter].rooms = new Room[FindObjectsOfType<RoomChange>().Length];
+
+        RoomChange[] rmch = FindObjectsOfType<RoomChange>();
+        dataGathering.levels[lvlCounter].rooms = new Room[rmch.Length];
+        for(int i = 0; i < rmch.Length; i++)
+        {
+            if(rmch[i].GetRoomStatus())
+            {
+                dataGathering.levels[lvlCounter].optionalRooms += 1;
+            }
+        }
+
+        dataGathering.levels[lvlCounter].totalCollectibles = FindObjectsOfType<MultiplierCollectible>().Length;
         startLevelTime = Time.time;
     }
 
@@ -115,6 +128,7 @@ public class ReportGatherer : MonoBehaviour
         levelRooms.Add(enteringRoom);
         roomCounter += 1;
         dataGathering.levels[lvlCounter].rooms[roomCounter] = new Room();
+        dataGathering.levels[lvlCounter].rooms[roomCounter].optional = enteringRoom.GetRoomStatus();
     }
 
     private void JumpCounter()
@@ -148,11 +162,13 @@ public class ReportGatherer : MonoBehaviour
         dataGathering.levels[lvlCounter].rooms[roomCounter].roomWallJump += 1;
         dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryWallJump += 1;
     }
-
+    private void CollectibleGotTry()
+    {
+        dataGathering.levels[lvlCounter].rooms[roomCounter].collectiblesGot += 1;
+        Debug.Log("Collectible got but not ended level");
+    }
     public void CollectibleMultiplierCounter()
     {
-        dataGathering.levels[lvlCounter].totalCollectibles += 1;
-        dataGathering.levels[lvlCounter].rooms[roomCounter].collectiblesGot += 1;
         dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryCollectibles += 1;
 
         if (dataGathering.levels[lvlCounter].rooms[roomCounter].returned)
@@ -203,5 +219,36 @@ public class ReportGatherer : MonoBehaviour
         questionaryAnswers.Clear();
         levelRooms.Clear();
         roomCounter = -1;
+    }
+
+
+    public MODE ComputeLevelData(Level LevelData)
+    {
+        int collectibles = 0;
+        int optionalRoomsEntered = 0;
+        for (int i = 0; i < LevelData.rooms.Length; i++)
+        {
+            collectibles += LevelData.rooms[i].lastTryCollectibles;
+            if(LevelData.rooms[i].optional)
+            {
+                optionalRoomsEntered += 1;
+            }
+        }
+        ///Percentage of collectables
+        float collectibleDiference = LevelData.totalCollectibles - collectibles;
+        float collectiblePercentage = (100 * collectibles) / LevelData.totalCollectibles;
+        if (collectiblePercentage > 50f)
+        {
+            //Tends to be more achiever.
+        }
+        /// 
+        ///Optional Zones
+        float optionalPercentage = (100 * optionalRoomsEntered) / LevelData.optionalRooms;
+        if(optionalPercentage > 50)
+        {
+
+        }
+
+        return MODE.INITIAL;
     }
 }

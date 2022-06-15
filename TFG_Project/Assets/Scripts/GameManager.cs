@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        PlayFabManager.Instance.dataSended += Application.Quit;
         ReportGatherer.Instance.GetNewLevel(currentSceneMode);
     }
     /// <summary>
@@ -58,11 +59,17 @@ public class GameManager : MonoBehaviour
                 return;
             }
             //TODO compute the result print charts etc and decide which scene will be loaded
+
+
+
+
+
             currentSceneMode = MODE.AGRESSIVE;
             modeList.Add(currentSceneMode);
             switch (currentSceneMode)
             {
                 case MODE.AGRESSIVE:
+                    DontDestroyOnLoad(FindObjectOfType<Player>());
                     SceneManager.LoadScene(agressiveScene);
                     ReportGatherer.Instance.GetNewLevel(currentSceneMode);
                     break;
@@ -71,7 +78,7 @@ public class GameManager : MonoBehaviour
         else
         {
             ReportGatherer.Instance.SendInfo();
-            Application.Quit();
+            //Application.Quit();
         }
     }
 }

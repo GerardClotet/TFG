@@ -14,7 +14,8 @@ public enum PLAYER_STATE
     ON_AIR,
     GRAB_WALL,
     BOUNCE,
-    BOUNCE_AIR
+    BOUNCE_AIR,
+    DEATH
 }
 public class Player : MonoBehaviour
 {
@@ -78,10 +79,18 @@ public class Player : MonoBehaviour
     public Action dieAction;
     public Action jumpAction;
     public Action bounceAction;
-
+    public Action collectibleGotAction;
     //Test
     public void AddRBVel(Vector2 vel)
     {
+        if(Mathf.Abs(vel.x) == Mathf.Infinity || float.IsNaN(vel.x))
+        {
+            vel.x = 0;
+        }
+        if (Mathf.Abs(vel.y) == Mathf.Infinity || float.IsNaN(vel.y))
+        {
+            vel.y = 0;
+        }
         rigidBody2D.velocity += vel;
     }
     private void Awake()
@@ -346,7 +355,7 @@ public class Player : MonoBehaviour
         {
             if (collision.GetContact(0).normal.y == 1)
             {
-                if (collision.gameObject.GetComponent<PlatformMove>())
+                if (collision.gameObject.GetComponent<PlatformMoveOnTouch>() || collision.gameObject.GetComponent<PlatformPerpetualMove>())
                 {
                     transform.parent = collision.transform;
                 }
@@ -379,13 +388,17 @@ public class Player : MonoBehaviour
         {
             endGame.Invoke();
         }
+        else if(collision.GetComponent<MultiplierCollectible>())
+        {
+            collectibleGotAction.Invoke();
+        }
     }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.layer == s_BounceLayer)
         {
-            if (collision.GetContact(0).normal.y == 1)
+            if (collision.GetContact(0).normal.y > 0.9f)
             {
                 if (playerState != PLAYER_STATE.MOVE && playerState != PLAYER_STATE.IDLE && playerState != PLAYER_STATE.HOLD_DASH && playerState != PLAYER_STATE.DASH)
                 {
@@ -393,9 +406,7 @@ public class Player : MonoBehaviour
                     {
                         GroundedReset();
                     }
-                    return;
                 }
-                return;
             }
             else
             {
@@ -423,7 +434,7 @@ public class Player : MonoBehaviour
     {
         if(collision.gameObject.layer == s_BounceLayer)
         {
-            if (collision.gameObject.GetComponent<PlatformMove>())
+            if (collision.gameObject.GetComponent<PlatformMoveOnTouch>() || collision.gameObject.GetComponent<PlatformPerpetualMove>())
             {
                 transform.parent = null;
             }
@@ -439,13 +450,16 @@ public class Player : MonoBehaviour
     }
 
     //here we check if we can properly change player state
-    //This is called when InputActions are cancelled
     public void RequestChangePlayerState(PLAYER_STATE state)
     {
         if(state != PLAYER_STATE.IDLE && stopCoroutineActive)
         {
             stopCoroutineActive = false;
             StopAllCoroutines();
+        }
+        if(state == PLAYER_STATE.DEATH)
+        {
+            return;
         }
 
         switch(state)
@@ -552,6 +566,25 @@ public class Player : MonoBehaviour
     {
         StopCoroutine(StopPlayerHorizontalMovement());
 
+        playerState = PLAYER_STATE.DEATH;
+        playerAnimator.SetTrigger("DieTrigger");
+        StartCoroutine(GoToStart());
+        playerAnimator.SetTrigger("GroundedTrigger");
+    }
+
+    private IEnumerator GoToStart()
+    {
+        GetComponent<Collider2D>().enabled = false;
+        Vector3 origin = transform.position;
+        float t = 0;
+        while(transform.position != spawnPos)
+        {
+            transform.position = Vector3.Lerp(origin, spawnPos, t);
+            t += 0.05f;
+            yield return null;
+        }
+        GetComponent<Collider2D>().enabled = true;
+
         canDash = true;
         jumpTime = 0f;
         jumping = false;
@@ -565,11 +598,10 @@ public class Player : MonoBehaviour
         {
             playerState = PLAYER_STATE.IDLE;
         }
-        transform.position = spawnPos;
+        //transform.position = spawnPos;
         rigidBody2D.velocity = Vector2.zero;
+        holdDash.Stop();
     }
-
-
     public void ResetDashCollectable()
     {
         canDash = true;
