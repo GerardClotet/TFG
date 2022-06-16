@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour
             if(currentSceneMode == MODE.AGRESSIVE)
             {
                 ReportGatherer.Instance.SendInfoJSON();
-                Application.Quit();
+                //Application.Quit();
                 return;
             }
             //TODO compute the result print charts etc and decide which scene will be loaded

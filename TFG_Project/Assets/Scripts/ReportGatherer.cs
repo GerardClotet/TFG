@@ -37,7 +37,7 @@ public class ReportGatherer : MonoBehaviour
         public int roomDeaths = 0;
         public int roomJumps = 0;
         public int roomWallJump = 0;
-        public float totalRunTime = 0f;
+        public float totalRoomTime = 0f;
 
         //Last run
         public int lastTryJumps = 0;
@@ -112,6 +112,8 @@ public class ReportGatherer : MonoBehaviour
         {
             if (levelRooms[i] == enteringRoom)
             {
+                dataGathering.levels[lvlCounter].rooms[roomCounter].totalRoomTime += Time.time - startRoomTime;
+                dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryTime = Time.time - startRoomLastTryTime;
                 roomCounter = i;
                 dataGathering.levels[lvlCounter].rooms[roomCounter].returned = true;
                 return;
@@ -120,7 +122,7 @@ public class ReportGatherer : MonoBehaviour
 
         if (roomCounter > -1)
         {
-            dataGathering.levels[lvlCounter].rooms[roomCounter].totalRunTime = Time.time - startRoomTime;
+            dataGathering.levels[lvlCounter].rooms[roomCounter].totalRoomTime += Time.time - startRoomTime;
             dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryTime = Time.time - startRoomLastTryTime;
         }
 
@@ -186,7 +188,7 @@ public class ReportGatherer : MonoBehaviour
     public void AddLevelTime()
     {
         dataGathering.levels[lvlCounter].totalTime = Time.time - startLevelTime;
-        dataGathering.levels[lvlCounter].rooms[roomCounter].totalRunTime = Time.time - startRoomTime;
+        dataGathering.levels[lvlCounter].rooms[roomCounter].totalRoomTime = Time.time - startRoomTime;
         dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryTime = Time.time - startRoomLastTryTime;
     }
 

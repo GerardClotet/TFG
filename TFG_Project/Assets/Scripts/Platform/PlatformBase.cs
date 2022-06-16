@@ -22,6 +22,7 @@ public abstract class PlatformBase : MonoBehaviour
 
     protected abstract void OnCollisionExit2D(Collision2D collision);
     
+
     //private class template<T>
     //{
 

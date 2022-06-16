@@ -29,10 +29,13 @@ public class RoomChange : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Something Enter");
         if (collision.GetComponent<Player>()) //maybe do it through GetComponent<Player>()
         {
-            Debug.Log("Player Enter");
+            if (collision.GetComponent<Player>().GetPlayerState() == PLAYER_STATE.DEATH)
+            {
+                return;
+            }
+
             collision.gameObject.GetComponent<Player>().SetSpawnPoint(spawnPoint.position);
             virtualCam.gameObject.SetActive(true);
 
@@ -53,6 +56,7 @@ public class RoomChange : MonoBehaviour
             }
         }
     }
+
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.GetComponent<Player>()) 

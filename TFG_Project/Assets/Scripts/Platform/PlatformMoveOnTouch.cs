@@ -36,13 +36,11 @@ public class PlatformMoveOnTouch : PlatformBase
             Vector2 v = Vector2.zero;
             if (horizontal)
             {
-                Debug.Log("x " +vel);
                 vel = (transform.position.x - origin) / (Time.time - startTime);
                 v.x = vel;
             }
             else
             {
-                Debug.Log("y " +vel);
                 vel = (transform.position.y - origin) / (Time.time - startTime);
                 v.y = vel;
             }
