@@ -61,6 +61,10 @@ public class RoomChange : MonoBehaviour
     {
         if (collision.GetComponent<Player>()) 
         {
+            if (collision.GetComponent<Player>().GetPlayerState() == PLAYER_STATE.DEATH)
+            {
+                return;
+            }
             virtualCam.gameObject.SetActive(false);
 
             MultiplierCollectible collectible = GetComponentInChildren<MultiplierCollectible>();

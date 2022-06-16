@@ -761,7 +761,7 @@ GameObject:
   - component: {fileID: 776654073}
   - component: {fileID: 776654072}
   - component: {fileID: 776654071}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1506,6 +1506,7 @@ MonoBehaviour:
   virtualCam: {fileID: 1001936921}
   spawnPoint: {fileID: 80580211}
   startPlayer: 1
+  optionalRoom: 0
 --- !u!1 &2032394461
 GameObject:
   m_ObjectHideFlags: 0
@@ -1586,3 +1587,4 @@ MonoBehaviour:
   virtualCam: {fileID: 1176170442}
   spawnPoint: {fileID: 515225431}
   startPlayer: 0
+  optionalRoom: 0

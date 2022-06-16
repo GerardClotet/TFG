@@ -103,6 +103,7 @@ public class Player : MonoBehaviour
         boxCollider2D = GetComponent<BoxCollider2D>();
         playerAnimator = GetComponentInChildren<Animator>();
         dieAction += ResetPlayer;
+        rigidBody2D.gravityScale = fallingGravityScale;
     }
 
     private void OnEnable()
@@ -161,16 +162,9 @@ public class Player : MonoBehaviour
                 releaseDash.Play();
             }
         }
-        if (coyoteJumpCounter > 0 && countCoyoteTime) //TODO CHECK
+        if (coyoteJumpCounter > 0 && countCoyoteTime)
         {
             coyoteJumpCounter -= Time.deltaTime;
-        }
-        if (playerState == PLAYER_STATE.IDLE || playerState == PLAYER_STATE.MOVE)
-        {
-            if (!IsGrounded(bounceLayer))
-            {
-                playerState = PLAYER_STATE.ON_AIR;
-            }
         }
     }
 
@@ -197,7 +191,7 @@ public class Player : MonoBehaviour
 
     private bool IsGrounded(LayerMask layer)
     {
-        float extraHeightText = 0.01f;
+        float extraHeightText = 0.05f;
         RaycastHit2D raycastHitFloor = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, layer);
         return raycastHitFloor.collider != null;
     }
@@ -231,9 +225,6 @@ public class Player : MonoBehaviour
                     rigidBody2D.gravityScale = fallingGravityScale;
                 }
                 break;
-
-            //case PLAYER_STATE.GRAB_WALL:
-            //    break;
 
             case PLAYER_STATE.BOUNCE:
                 rigidBody2D.AddForce(new Vector2(grabNormal.x, bounceInclination) * bounceImpulse, ForceMode2D.Impulse);
@@ -335,21 +326,13 @@ public class Player : MonoBehaviour
                 if(playerState == PLAYER_STATE.GRAB_WALL)
                 {
                     GroundedReset();
-                    if (leftStick != Vector2.zero)
-                    {
-                        playerState = PLAYER_STATE.MOVE;
-                    }
-                    else
-                    {
-                        playerState = PLAYER_STATE.IDLE;
-                    }
                 }
 
                 if (collision.gameObject.GetComponent<PlatformMoveOnTouch>() || collision.gameObject.GetComponent<PlatformPerpetualMove>())
                 {
                     transform.parent = collision.transform;
                 }
-                if (playerState != PLAYER_STATE.MOVE && playerState != PLAYER_STATE.IDLE)
+                if (playerState != PLAYER_STATE.MOVE && playerState != PLAYER_STATE.IDLE && playerState != PLAYER_STATE.HOLD_DASH)
                 {
                     GroundedReset();
                     return;
@@ -420,7 +403,6 @@ public class Player : MonoBehaviour
             {
                 RequestChangePlayerState(PLAYER_STATE.GRAB_WALL);
             }
-            
         }
     }
 
@@ -438,6 +420,13 @@ public class Player : MonoBehaviour
             }
             else
             {
+                if (playerState == PLAYER_STATE.IDLE || playerState == PLAYER_STATE.MOVE)
+                {
+                    if (!IsGrounded(bounceLayer))
+                    {
+                        playerState = PLAYER_STATE.ON_AIR;
+                    }
+                }
                 countCoyoteTime = true;
             }
         }
@@ -447,7 +436,6 @@ public class Player : MonoBehaviour
     {
     }
 
-    //here we check if we can properly change player state
     public void RequestChangePlayerState(PLAYER_STATE state)
     {
         if(state != PLAYER_STATE.IDLE && stopCoroutineActive)
@@ -455,7 +443,7 @@ public class Player : MonoBehaviour
             stopCoroutineActive = false;
             StopAllCoroutines();
         }
-        if(state == PLAYER_STATE.DEATH)
+        if(playerState == PLAYER_STATE.DEATH || playerState == PLAYER_STATE.HOLD_DASH)
         {
             return;
         }
@@ -563,14 +551,12 @@ public class Player : MonoBehaviour
     private void ResetPlayer()
     {
         StopCoroutine(StopPlayerHorizontalMovement());
-
         playerState = PLAYER_STATE.DEATH;
         StartCoroutine(GoToStart());
     }
 
     private IEnumerator GoToStart()
     {
-        //GetComponent<Collider2D>().enabled = false;
         Vector3 origin = transform.position;
         float t = 0;
         while(transform.position != spawnPos)
@@ -579,12 +565,11 @@ public class Player : MonoBehaviour
             t += 0.05f;
             yield return null;
         }
-        //GetComponent<Collider2D>().enabled = true;
 
         canDash = true;
         jumpTime = 0f;
         jumping = false;
-        rigidBody2D.gravityScale = defaultGravityScale;
+        rigidBody2D.gravityScale = fallingGravityScale;
         coyoteJumpCounter = coyoteJumpTime;
         if (leftStick != Vector2.zero)
         {
@@ -594,7 +579,6 @@ public class Player : MonoBehaviour
         {
             playerState = PLAYER_STATE.IDLE;
         }
-        //transform.position = spawnPos;
         rigidBody2D.velocity = Vector2.zero;
         holdDash.Stop();
     }
