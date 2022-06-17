@@ -52,7 +52,7 @@ public class UserInputManager : MonoBehaviour
         userActionInput.Player.Menu.started += context => openMenu.Invoke(context);
         userActionInput.UI.Start.started += context => closeMenu.Invoke();
 
-        openMenu += func => { Debug.Log("Disable & enable"); DisablePlayerInput(); EnableUiInput(); };
+        openMenu += func => { DisablePlayerInput(); EnableUiInput(); };
     }
     private void OnEnable() 
     {

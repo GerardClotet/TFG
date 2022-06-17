@@ -7,17 +7,17 @@ public class RoomChange : MonoBehaviour
 
     [SerializeField] private CinemachineVirtualCamera virtualCam;
     [SerializeField] private Transform spawnPoint;
-
     [SerializeField] private bool startPlayer = false;
     [Tooltip("If true this room will be counted in the report as an optional")]
     [SerializeField] private bool optionalRoom = false;
+
     private void Awake()
     {
         Player p = FindObjectOfType<Player>();
         if(startPlayer)
         {
             p.transform.position = spawnPoint.position;
-            Player.Instance.GetComponent<Collider2D>().enabled = true;
+            p.GetComponent<Collider2D>().enabled = true;
 
             if(GetComponentInChildren<LevelEater>(true) != null)
             {
@@ -86,7 +86,7 @@ public class RoomChange : MonoBehaviour
 
             foreach (PlatformPerpetualMove p in GetComponentsInChildren<PlatformPerpetualMove>())
             {
-                p.ResetPlatform();
+                p.StopPlatform();
             }
 
             KeyCollectible key = GetComponentInChildren<KeyCollectible>(); //TODO improve key way to open door

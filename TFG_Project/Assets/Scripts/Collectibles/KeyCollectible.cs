@@ -41,7 +41,7 @@ public class KeyCollectible : Collectible
     {
         isOpening = true;
         StopCoroutine(FollowPlayer(Player.Instance.transform));
-        Player.Instance.dieAction -= ResetCollectible;
+        Player.Instance.dieAction -= ResetCollectible; //?
         yield return new WaitForSeconds(0.3f);
         float startTime = Time.time;
         float elapsedTime;

@@ -9,7 +9,7 @@ public class PlatformMoveOnTouch : PlatformBase
     [Range(0.01f, 0.9f)] [SerializeField] private float maxIncreaseStep = 0.3f;
     private float origin = 0;
 
-    public void ResetPlatform()
+    public void RestartPlatform()
     {
         StopAllCoroutines();
         transform.position = startPosition;
@@ -18,7 +18,7 @@ public class PlatformMoveOnTouch : PlatformBase
     private void Start()
     {
         startPosition = transform.position;
-        Player.Instance.dieAction += ResetPlatform;
+        Player.Instance.dieAction += RestartPlatform;
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {

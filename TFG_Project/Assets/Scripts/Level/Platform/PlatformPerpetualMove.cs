@@ -16,10 +16,12 @@ public class PlatformPerpetualMove : PlatformBase
         destination = horizontal ? transform.position.x + sign * distance : transform.position.y + sign * distance;
         origin = horizontal ? transform.position.x : transform.position.y;
     }
-    private void Start()
-    {
-        Player.Instance.dieAction += ResetPlatform;
-    }
+
+
+    //private void Start()
+    //{
+    //    Player.Instance.dieAction += ResetPlatform;
+    //}
 
     public void StartMoving()
     {
@@ -130,10 +132,16 @@ public class PlatformPerpetualMove : PlatformBase
             yield return null;
         }
     }
-    public void ResetPlatform()
+    //public void RestartPlatform()
+    //{
+    //    StopAllCoroutines();
+    //    transform.position = startPosition;
+    //    StartMoving();
+    //}
+
+    public void StopPlatform()
     {
         StopAllCoroutines();
         transform.position = startPosition;
-        StartMoving();
     }
 }

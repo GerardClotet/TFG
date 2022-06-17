@@ -184,6 +184,10 @@ public class Player : MonoBehaviour
         }
         else
         {
+            if (!stopCoroutineActive)
+            {
+                StartCoroutine(StopPlayerHorizontalMovement());
+            }
             playerState = PLAYER_STATE.IDLE;
         }
     }
@@ -360,6 +364,14 @@ public class Player : MonoBehaviour
 
         if (collision.gameObject.layer == s_DieLayer)
         {
+            Delegate[] d = dieAction.GetInvocationList();
+            for(int i = 0; i < d.Length; i++)
+            {
+                if(d[i].Target == null)
+                {
+                    Delegate.Remove(dieAction, d[i]);
+                }
+            }
             dieAction.Invoke();
             FindObjectOfType<UIManager>().FadeFromToBlack(1.3f);
         }
@@ -437,6 +449,12 @@ public class Player : MonoBehaviour
                 }
                 countCoyoteTime = true;
             }
+
+            if (stopCoroutineActive)
+            {
+                stopCoroutineActive = false;
+                StopCoroutine(StopPlayerHorizontalMovement());
+            }
         }
     }
 
@@ -449,7 +467,7 @@ public class Player : MonoBehaviour
         if(state != PLAYER_STATE.IDLE && stopCoroutineActive)
         {
             stopCoroutineActive = false;
-            StopAllCoroutines();
+            StopCoroutine(StopPlayerHorizontalMovement());
         }
         if(playerState == PLAYER_STATE.DEATH || playerState == PLAYER_STATE.HOLD_DASH)
         {
@@ -578,7 +596,6 @@ public class Player : MonoBehaviour
             if(t >= 0.97f)
             {
                 GetComponent<Collider2D>().enabled = true;
-                Debug.Log("amics");
             }
             yield return null;
         }
