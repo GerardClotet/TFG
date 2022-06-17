@@ -31,6 +31,7 @@ public class MultiplierCollectible : Collectible
         if (taken)
         {
             ReportGatherer.Instance.CollectibleMultiplierCounter();
+            FindObjectOfType<UIManager>().CollectibleGot();
             Destroy(gameObject);
         }
     }

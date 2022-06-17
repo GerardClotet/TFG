@@ -170,7 +170,6 @@ public class Player : MonoBehaviour
 
     private void GroundedReset() 
     {
-        Debug.Log("Herre ground");
         groundedAction.Invoke();
         playerAnimator.SetTrigger("GroundTrigger");
         canDash = true;
@@ -319,6 +318,9 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (playerState == PLAYER_STATE.DEATH)
+            return;
+
         if (collision.gameObject.layer == s_BounceLayer)
         {
             if (collision.GetContact(0).normal.y == 1)//On top
@@ -353,9 +355,13 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (playerState == PLAYER_STATE.DEATH)
+            return;
+
         if (collision.gameObject.layer == s_DieLayer)
         {
             dieAction.Invoke();
+            FindObjectOfType<UIManager>().FadeFromToBlack(1.3f);
         }
         else if(collision.gameObject.layer == s_FinishLayer )
         {
@@ -369,6 +375,8 @@ public class Player : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
+        if (playerState == PLAYER_STATE.DEATH)
+            return;
 
         if (collision.gameObject.layer == s_BounceLayer)
         {
@@ -408,7 +416,7 @@ public class Player : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if(collision.gameObject.layer == s_BounceLayer)
+        if (collision.gameObject.layer == s_BounceLayer)
         {
             if (collision.gameObject.GetComponent<PlatformMoveOnTouch>() || collision.gameObject.GetComponent<PlatformPerpetualMove>())
             {
@@ -552,25 +560,34 @@ public class Player : MonoBehaviour
     {
         StopCoroutine(StopPlayerHorizontalMovement());
         playerState = PLAYER_STATE.DEATH;
+        rigidBody2D.velocity = Vector2.zero;
+        rigidBody2D.gravityScale = 0;
         StartCoroutine(GoToStart());
     }
 
     private IEnumerator GoToStart()
     {
+        GetComponent<Collider2D>().enabled = false;
+        yield return new WaitForSeconds(1.3f);
         Vector3 origin = transform.position;
         float t = 0;
-        while(transform.position != spawnPos)
+        while (transform.position != spawnPos)
         {
             transform.position = Vector3.Lerp(origin, spawnPos, t);
             t += 0.05f;
+            if(t >= 0.97f)
+            {
+                GetComponent<Collider2D>().enabled = true;
+                Debug.Log("amics");
+            }
             yield return null;
         }
-
         canDash = true;
         jumpTime = 0f;
         jumping = false;
         rigidBody2D.gravityScale = fallingGravityScale;
         coyoteJumpCounter = coyoteJumpTime;
+
         if (leftStick != Vector2.zero)
         {
             playerState = PLAYER_STATE.MOVE;
@@ -579,7 +596,6 @@ public class Player : MonoBehaviour
         {
             playerState = PLAYER_STATE.IDLE;
         }
-        rigidBody2D.velocity = Vector2.zero;
         holdDash.Stop();
     }
     public void ResetDashCollectable()

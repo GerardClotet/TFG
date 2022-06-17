@@ -19,6 +19,7 @@ public class Rumbler : MonoBehaviour
         Player.Instance.groundedAction += GroundRumble;
         Player.Instance.endGame += StopRumble;
         Player.Instance.endGame += StopAllCoroutines;
+        Player.Instance.dieAction += DieRumble;
         UserInputManager.Instance.openMenu += context => {StopRumble();};
         Application.quitting += StopRumble;
     }
@@ -36,6 +37,11 @@ public class Rumbler : MonoBehaviour
     void StartDashRumble()
     {
         StartCoroutine(LinealRumbleOverTime(1f,0.5f,1f,0.5f,0.4f));
+    }
+    
+    void DieRumble()
+    {
+        StartCoroutine(LinealRumbleOverTime(0.7f, 0.1f, 1f, 0.1f, 0.3f));
     }
 
     IEnumerator ConstantRumbleOverTime(float lowF, float highF, float time)
@@ -61,7 +67,7 @@ public class Rumbler : MonoBehaviour
         float currentHighF = highF_Initial;
         while(time >0)
         {
-            if(Time.timeScale == 1)
+            if(Time.timeScale == 1 && gamepad != null)
                 gamepad.SetMotorSpeeds(currentLowF, currentHighF);
 
             currentLowF = Mathf.Lerp(lowF_Initial, lowF_Final, time);

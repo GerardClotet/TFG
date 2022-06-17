@@ -44,6 +44,13 @@ public class RoomChange : MonoBehaviour
             {
                 collectible.StartCollectible();
             }
+
+            KeyCollectible key = GetComponentInChildren<KeyCollectible>();
+            if(key)
+            {
+                key.StartCollectible();
+            }
+
             if (GetComponentInChildren<LevelEater>(true))
             {
                 GetComponentInChildren<LevelEater>(true).gameObject.SetActive(true);
@@ -80,6 +87,13 @@ public class RoomChange : MonoBehaviour
             foreach (PlatformPerpetualMove p in GetComponentsInChildren<PlatformPerpetualMove>())
             {
                 p.ResetPlatform();
+            }
+
+            KeyCollectible key = GetComponentInChildren<KeyCollectible>(); //TODO improve key way to open door
+            if (key && key.taken && !key.isOpening)
+            {
+
+                StartCoroutine(key.OpenDoor());
             }
         }
     }

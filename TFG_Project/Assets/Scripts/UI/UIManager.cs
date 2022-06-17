@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -13,17 +14,19 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button primaryButton;
     [SerializeField] private GameObject postGamePanel;
     [SerializeField] private GameObject fadePanel;
+    [SerializeField] private GameObject collectiblesCounter;
 
     private List<Button> menuButtonList = new List<Button>();
     private TestClass questions;
     private GameObject questionsPrefab;
     private GameObject questionButtonPrefab;
     private int questionCounter = 0;
+    private int currentCollectibles = 0;
+    private int totalCollectibles = 0;
     private void Awake()
     {
         Player.Instance.endGame += PostGameState;
-
-        UserInputManager.Instance.openMenu += func => OpenMenu(); 
+        UserInputManager.Instance.openMenu += context => OpenMenu();
         UserInputManager.Instance.closeMenu += OnResumeButtonClicked;
 
         SceneManager.activeSceneChanged += NewLevelLoaded;
@@ -176,9 +179,13 @@ public class UIManager : MonoBehaviour
             currQuestion.GetComponent<QuestionHandler>().SetDelegates();
             return;
         }
+        FadeFromToBlack(1, true);
+    }
 
+    public void FadeFromToBlack(float time = 1, bool endGame = false)
+    {
         Image img = fadePanel.GetComponent<Image>();
-        LeanTween.value(gameObject, 0, 1, 1).setIgnoreTimeScale(true).setOnUpdate((float val) =>
+        LeanTween.value(gameObject, 0, 1, time).setIgnoreTimeScale(true).setOnUpdate((float val) =>
         {
             Color c = img.color;
             c.a = val;
@@ -186,15 +193,19 @@ public class UIManager : MonoBehaviour
         }).setOnComplete(
             func =>
             {
-                GameManager.Instance.EndScene();
-                LeanTween.value(gameObject, 1, 0, 1).setIgnoreTimeScale(true).setOnUpdate((float val) =>
-                   {
-                       Color c = img.color;
-                       c.a = val;
-                       img.color = c;
-                   });
+                if (endGame)
+                {
+                    GameManager.Instance.EndScene();
+                }
+                LeanTween.value(gameObject, 1, 0, time).setIgnoreTimeScale(true).setOnUpdate((float val) =>
+                {
+                    Color c = img.color;
+                    c.a = val;
+                    img.color = c;
+                });
             });
     }
+
 
     public void TestButtonCallback(int answer, GameObject go)
     {
@@ -204,9 +215,28 @@ public class UIManager : MonoBehaviour
         LeanTween.moveLocalY(go, -600, 0.3f).setIgnoreTimeScale(true).setOnComplete(func => { Destroy(go); CreateQuestionAnswer();});
     }
 
+    public void CollectibleGot()
+    {
+        currentCollectibles += 1;
+        collectiblesCounter.GetComponentInChildren<Text>().text = $"{currentCollectibles}/{totalCollectibles}";
+    }
+
     private void NewLevelLoaded(Scene current, Scene next)
     {
         Debug.Log($"Changed from {current.name} to {next.name}");
+
+        RoomChange[] rooms = FindObjectsOfType<RoomChange>();
+        totalCollectibles = 0;
+        currentCollectibles = 0;
+        for(int i = 0; i < rooms.Length; i++)
+        {
+            if(rooms[i].GetComponentInChildren<MultiplierCollectible>())
+            {
+                totalCollectibles += 1;
+            }
+        }
+        collectiblesCounter.GetComponentInChildren<Text>().text = $"0/{totalCollectibles}";
+
         Time.timeScale = 1f;
         UserInputManager.Instance.DisableUiInput();
         UserInputManager.Instance.EnablePlayerInput();
