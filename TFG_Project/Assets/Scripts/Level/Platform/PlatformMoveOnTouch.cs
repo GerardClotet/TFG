@@ -46,7 +46,7 @@ public class PlatformMoveOnTouch : PlatformBase
             }
             
             if(v != Vector2.zero)
-                Player.Instance.AddRBVel(v);
+                Player.Instance.AddRBVel(v*1.5f);
         }
     }
 
