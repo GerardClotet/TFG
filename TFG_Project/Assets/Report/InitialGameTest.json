@@ -1,23 +1,38 @@
 {
   "questions": [
     {
-      "question": "Quina part t'ha agradat més del joc?",
+      "question": "T'ha semblat difícil el nivell?",
       "answers": [
-        "La dificultad",
-        "La exploració",
-        "El moviment"
+        "Molt",
+        "Poc",
+        "Una mica"
       ]
     },
     {
-      "question": "Que t'ha frustrat més?",
+      "question": "T'hauria agradat que el moviment del jugador fos més ràpid/àgil?",
       "answers": [
-        "La duració del joc",
-        "Les vegades que he mort",
-        "La música"
+        "Si",
+        "No"
       ]
     },
     {
       "question": "El joc anava massa ràpid?",
+      "answers": [
+        "Si",
+        "No"
+      ]
+    },
+    {
+      "question": "Quin element t'has sentit més còmode o és el que més t'ha ajudat a passar-te el nivell?",
+      "answers": [
+        "El salt",
+        "El dash",
+        "El rebot de les parets",
+        "Resetejar el dash al aire"
+      ]
+    },
+    {
+      "question": "Has sentit alguna satisfacció o t'ha agradat agafar els coleccionables?",
       "answers": [
         "Si",
         "No"

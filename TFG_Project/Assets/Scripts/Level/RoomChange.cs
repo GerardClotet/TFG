@@ -46,7 +46,7 @@ public class RoomChange : MonoBehaviour
             }
 
             KeyCollectible key = GetComponentInChildren<KeyCollectible>();
-            if(key)
+            if(key && !key.isOpening)
             {
                 key.StartCollectible();
             }
@@ -54,6 +54,7 @@ public class RoomChange : MonoBehaviour
             if (GetComponentInChildren<LevelEater>(true))
             {
                 GetComponentInChildren<LevelEater>(true).gameObject.SetActive(true);
+
             }
             ReportGatherer.Instance.EnterRoom(this);
 
@@ -92,7 +93,7 @@ public class RoomChange : MonoBehaviour
             KeyCollectible key = GetComponentInChildren<KeyCollectible>(); //TODO improve key way to open door
             if (key && key.taken && !key.isOpening)
             {
-
+                Debug.Log("KeyCouroutineStart");
                 StartCoroutine(key.OpenDoor());
             }
         }

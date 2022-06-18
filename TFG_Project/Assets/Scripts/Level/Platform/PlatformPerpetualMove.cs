@@ -38,13 +38,10 @@ public class PlatformPerpetualMove : PlatformBase
             Vector2 v = Vector2.zero;
             if (horizontal)
             {
-                Debug.Log("x " + vel);
-               
                 v.x = vel;
             }
             else if(startLeftOrBottom)
             {
-                Debug.Log("y " + vel);
                 vel = (transform.position.y - origin) / (Time.time - startTime);
                 v.y = vel;
             }

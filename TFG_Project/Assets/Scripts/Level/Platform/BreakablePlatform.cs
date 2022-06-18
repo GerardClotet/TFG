@@ -20,6 +20,7 @@ public class BreakablePlatform : MonoBehaviour
     IEnumerator DoYourThings()
     {
         GetComponent<ParticleSystem>().Play();
+        GetComponentInChildren<Animator>().SetTrigger("PlayerOnTop");
         float timer = 0;
         while(timer < holdTime)
         {
@@ -27,18 +28,17 @@ public class BreakablePlatform : MonoBehaviour
             yield return null;
         }
         GetComponent<ParticleSystem>().Stop();
+        GetComponentInChildren<Animator>().SetTrigger("BackToNormal");
         GetComponent<Collider2D>().enabled = false;
 
-        Color c = GetComponent<MeshRenderer>().material.color;
+        Color c = GetComponentInChildren<SpriteRenderer>().material.color;
         c.a = 0;
-        GetComponent<MeshRenderer>().material.SetColor("_Color", c);
-        GetComponent<MeshRenderer>().material.color = c;
-
+        GetComponentInChildren<SpriteRenderer>().material.SetColor("_Color", c);
         yield return new WaitForSeconds(recoverTime);
 
         GetComponent<Collider2D>().enabled = true;
         c.a = 1f;
-        GetComponent<MeshRenderer>().material.SetColor("_Color", c);
+        GetComponentInChildren<SpriteRenderer>().material.SetColor("_Color", c);
         coroutineActive = false;
     }
 }

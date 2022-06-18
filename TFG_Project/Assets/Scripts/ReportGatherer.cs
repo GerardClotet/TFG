@@ -128,9 +128,11 @@ public class ReportGatherer : MonoBehaviour
 
         //First time we pass this room
         levelRooms.Add(enteringRoom);
-        roomCounter += 1;
+        roomCounter = levelRooms.Count()-1;
         dataGathering.levels[lvlCounter].rooms[roomCounter] = new Room();
         dataGathering.levels[lvlCounter].rooms[roomCounter].optional = enteringRoom.GetRoomStatus();
+
+
     }
 
     private void JumpCounter()
@@ -249,6 +251,26 @@ public class ReportGatherer : MonoBehaviour
         if(optionalPercentage > 50)
         {
 
+        }
+
+        int nJumpsLevel = 0;
+
+        switch(LevelData.mode)
+        {
+            case MODE.INITIAL:
+                nJumpsLevel = 30;
+                
+                break;
+        }
+
+        if(LevelData.jumps > nJumpsLevel) //Todo Mirar si es més granq ue la meitat
+        {
+
+        }
+        switch(LevelData.jumps -nJumpsLevel)
+        {
+            case 0:
+                break;
         }
 
         return MODE.INITIAL;

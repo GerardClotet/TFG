@@ -303,9 +303,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 443f036dee12ca54fbcb2c5cc22c1142, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destination: {fileID: 681950425}
-  origin: {fileID: 1347368800}
+  destination: {fileID: 1347368800}
+  origin: {fileID: 681950425}
   timeToEnd: 160
+  stepTime: 0.01
 --- !u!212 &512761700
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1500,7 +1501,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1940541651}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa5722920737b844ba66625f13cf9167, type: 3}
+  m_Script: {fileID: 11500000, guid: ad1b5c9b5abc69e4a93c43154f8817ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCam: {fileID: 1001936921}
@@ -1581,7 +1582,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2032394461}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa5722920737b844ba66625f13cf9167, type: 3}
+  m_Script: {fileID: 11500000, guid: ad1b5c9b5abc69e4a93c43154f8817ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCam: {fileID: 1176170442}

@@ -15,6 +15,7 @@ public class PlatformMoveOnTouch : PlatformBase
         transform.position = startPosition;
         coroutineActive = false;
     }
+
     private void Start()
     {
         startPosition = transform.position;

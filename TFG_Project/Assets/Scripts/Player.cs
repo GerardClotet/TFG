@@ -369,6 +369,7 @@ public class Player : MonoBehaviour
             {
                 if(d[i].Target == null)
                 {
+                    Debug.Log("Target null");
                     Delegate.Remove(dieAction, d[i]);
                 }
             }

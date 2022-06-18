@@ -8,34 +8,36 @@ public class LevelEater : MonoBehaviour
     [SerializeField] private Transform destination;
     [SerializeField] private Transform origin;
     [SerializeField] private float timeToEnd = 10f;
-
+    [SerializeField] private float stepTime = 0.05f;
     private void OnEnable()
     {
         transform.position = origin.position;
         StartCoroutine(ReachToEnd());
     }
+
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.GetComponent<Player>() != null)
-        {
-            StopAllCoroutines();
-            transform.position = origin.position;
-            StartCoroutine(ReachToEnd());
-        }
+        //if(collision.GetComponent<Player>() != null)
+        //{
+        //    StopAllCoroutines();
+        //    transform.position = origin.position;
+        //    StartCoroutine(ReachToEnd());
+        //}
     }
 
     IEnumerator ReachToEnd()
     {
-        float stepX = (destination.position.x - origin.position.x)/timeToEnd;
-        float stepY = (destination.position.x - origin.position.x) / timeToEnd;
-        // Vector3 vec3 = origin;
-        float step = 0;
+        Vector3 vec3 = transform.position;
+        float t = 0;
         while (true)
         {
-        
             if(Time.timeScale == 1)
             {
-                transform.position = Vector3.Lerp(origin.position, destination.position, Mathf.MoveTowards(0, 1, Time.deltaTime));
+                vec3 = Vector3.Lerp(origin.position, destination.position, t);
+                t += stepTime;
+                transform.position = vec3;
             }
             yield return null;
         }

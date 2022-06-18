@@ -39,9 +39,9 @@ public class KeyCollectible : Collectible
 
     public IEnumerator OpenDoor()
     {
+        Player.Instance.dieAction -= ResetCollectible; //?
         isOpening = true;
         StopCoroutine(FollowPlayer(Player.Instance.transform));
-        Player.Instance.dieAction -= ResetCollectible; //?
         yield return new WaitForSeconds(0.3f);
         float startTime = Time.time;
         float elapsedTime;
