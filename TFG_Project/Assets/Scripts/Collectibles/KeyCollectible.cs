@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class KeyCollectible : Collectible
 {
@@ -30,10 +31,17 @@ public class KeyCollectible : Collectible
 
     private void ResetCollectible()
     {
-        taken = false;
-        StopAllCoroutines();
-        GetComponent<Collider2D>().enabled = true;
-        transform.position = startPosition;
+        try
+        {
+            taken = false;
+            StopAllCoroutines();
+            GetComponent<Collider2D>().enabled = true;
+            transform.position = startPosition;
+        }
+        catch(SystemException e)
+        {
+            Debug.Log(e);
+        }
 
     }
 

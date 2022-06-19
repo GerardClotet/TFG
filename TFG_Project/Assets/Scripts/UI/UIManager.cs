@@ -52,7 +52,7 @@ public class UIManager : MonoBehaviour
             }
         };
 
-        questions = JSONManager.ReadJson();
+        questions = JSONManager.ReadTests();
         questionButtonPrefab = Resources.Load<GameObject>("QuestionButton");
         questionsPrefab = Resources.Load<GameObject>("Question");
         menuButtonList = PausePanel.GetComponentsInChildren<Button>().ToList();
@@ -149,7 +149,7 @@ public class UIManager : MonoBehaviour
         }
         else //Meaning it's another scene and we have finished it.
         {
-            questions = JSONManager.ReadJson();
+            questions = JSONManager.ReadTests();
             questionCounter = 0;
             CreateQuestionAnswer();
         }
@@ -211,7 +211,7 @@ public class UIManager : MonoBehaviour
     {
         ReportGatherer.Instance.AddAnswerValue(questionCounter, answer);
         questionCounter++;
-        Debug.Log(answer);
+        //Debug.Log(answer);
         LeanTween.moveLocalY(go, -600, 0.3f).setIgnoreTimeScale(true).setOnComplete(func => { Destroy(go); CreateQuestionAnswer();});
     }
 

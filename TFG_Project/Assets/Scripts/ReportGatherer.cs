@@ -31,6 +31,7 @@ public class ReportGatherer : MonoBehaviour
     }
     public class Room
     {
+        public string roomName;
         public bool optional = false;
         public int collectiblesGot = 0;
         public int roomDashes = 0;
@@ -65,9 +66,11 @@ public class ReportGatherer : MonoBehaviour
     [HideInInspector] private DataGathering dataGathering = new DataGathering();
     private int lvlCounter = -1;
     private int roomCounter = -1;
-    private List<RoomChange> levelRooms = new List<RoomChange>();
+    private RoomChange[] levelRooms;
     private RoomChange previousRoom = null;
 
+    [HideInInspector] public bool Explorer { get; private set; }
+    [HideInInspector] public bool Achiever { get; private set; }
     void Awake()
     {
         Instance = this;
@@ -81,16 +84,24 @@ public class ReportGatherer : MonoBehaviour
         Player.Instance.collectibleGotAction += CollectibleGotTry;
         startLevelTime = Time.time;
         dataGathering.levels = new Level[5];
+
+        Explorer = false;
+        Achiever = false;
     }
 
     public void GetNewLevel(MODE lvlMode)
     {
+        Explorer = false;
+        Achiever = false;
+
         lvlCounter++;
         dataGathering.levels[lvlCounter] = new Level();
         dataGathering.levels[lvlCounter].mode = lvlMode;
 
         RoomChange[] rmch = FindObjectsOfType<RoomChange>();
         dataGathering.levels[lvlCounter].rooms = new Room[rmch.Length];
+        levelRooms = new RoomChange[rmch.Length];
+
         for(int i = 0; i < rmch.Length; i++)
         {
             if(rmch[i].GetRoomStatus())
@@ -105,10 +116,8 @@ public class ReportGatherer : MonoBehaviour
 
     public void EnterRoom(RoomChange enteringRoom) //Need to see if we go two rooms back
     {
-        startRoomTime = Time.time;
-        startRoomLastTryTime = Time.time;
         //Check if we have passed in this room
-        for (int i = 0; i < levelRooms.Count(); i++)
+        for (int i = 0; i < levelRooms.Length; i++)
         {
             if (levelRooms[i] == enteringRoom)
             {
@@ -116,6 +125,8 @@ public class ReportGatherer : MonoBehaviour
                 dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryTime = Time.time - startRoomLastTryTime;
                 roomCounter = i;
                 dataGathering.levels[lvlCounter].rooms[roomCounter].returned = true;
+                startRoomTime = Time.time;
+                startRoomLastTryTime = Time.time;
                 return;
             }
         }
@@ -125,12 +136,18 @@ public class ReportGatherer : MonoBehaviour
             dataGathering.levels[lvlCounter].rooms[roomCounter].totalRoomTime += Time.time - startRoomTime;
             dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryTime = Time.time - startRoomLastTryTime;
         }
-
+        startRoomTime = Time.time;
+        startRoomLastTryTime = Time.time;
         //First time we pass this room
-        levelRooms.Add(enteringRoom);
-        roomCounter = levelRooms.Count()-1;
+        char pos = enteringRoom.name[enteringRoom.name.Length - 1];
+        int value = (int)char.GetNumericValue(pos);
+        levelRooms[value -1] = enteringRoom;
+        roomCounter = value - 1;
         dataGathering.levels[lvlCounter].rooms[roomCounter] = new Room();
         dataGathering.levels[lvlCounter].rooms[roomCounter].optional = enteringRoom.GetRoomStatus();
+        dataGathering.levels[lvlCounter].rooms[roomCounter].roomName = enteringRoom.name;
+
+
 
 
     }
@@ -221,21 +238,47 @@ public class ReportGatherer : MonoBehaviour
     public void ResetScene(Scene current, Scene next)
     {
         questionaryAnswers.Clear();
-        levelRooms.Clear();
+        if (levelRooms != null)
+        {
+            Array.Clear(levelRooms, 0, levelRooms.Length);
+        }
         roomCounter = -1;
     }
 
 
-    public MODE ComputeLevelData(Level LevelData)
+    public MODE ComputeLevelData()
     {
+        Level LevelData = dataGathering.levels[lvlCounter];
         int collectibles = 0;
         int optionalRoomsEntered = 0;
+        float Agressive_Passive = 0; //negative is agressive, positive is passive
+
+        int nJumpsLevel = 0;
+        int nDashesLevel = 0;
+        int nWallJumpLevel = 0;
+        float requiredTime = 0;
+        LevelStats stats = JSONManager.ReadLevelStats();
+
+        for(int j = 0; j < stats.room.Length; j++)
+        {
+            if (LevelData.rooms[j] != null)
+            {
+                nJumpsLevel += stats.room[j].requiredJumpsRoom;
+                nDashesLevel += stats.room[j].requiredDashesRoom;
+                nWallJumpLevel += stats.room[j].requiredBouncesRoom;
+                requiredTime += stats.room[j].roomTime;
+            }
+        }
+
         for (int i = 0; i < LevelData.rooms.Length; i++)
         {
-            collectibles += LevelData.rooms[i].lastTryCollectibles;
-            if(LevelData.rooms[i].optional)
+            if (LevelData.rooms[i] != null)
             {
-                optionalRoomsEntered += 1;
+                collectibles += LevelData.rooms[i].lastTryCollectibles;
+                if (LevelData.rooms[i].optional)
+                {
+                    optionalRoomsEntered += 1;
+                }
             }
         }
         ///Percentage of collectables
@@ -244,34 +287,112 @@ public class ReportGatherer : MonoBehaviour
         if (collectiblePercentage > 50f)
         {
             //Tends to be more achiever.
+            Achiever = true;
         }
         /// 
         ///Optional Zones
         float optionalPercentage = (100 * optionalRoomsEntered) / LevelData.optionalRooms;
         if(optionalPercentage > 50)
         {
-
+            Explorer = true;
         }
 
-        int nJumpsLevel = 0;
-
-        switch(LevelData.mode)
+        //Jumps
+        float difJumps = nJumpsLevel - LevelData.jumps;
+        if( difJumps <= nJumpsLevel)
         {
-            case MODE.INITIAL:
-                nJumpsLevel = 30;
-                
-                break;
+            Debug.Log("Less than a double"); //Probably Assegurador 
+            Agressive_Passive = 1;
+        }
+        else if(difJumps > nJumpsLevel)
+        {
+            Debug.Log("More than double"); //Probably an Agressive
+            Agressive_Passive += -1;
         }
 
-        if(LevelData.jumps > nJumpsLevel) //Todo Mirar si es més granq ue la meitat
+        ///Dashes
+        ///
+        float difDash = nDashesLevel - LevelData.dashes;
+        if (difDash <= nDashesLevel)
         {
+            Debug.Log("Less than a double"); //Probably Assegurador 
+            Agressive_Passive += 1;
 
         }
-        switch(LevelData.jumps -nJumpsLevel)
+        else if (difDash > nDashesLevel)
         {
-            case 0:
-                break;
+            Debug.Log("More than double"); //Probably an Agressive
+            Agressive_Passive += -1;
         }
+
+
+        for (int k = 0; k < LevelData.rooms.Length; k++)
+        {
+            if (LevelData.rooms[k] != null)
+            {
+                float dBounce = LevelData.rooms[k].lastTryWallJump - stats.room[k].requiredBouncesRoom;
+                float dJumps = LevelData.rooms[k].lastTryJumps - stats.room[k].requiredJumpsRoom;
+                float dDash = LevelData.rooms[k].lastTryDashes - stats.room[k].requiredDashesRoom;
+                if (LevelData.rooms[k].lastTryTime < stats.room[k].roomTime / 2)
+                {
+                    //Means player has returned
+                }
+                else
+                {
+                    if (dBounce <= stats.room[k].requiredBouncesRoom)
+                    {
+                        Agressive_Passive -= 1;
+                    }
+                    else
+                    {
+                        Agressive_Passive += 1;
+                    }
+
+                    if (dJumps <= stats.room[k].requiredJumpsRoom)
+                    {
+                        Agressive_Passive -= 1;
+                    }
+                    else
+                    {
+                        Agressive_Passive += 1;
+                    }
+
+                    if (dDash <= stats.room[k].requiredDashesRoom)
+                    {
+                        Agressive_Passive -= 1;
+                    }
+                    else
+                    {
+                        Agressive_Passive += 1;
+                    }
+                }
+            }
+        }
+
+        if(Agressive_Passive < 0) //AgresiveProfile
+        {
+            if(Explorer)
+            {
+                return MODE.AGRESSIVE_EXPLORER;
+            }
+            if(Achiever)
+            {
+                return MODE.AGRESSIVE_ACHIEVER;
+            }
+        }
+        else
+        {
+            if(Explorer)
+            {
+                return MODE.PASSIVE_EXPLORER;
+            }
+            else if(Achiever)
+            {
+                return MODE.PASSIVE_ACHIEVER;
+            }
+        }
+        //LevelData.deaths
+
 
         return MODE.INITIAL;
     }

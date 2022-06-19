@@ -162,6 +162,7 @@ public class Player : MonoBehaviour
                 releaseDash.Play();
             }
         }
+
         if (coyoteJumpCounter > 0 && countCoyoteTime)
         {
             coyoteJumpCounter -= Time.deltaTime;
@@ -367,9 +368,13 @@ public class Player : MonoBehaviour
             Delegate[] d = dieAction.GetInvocationList();
             for(int i = 0; i < d.Length; i++)
             {
-                if(d[i].Target == null)
+                if(d[i].Target != null)
                 {
-                    Debug.Log("Target null");
+
+                }
+                else
+                {
+                    Debug.Log("Subscriber removed");
                     Delegate.Remove(dieAction, d[i]);
                 }
             }
