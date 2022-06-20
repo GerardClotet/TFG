@@ -208,7 +208,7 @@ public class ReportGatherer : MonoBehaviour
 
     public void AddAnswerValue(int q, int a)
     {
-        questionaryAnswers.Add(q.ToString(), a.ToString());//TODO treure això
+        questionaryAnswers.Add(q.ToString(), a.ToString());//TODO treure aixÃ²
         data.Add(a.ToString());
     }
 
@@ -328,63 +328,57 @@ public class ReportGatherer : MonoBehaviour
                 float dBounce = LevelData.rooms[k].lastTryWallJump - stats.room[k].requiredBouncesRoom;
                 float dJumps = LevelData.rooms[k].lastTryJumps - stats.room[k].requiredJumpsRoom;
                 float dDash = LevelData.rooms[k].lastTryDashes - stats.room[k].requiredDashesRoom;
-                if (LevelData.rooms[k].lastTryTime < stats.room[k].roomTime / 2)
+                
+                float avgJumps = LevelData.rooms[k].roomJumps / LevelData.rooms[k].roomsDeaths;
+                float avgDash = LevelData.rooms[k].roomDashes / LevelData.rooms[k].roomsDeaths;
+                float avgWallJump = LevelData.rooms[k].roomWallJump / LevelData.rooms[k].roomsDeaths;
+                float avgTime = LevelData.rooms[k].totalRoomTime / LevelData.rooms[k].roomsDeath;
+                
+                if (avgWallJump <= stats.room[k].requiredBouncesRoom)
                 {
-                    //Means player has returned
+                    Agressive_Passive -= 1;
                 }
                 else
                 {
-                    if (dBounce <= stats.room[k].requiredBouncesRoom)
-                    {
-                        Agressive_Passive -= 1;
-                    }
-                    else
-                    {
-                        Agressive_Passive += 1;
-                    }
-
-                    if (dJumps <= stats.room[k].requiredJumpsRoom)
-                    {
-                        Agressive_Passive -= 1;
-                    }
-                    else
-                    {
-                        Agressive_Passive += 1;
-                    }
-
-                    if (dDash <= stats.room[k].requiredDashesRoom)
-                    {
-                        Agressive_Passive -= 1;
-                    }
-                    else
-                    {
-                        Agressive_Passive += 1;
-                    }
+                    Agressive_Passive += 1;
                 }
+
+                if (avgJumps <= stats.room[k].requiredJumpsRoom)
+                {
+                    Agressive_Passive -= 1;
+                }
+                else
+                {
+                    Agressive_Passive += 1;
+                }
+
+                if (avgDash <= stats.room[k].requiredDashesRoom)
+                {
+                    Agressive_Passive -= 1;
+                }
+                else
+                {
+                    Agressive_Passive += 1;
+                }
+                
+                if(avgTime <= stats.room[k].roomTime)
+                {
+                    Agressive_Passive -= 1;
+                }
+                else
+                {
+                    Agressive_Passive += 1;
+                }                
             }
         }
 
         if(Agressive_Passive < 0) //AgresiveProfile
         {
-            if(Explorer)
-            {
-                return MODE.AGRESSIVE_EXPLORER;
-            }
-            if(Achiever)
-            {
-                return MODE.AGRESSIVE_ACHIEVER;
-            }
+            return MODE.AGRESSIVE_EXPLORER;
         }
         else
         {
-            if(Explorer)
-            {
-                return MODE.PASSIVE_EXPLORER;
-            }
-            else if(Achiever)
-            {
-                return MODE.PASSIVE_ACHIEVER;
-            }
+            return MODE.PASSIVE_EXPLORER;         
         }
         //LevelData.deaths
 
