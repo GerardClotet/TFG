@@ -365,19 +365,19 @@ public class Player : MonoBehaviour
 
         if (collision.gameObject.layer == s_DieLayer)
         {
-            Delegate[] d = dieAction.GetInvocationList();
-            for(int i = 0; i < d.Length; i++)
-            {
-                if(d[i].Target != null)
-                {
-
-                }
-                else
-                {
-                    Debug.Log("Subscriber removed");
-                    Delegate.Remove(dieAction, d[i]);
-                }
-            }
+            //Delegate[] d = dieAction.GetInvocationList();
+            //for(int i = 0; i < d.Length; i++)
+            //{
+            //    if(d[i].Target != null)
+            //    {
+            //        Debug.Log("iei");
+            //    }
+            //    else
+            //    {
+            //        Debug.Log("Subscriber removed");
+            //        Delegate.Remove(dieAction, d[i]);
+            //    }
+            //}
             dieAction.Invoke();
             FindObjectOfType<UIManager>().FadeFromToBlack(1.3f);
         }

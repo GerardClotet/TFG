@@ -16,6 +16,10 @@ public class PlatformMoveOnTouch : PlatformBase
         coroutineActive = false;
     }
 
+    private void OnDestroy()
+    {
+        Player.Instance.dieAction -= RestartPlatform;
+    }
     private void Start()
     {
         startPosition = transform.position;

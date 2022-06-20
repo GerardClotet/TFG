@@ -33,10 +33,13 @@ public class KeyCollectible : Collectible
     {
         try
         {
-            taken = false;
-            StopAllCoroutines();
-            GetComponent<Collider2D>().enabled = true;
-            transform.position = startPosition;
+            if (!isOpening)
+            {
+                taken = false;
+                StopAllCoroutines();
+                GetComponent<Collider2D>().enabled = true;
+                transform.position = startPosition;
+            }
         }
         catch(SystemException e)
         {
@@ -45,6 +48,10 @@ public class KeyCollectible : Collectible
 
     }
 
+    private void OnDestroy()
+    {
+        Player.Instance.dieAction -= ResetCollectible;
+    }
     public IEnumerator OpenDoor()
     {
         Player.Instance.dieAction -= ResetCollectible; //?
