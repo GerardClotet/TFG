@@ -67,7 +67,6 @@ public class ReportGatherer : MonoBehaviour
     private int lvlCounter = -1;
     private int roomCounter = -1;
     private RoomChange[] levelRooms;
-    private RoomChange previousRoom = null;
 
     [HideInInspector] public bool Explorer { get; private set; }
     [HideInInspector] public bool Achiever { get; private set; }
@@ -146,10 +145,6 @@ public class ReportGatherer : MonoBehaviour
         dataGathering.levels[lvlCounter].rooms[roomCounter] = new Room();
         dataGathering.levels[lvlCounter].rooms[roomCounter].optional = enteringRoom.GetRoomStatus();
         dataGathering.levels[lvlCounter].rooms[roomCounter].roomName = enteringRoom.name;
-
-
-
-
     }
 
     private void JumpCounter()
