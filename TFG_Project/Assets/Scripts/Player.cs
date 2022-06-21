@@ -29,7 +29,8 @@ public class Player : MonoBehaviour
 
     [Header("Movement Stats")]
     [SerializeField] private float playerSpeed = 10;
-    [SerializeField] private float playerHorizontalMaxVelocity = 10f;    
+    [SerializeField] private float playerHorizontalMaxVelocity = 10f;
+    [SerializeField] private float reduceHorizontalMovementStep = 0.01f;
     [SerializeField] private float cancelRateJump = 100f;
     [SerializeField] private float jumpHeight = 5f;
     [SerializeField] private float jumpButtonTime = 0.5f;
@@ -335,7 +336,7 @@ public class Player : MonoBehaviour
                     GroundedReset();
                 }
 
-                if (collision.gameObject.GetComponent<PlatformMoveOnTouch>() || collision.gameObject.GetComponent<PlatformPerpetualMove>())
+                if (collision.gameObject.GetComponent<PlatformPerpetualMove>())
                 {
                     transform.parent = collision.transform;
                 }
@@ -365,19 +366,6 @@ public class Player : MonoBehaviour
 
         if (collision.gameObject.layer == s_DieLayer)
         {
-            //Delegate[] d = dieAction.GetInvocationList();
-            //for(int i = 0; i < d.Length; i++)
-            //{
-            //    if(d[i].Target != null)
-            //    {
-            //        Debug.Log("iei");
-            //    }
-            //    else
-            //    {
-            //        Debug.Log("Subscriber removed");
-            //        Delegate.Remove(dieAction, d[i]);
-            //    }
-            //}
             dieAction.Invoke();
             FindObjectOfType<UIManager>().FadeFromToBlack(1.3f);
         }
@@ -436,7 +424,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.layer == s_BounceLayer)
         {
-            if (collision.gameObject.GetComponent<PlatformMoveOnTouch>() || collision.gameObject.GetComponent<PlatformPerpetualMove>())
+            if (collision.gameObject.GetComponent<PlatformPerpetualMove>())
             {
                 transform.parent = null;
             }
@@ -512,6 +500,10 @@ public class Player : MonoBehaviour
 
                 if (playerState == PLAYER_STATE.MOVE || playerState == PLAYER_STATE.IDLE || coyoteJumpCounter > 0)
                 {
+                    if(transform.parent != null)
+                    {
+                        transform.parent = null;
+                    }
                     coyoteJumpCounter = -1;
                     jumping = true;
                     playerState = state;
@@ -564,7 +556,7 @@ public class Player : MonoBehaviour
     {
         stopCoroutineActive = true;
         float startVel = rigidBody2D.velocity.x;
-        float reduceStep = startVel / 1000f;
+        float reduceStep = reduceHorizontalMovementStep;
         while (Mathf.Abs(rigidBody2D.velocity.x) > 0)
         {
             reduceStep += reduceStep;

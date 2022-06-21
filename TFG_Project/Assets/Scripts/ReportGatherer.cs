@@ -265,7 +265,6 @@ public class ReportGatherer : MonoBehaviour
         roomCounter = -1;
     }
 
-
     public MODE ComputeLevelData()
     {
         Level LevelData = dataGathering.levels[lvlCounter];
@@ -450,15 +449,11 @@ public class ReportGatherer : MonoBehaviour
 
         if(Agressive_Passive < 0) //AgresiveProfile
         {
-            return MODE.AGRESSIVE_EXPLORER;
+            return MODE.AGRESSIVE;
         }
         else
         {
-            return MODE.PASSIVE_EXPLORER;         
+            return MODE.PASSIVE;         
         }
-        //LevelData.deaths
-
-
-        return MODE.INITIAL;
     }
 }

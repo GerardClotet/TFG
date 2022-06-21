@@ -8,11 +8,10 @@ public class Hard_Easy_Way : MonoBehaviour
 
     [SerializeField] private bool hardWay = false;
 
-    private void Awake()
+    private void Start()
     {
         Player.Instance.dieAction += ResetPlayer;
     }
-
     private void OnDestroy()
     {
         Player.Instance.dieAction -= ResetPlayer;

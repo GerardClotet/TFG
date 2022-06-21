@@ -7,10 +7,8 @@ using System.Linq;
 public enum MODE //Agresive_Explorer, PAssive_Explorer, Agressive_Achiever, Passive_Achiever
 {
     INITIAL,
-    AGRESSIVE_ACHIEVER,
-    PASSIVE_ACHIEVER,
-    AGRESSIVE_EXPLORER,
-    PASSIVE_EXPLORER
+    AGRESSIVE,
+    PASSIVE
 }
 
 public class GameManager : MonoBehaviour
@@ -20,8 +18,9 @@ public class GameManager : MonoBehaviour
     public MODE currentSceneMode { get; private set; }
 
     private static string agressiveScene = "AgressiveScene";
+    private static string passiveScene = "PassiveScene";
     private List<MODE> modeList = new List<MODE>();
-    private static List<MODE> compareList = new List<MODE> {MODE.INITIAL,MODE.AGRESSIVE_ACHIEVER, MODE.PASSIVE_ACHIEVER, MODE.AGRESSIVE_EXPLORER, MODE.PASSIVE_EXPLORER };
+    private static List<MODE> compareList = new List<MODE> {MODE.INITIAL,MODE.AGRESSIVE, MODE.PASSIVE };
 
     private void Awake()
     {
@@ -57,22 +56,23 @@ public class GameManager : MonoBehaviour
             currentSceneMode = ReportGatherer.Instance.ComputeLevelData();
             
 
-            currentSceneMode = MODE.AGRESSIVE_ACHIEVER;
+            currentSceneMode = MODE.AGRESSIVE;
             modeList.Add(currentSceneMode);
             switch (currentSceneMode)
             {
-                case MODE.AGRESSIVE_ACHIEVER:
+                case MODE.AGRESSIVE:
                     DontDestroyOnLoad(FindObjectOfType<Player>());
-                    //SceneManager.LoadScene(agressiveScene);
                     StartCoroutine(LoadAsyncScene(agressiveScene));
                     break;
-
+                case MODE.PASSIVE:
+                    DontDestroyOnLoad(FindObjectOfType<Player>());
+                    StartCoroutine(LoadAsyncScene(passiveScene));
+                    break;
             }
         }
         else
         {
             ReportGatherer.Instance.SendInfo();
-            //Application.Quit();
         }
     }
 

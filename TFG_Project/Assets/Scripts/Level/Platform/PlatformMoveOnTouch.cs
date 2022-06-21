@@ -29,14 +29,21 @@ public class PlatformMoveOnTouch : PlatformBase
     {
         if (!coroutineActive && collision.gameObject.GetComponent<Player>())
         {
-            if(collision.GetContact(0).normal.y == -1)
+            collision.gameObject.GetComponent<Player>().transform.parent = transform;
+
+            if (collision.GetContact(0).normal.y == -1)
                 StartCoroutine(MovePlatform());
+
+            //if(!horizontal && !startLeftOrBottom)
+            //{
+            //    return;
+            //}
         }
     }
 
     protected override void OnCollisionExit2D(Collision2D collision)
     {
-        if (!goingDown && coroutineActive)
+        if (coroutineActive)
         {
             Vector2 v = Vector2.zero;
             if (horizontal)
@@ -49,9 +56,16 @@ public class PlatformMoveOnTouch : PlatformBase
                 vel = (transform.position.y - origin) / (Time.time - startTime);
                 v.y = vel;
             }
-            
-            if(v != Vector2.zero)
-                Player.Instance.AddRBVel(v*1.5f);
+
+            if (v != Vector2.zero/* && !goingDown*/)
+                Player.Instance.AddRBVel(v * 1.5f);
+            //else if (v != Vector2.zero)
+            //    Player.Instance.AddRBVel(-v * 1.5f);
+        }
+
+        if(collision.gameObject.GetComponent<Player>())
+        {
+            collision.gameObject.GetComponent<Player>().transform.parent = null;
         }
     }
 
