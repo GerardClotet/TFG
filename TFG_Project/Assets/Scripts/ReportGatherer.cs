@@ -28,6 +28,7 @@ public class ReportGatherer : MonoBehaviour
         public float totalTime = 0f;
         public int optionalRooms = 0;
         public Room[] rooms;
+        public QuestionAnswer[] questionAnswers;
     }
     public class Room
     {
@@ -57,7 +58,11 @@ public class ReportGatherer : MonoBehaviour
         public bool LastTryEasy = false;
         public bool LastTryHard = false;
     }
-
+    public class QuestionAnswer
+    {
+        public string question;
+        public string answer;
+    }
     public static ReportGatherer Instance { get; private set; }
 
     private string username = string.Empty;
@@ -65,9 +70,6 @@ public class ReportGatherer : MonoBehaviour
     private float startLevelTime;
     private float startRoomTime;
     private float startRoomLastTryTime;
-
-    private Dictionary<string, string> questionaryAnswers = new Dictionary<string, string>();
-    private List<string> data = new List<string>();
 
     [HideInInspector] private DataGathering dataGathering = new DataGathering();
     private int lvlCounter = -1;
@@ -78,6 +80,7 @@ public class ReportGatherer : MonoBehaviour
     [HideInInspector] public bool Achiever { get; private set; }
     void Awake()
     {
+
         Instance = this;
 
         Player.Instance.dieAction += DieCounter;
@@ -98,6 +101,10 @@ public class ReportGatherer : MonoBehaviour
     {
         Explorer = false;
         Achiever = false;
+        //Temportal TODO QUIT
+        Explorer = true;
+        Achiever = true;
+        ///
 
         lvlCounter++;
         dataGathering.levels[lvlCounter] = new Level();
@@ -231,10 +238,13 @@ public class ReportGatherer : MonoBehaviour
         dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryTime = Time.time - startRoomLastTryTime;
     }
 
-    public void AddAnswerValue(int q, int a)
+    public void SetQuestions(int n) => dataGathering.levels[lvlCounter].questionAnswers = new QuestionAnswer[n];
+
+    public void AddQuestionAnswer(int pos, string question, string answer)
     {
-        questionaryAnswers.Add(q.ToString(), a.ToString());//TODO treure això
-        data.Add(a.ToString());
+        dataGathering.levels[lvlCounter].questionAnswers[pos] = new QuestionAnswer();
+        dataGathering.levels[lvlCounter].questionAnswers[pos].question = question;
+        dataGathering.levels[lvlCounter].questionAnswers[pos].answer = answer;
     }
 
     public void SendInfoJSON()
@@ -246,18 +256,17 @@ public class ReportGatherer : MonoBehaviour
         PlayFabManager.Instance.UploadData(dict);
     }
 
-    public void SendInfo()
-    {
-        Dictionary<string, string> dict = new Dictionary<string, string>
-        {
-            { username + " Report", CSVManager.GetCommaSeparatedString(data.ToArray())}
-        };
-        PlayFabManager.Instance.UploadData(dict);
-    }
+    //public void SendInfo()
+    //{
+    //    Dictionary<string, string> dict = new Dictionary<string, string>
+    //    {
+    //        { username + " Report", CSVManager.GetCommaSeparatedString(data.ToArray())}
+    //    };
+    //    PlayFabManager.Instance.UploadData(dict);
+    //}
 
     public void ResetScene(Scene current, Scene next)
     {
-        questionaryAnswers.Clear();
         if (levelRooms != null)
         {
             Array.Clear(levelRooms, 0, levelRooms.Length);

@@ -54,7 +54,8 @@ public class GameManager : MonoBehaviour
 
             //TODO compute the result print charts etc and decide which scene will be loaded
             currentSceneMode = ReportGatherer.Instance.ComputeLevelData();
-            
+            ReportGatherer.Instance.SendInfoJSON();
+
 
             currentSceneMode = MODE.AGRESSIVE;
             modeList.Add(currentSceneMode);
@@ -72,7 +73,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            ReportGatherer.Instance.SendInfo();
+            ReportGatherer.Instance.SendInfoJSON();
         }
     }
 

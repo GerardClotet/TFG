@@ -53,14 +53,14 @@ public class Player : MonoBehaviour
     [SerializeField] private ParticleSystem releaseDash;
 
 
-    private Rigidbody2D rigidBody2D;
+    private     Rigidbody2D rigidBody2D;
     private     BoxCollider2D boxCollider2D;
     private     UserInputManager inputManager;
     private     Animator playerAnimator;
 
     private     bool jumpHeld = false;
     private     float jumpTime = 0f;
-    private     bool jumping = false;
+    public      bool jumping { get; private set; } = false;
     private     float coyoteJumpCounter;
     private     bool countCoyoteTime = false;
     private     float defaultGravityScale = 1f;

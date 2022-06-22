@@ -27,17 +27,12 @@ public class PlatformMoveOnTouch : PlatformBase
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!coroutineActive && collision.gameObject.GetComponent<Player>())
+        if (collision.gameObject.GetComponent<Player>())
         {
             collision.gameObject.GetComponent<Player>().transform.parent = transform;
 
-            if (collision.GetContact(0).normal.y == -1)
+            if (!coroutineActive && collision.GetContact(0).normal.y == -1)
                 StartCoroutine(MovePlatform());
-
-            //if(!horizontal && !startLeftOrBottom)
-            //{
-            //    return;
-            //}
         }
     }
 
@@ -57,10 +52,14 @@ public class PlatformMoveOnTouch : PlatformBase
                 v.y = vel;
             }
 
-            if (v != Vector2.zero/* && !goingDown*/)
-                Player.Instance.AddRBVel(v * 1.5f);
-            //else if (v != Vector2.zero)
-            //    Player.Instance.AddRBVel(-v * 1.5f);
+            if (goingDown && !horizontal && startLeftOrBottom && Player.Instance.jumping)
+            {
+                Player.Instance.AddRBVel(-v * 1.5f);
+            }
+            else if (v != Vector2.zero && !goingDown && Player.Instance.jumping)
+            {
+                Debug.Log("Down " + Player.Instance.GetPlayerState());
+            }
         }
 
         if(collision.gameObject.GetComponent<Player>())

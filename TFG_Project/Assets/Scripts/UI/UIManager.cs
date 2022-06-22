@@ -52,7 +52,7 @@ public class UIManager : MonoBehaviour
             }
         };
 
-        questions = JSONManager.ReadTests();
+        //questions = JSONManager.ReadTests();
         questionButtonPrefab = Resources.Load<GameObject>("QuestionButton");
         questionsPrefab = Resources.Load<GameObject>("Question");
         menuButtonList = PausePanel.GetComponentsInChildren<Button>().ToList();
@@ -82,6 +82,13 @@ public class UIManager : MonoBehaviour
     {
         if (postGamePanel.activeInHierarchy)
             return;
+
+        if(Player.Instance.GetPlayerState() == PLAYER_STATE.DEATH)
+        {
+            UserInputManager.Instance.DisableUiInput();
+            UserInputManager.Instance.EnablePlayerInput();
+            return;
+        }
 
         Time.timeScale = 0f;
         PausePanel.SetActive(true);
@@ -114,15 +121,12 @@ public class UIManager : MonoBehaviour
                             PausePanel.SetActive(false);
                             UserInputManager.Instance.DisableUiInput();
                             UserInputManager.Instance.EnablePlayerInput();
-
                             if (!DisconnectedController.activeInHierarchy)
                             {
                                 Time.timeScale = 1;
                             }
                         }))));
     }
-
-
 
     public void PostGameState()
     {
@@ -138,6 +142,9 @@ public class UIManager : MonoBehaviour
         LeanTween.move(postGamePanel.GetComponent<RectTransform>(), Vector3.zero, 0.1f).setIgnoreTimeScale(true);
         InputField inputField = postGamePanel.GetComponentInChildren<InputField>();
 
+        questions = JSONManager.ReadTests();
+        ReportGatherer.Instance.SetQuestions(questions.questions.Length);
+
         if (inputField)
         {
             inputField.onEndEdit.AddListener(delegate
@@ -149,7 +156,7 @@ public class UIManager : MonoBehaviour
         }
         else //Meaning it's another scene and we have finished it.
         {
-            questions = JSONManager.ReadTests();
+            
             questionCounter = 0;
             CreateQuestionAnswer();
         }
@@ -162,6 +169,7 @@ public class UIManager : MonoBehaviour
         {
             var currQuestion = Instantiate(questionsPrefab, gameObject.transform);
             currQuestion.GetComponent<Text>().text = questions.questions[questionCounter].question;
+            int achiever = ReportGatherer.Instance.Achiever ? questions.questions.Length - 2 : questions.questions.Length -3;
             for(int i = 0; i < questions.questions[questionCounter].answers.Length; i++ )
             {
                 if(i ==0)
@@ -207,11 +215,10 @@ public class UIManager : MonoBehaviour
     }
 
 
-    public void TestButtonCallback(int answer, GameObject go)
+    public void TestButtonCallback(string answer, GameObject go)
     {
-        ReportGatherer.Instance.AddAnswerValue(questionCounter, answer);
+        ReportGatherer.Instance.AddQuestionAnswer(questionCounter,go.GetComponent<Text>().text, answer);
         questionCounter++;
-        //Debug.Log(answer);
         LeanTween.moveLocalY(go, -600, 0.3f).setIgnoreTimeScale(true).setOnComplete(func => { Destroy(go); CreateQuestionAnswer();});
     }
 

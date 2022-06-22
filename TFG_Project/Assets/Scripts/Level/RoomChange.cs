@@ -18,11 +18,6 @@ public class RoomChange : MonoBehaviour
         {
             p.transform.position = spawnPoint.position;
             p.GetComponent<Collider2D>().enabled = true;
-
-            if(GetComponentInChildren<LevelEater>(true) != null)
-            {
-                GetComponentInChildren<LevelEater>(true).gameObject.SetActive(true);
-            }
         }
         virtualCam.m_Follow = p.transform;
     }

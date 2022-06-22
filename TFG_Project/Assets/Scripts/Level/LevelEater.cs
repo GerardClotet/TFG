@@ -1,37 +1,52 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class LevelEater : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] private Transform destination;
     [SerializeField] private Transform origin;
-    [SerializeField] private float timeToEnd = 10f;
     [SerializeField] private float stepTime = 0.05f;
+    [SerializeField] float holdTime = 3f;
+
+    private bool stopEating = false;
+
     private void OnEnable()
     {
         transform.position = origin.position;
+        Player.Instance.dieAction += Restart;
         StartCoroutine(ReachToEnd());
     }
 
-
-
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnDisable()
     {
-        if (collision.GetComponent<Player>() != null)
-        {
-            StopAllCoroutines();
-            transform.position = origin.position;
-            StartCoroutine(ReachToEnd());
-        }
+        Player.Instance.dieAction -= Restart;
+    }
+    private void OnDestroy()
+    {
+        transform.position = origin.position;
+        Player.Instance.dieAction -= Restart;
+    }
+
+    private void Restart()
+    {
+        //StopCoroutine(ReachToEnd());
+        stopEating = true;
+        transform.position = origin.position;
+    }
+    private void Stop()
+    {
+        StopCoroutine(ReachToEnd());
+        transform.position = origin.position;
     }
 
     IEnumerator ReachToEnd()
     {
+        yield return new WaitForSeconds(holdTime);
         Vector3 vec3 = transform.position;
         float t = 0;
-        while (true)
+        while (!stopEating)
         {
             if(Time.timeScale == 1)
             {
@@ -41,5 +56,8 @@ public class LevelEater : MonoBehaviour
             }
             yield return null;
         }
+        stopEating = false;
+        transform.position = origin.position;
+        StartCoroutine(ReachToEnd());
     }
 }

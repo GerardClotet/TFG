@@ -4879,7 +4879,7 @@ GameObject:
   - component: {fileID: 7164656918432837806}
   - component: {fileID: 7164656918432837801}
   m_Layer: 0
-  m_Name: Collectable
+  m_Name: DashReset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

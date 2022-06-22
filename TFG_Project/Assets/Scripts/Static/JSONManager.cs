@@ -30,10 +30,12 @@ public class LevelStats
 public static class JSONManager 
 {
     private static string reportDirectoryName = "Report";
-    private static string[] reportsFileName = { "InitialGameTest.json", "AgressiveGameTest.json", "PassiveGameTest.json", "AchieverGameTest.json", "ExplorerGameTest.json" };
-    private static string[] statsFileName = { "InitialLevelStats.json", "AgressiveLevelStats.json"};
+    private static string[] reportsFileName = {"InitialGameTest.json", "AgressiveGameTest.json", "PassiveGameTest.json"};
+    private static string[] statsFileName = { "InitialLevelStats.json", "AgressiveLevelStats.json", "PassiveLevelStats.json" };
 
     public static TestClass ReadTests() => JsonConvert.DeserializeObject<TestClass>(File.ReadAllText(GetFilePath(reportsFileName[(int)GameManager.Instance.currentSceneMode]), Encoding.GetEncoding("Windows-1252")));
+
+    public static TestClass ReadTests(string filename) => JsonConvert.DeserializeObject<TestClass>(File.ReadAllText(GetFilePath(filename), Encoding.GetEncoding("Windows-1252")));
 
     public static LevelStats ReadLevelStats() => JsonConvert.DeserializeObject<LevelStats>(File.ReadAllText(GetFilePath(statsFileName[(int)GameManager.Instance.currentSceneMode])));
 

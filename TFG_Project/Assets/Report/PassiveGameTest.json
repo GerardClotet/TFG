@@ -9,7 +9,7 @@
       ]
     },
     {
-      "question": "Has notat canvis en el moviment del jugador",// #condicionat a canviar el respawn time, coyote jump etc
+      "question": "Has notat canvis en el moviment del jugador", //#condicionat a canviar el respawn time, coyote jump etc
       "answers": [
         "Si",
         "No"
@@ -23,14 +23,7 @@
       ]
     },
     {
-      "question": "El joc anava massa ràpid?",
-      "answers": [
-        "Si",
-        "No"
-      ]
-    },
-    {
-      "question": "T'ha semblat massa lineal el nivell", //#Independentment de si explorer es true o no
+      "question": "Se t'ha fet llarg el nivell?",
       "answers": [
         "Si",
         "No"
@@ -48,6 +41,13 @@
       "answers": [
         "Si, més dificultat",
         "No, no en feia cas"     
+      ]
+    },
+    {
+      "question": "T'ha semblat massa lineal el nivell", //#Independentment de si explorer es true o no
+      "answers": [
+        "Si",
+        "No"
       ]
     }
   ]
