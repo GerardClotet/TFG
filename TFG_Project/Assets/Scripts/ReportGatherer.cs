@@ -80,8 +80,11 @@ public class ReportGatherer : MonoBehaviour
     [HideInInspector] public bool Achiever { get; private set; }
     void Awake()
     {
-
         Instance = this;
+        startLevelTime = Time.time;
+        dataGathering.levels = new Level[5];
+        Explorer = false;
+        Achiever = false;
 
         Player.Instance.dieAction += DieCounter;
         Player.Instance.dashAction += DashCounter;
@@ -90,11 +93,6 @@ public class ReportGatherer : MonoBehaviour
         SceneManager.activeSceneChanged += ResetScene;
         Player.Instance.bounceAction += WallJumpCounter;
         Player.Instance.collectibleGotAction += CollectibleGotTry;
-        startLevelTime = Time.time;
-        dataGathering.levels = new Level[5];
-
-        Explorer = false;
-        Achiever = false;
     }
 
     public void GetNewLevel(MODE lvlMode)
@@ -319,10 +317,14 @@ public class ReportGatherer : MonoBehaviour
         }
         /// 
         ///Optional Zones
-        float optionalPercentage = (100 * optionalRoomsEntered) / LevelData.optionalRooms;
-        if(optionalPercentage > 50)
+        ///
+        if (LevelData.optionalRooms != 0)
         {
-            Explorer = true;
+            float optionalPercentage = (100 * optionalRoomsEntered) / LevelData.optionalRooms;
+            if (optionalPercentage > 50)
+            {
+                Explorer = true;
+            }
         }
 
         //Jumps

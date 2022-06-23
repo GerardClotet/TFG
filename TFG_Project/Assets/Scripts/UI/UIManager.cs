@@ -156,7 +156,6 @@ public class UIManager : MonoBehaviour
         }
         else //Meaning it's another scene and we have finished it.
         {
-            
             questionCounter = 0;
             CreateQuestionAnswer();
         }
@@ -258,5 +257,6 @@ public class UIManager : MonoBehaviour
     public void OnControlsButtonClicked()
     {
         Debug.Log("Controls button pressed");
+        GameManager.Instance.EndScene();//TODO QUIT
     }
 }

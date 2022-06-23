@@ -34,10 +34,10 @@ public class RoomChange : MonoBehaviour
             collision.gameObject.GetComponent<Player>().SetSpawnPoint(spawnPoint.position);
             virtualCam.gameObject.SetActive(true);
 
-            MultiplierCollectible collectible = GetComponentInChildren<MultiplierCollectible>();
-            if (collectible != null)
+            MultiplierCollectible[] collectibles = GetComponentsInChildren<MultiplierCollectible>();
+            for (int i = 0; i < collectibles.Length; i++)
             {
-                collectible.StartCollectible();
+                collectibles[i].StartCollectible();
             }
 
             KeyCollectible key = GetComponentInChildren<KeyCollectible>();
@@ -70,11 +70,12 @@ public class RoomChange : MonoBehaviour
             }
             virtualCam.gameObject.SetActive(false);
 
-            MultiplierCollectible collectible = GetComponentInChildren<MultiplierCollectible>();
-            if (collectible != null)
+            MultiplierCollectible[] collectibles = GetComponentsInChildren<MultiplierCollectible>();
+            for(int i = 0; i < collectibles.Length; i++)
             {
-                collectible.EndRoom();
+                collectibles[i].EndRoom();
             }
+
             if (GetComponentInChildren<LevelEater>())
             {
                 GetComponentInChildren<LevelEater>().gameObject.SetActive(false);
@@ -94,9 +95,7 @@ public class RoomChange : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns>Returns optionalRoom</returns>
     public bool GetRoomStatus() => optionalRoom;
+
+    public void ChangeSpawnPoint(Transform newSpawnPoint) => spawnPoint = newSpawnPoint;
 }

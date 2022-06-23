@@ -22,7 +22,10 @@ public class MultiplierCollectible : Collectible
         transform.position = startPosition;
         taken = false;
     }
-
+    private void OnDestroy()
+    {
+        Player.Instance.dieAction -= ResetCollectible;
+    }
     public void EndRoom()
     {
         Player.Instance.dieAction -= ResetCollectible;

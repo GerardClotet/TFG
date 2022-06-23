@@ -39,7 +39,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float bounceImpulse = 5f;
     [Range(0.5f,1f)] [SerializeField] private float bounceInclination = 0.5f;
     [Range(-10,-0.1f)][SerializeField] private float grabDownfallVelocity = -1f;
-    [SerializeField] private float bounceDistance = 10;
     [SerializeField] private float cancelRateBounce = 30f;
     [Range(0.01f, 1f)] [SerializeField] private float dashHoldTime = 0.5f;
     [SerializeField] private float dashImpulse = 500f;

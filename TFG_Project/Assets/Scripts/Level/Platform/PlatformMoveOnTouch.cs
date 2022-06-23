@@ -6,7 +6,7 @@ public class PlatformMoveOnTouch : PlatformBase
 {
     private bool coroutineActive = false;
 
-    [Range(0.01f, 0.9f)] [SerializeField] private float maxIncreaseStep = 0.3f;
+    //[Range(0.01f, 0.9f)] [SerializeField] private float maxIncreaseStep = 0.3f;
     private float origin = 0;
 
     public void RestartPlatform()
@@ -56,10 +56,10 @@ public class PlatformMoveOnTouch : PlatformBase
             {
                 Player.Instance.AddRBVel(-v * 1.5f);
             }
-            else if (v != Vector2.zero && !goingDown && Player.Instance.jumping)
-            {
-                Debug.Log("Down " + Player.Instance.GetPlayerState());
-            }
+            //else if (v != Vector2.zero && !goingDown && Player.Instance.jumping)
+            //{
+            //    Debug.Log("Down " + Player.Instance.GetPlayerState());
+            //}
         }
 
         if(collision.gameObject.GetComponent<Player>())

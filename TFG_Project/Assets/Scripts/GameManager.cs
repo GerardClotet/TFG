@@ -51,13 +51,12 @@ public class GameManager : MonoBehaviour
         bool containedAll = !compareList.Except(modeList).Any();
         if (!containedAll)
         {
-
-            //TODO compute the result print charts etc and decide which scene will be loaded
             currentSceneMode = ReportGatherer.Instance.ComputeLevelData();
-            ReportGatherer.Instance.SendInfoJSON();
-
-
-            currentSceneMode = MODE.AGRESSIVE;
+            if(currentSceneMode == MODE.AGRESSIVE)
+            {
+                ReportGatherer.Instance.SendInfoJSON();
+            }
+            currentSceneMode = MODE.AGRESSIVE;//TODO QUIT
             modeList.Add(currentSceneMode);
             switch (currentSceneMode)
             {

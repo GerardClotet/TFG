@@ -31,7 +31,6 @@ public class LevelEater : MonoBehaviour
 
     private void Restart()
     {
-        //StopCoroutine(ReachToEnd());
         stopEating = true;
         transform.position = origin.position;
     }
