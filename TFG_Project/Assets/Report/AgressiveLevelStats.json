@@ -27,41 +27,34 @@
       "requiredBouncesRoom": 2,
       "requiredDashesRoom": 3,
       "roomTime": 18
-    }//,
-    //{
-    //  "roomName": "Room5",
-    //  "requiredJumpsRoom": 1,
-    //  "requiredBouncesRoom": 2,
-    //  "requiredDashesRoom": 3,
-    //  "roomTime": 18
-    //},
-    //{
-    //  "roomName": "Room6",
-    //  "requiredJumpsRoom": 1,
-    //  "requiredBouncesRoom": 2,
-    //  "requiredDashesRoom": 3,
-    //  "roomTime": 18
-    //},
-    //{
-    //  "roomName": "Room7",
-    //  "requiredJumpsRoom": 1,
-    //  "requiredBouncesRoom": 2,
-    //  "requiredDashesRoom": 3,
-    //  "roomTime": 18
-    //},
-    //{
-    //  "roomName": "Room8",
-    //  "requiredJumpsRoom": 1,
-    //  "requiredBouncesRoom": 2,
-    //  "requiredDashesRoom": 3,
-    //  "roomTime": 18
-    //},
-    //{
-    //  "roomName": "Room9",
-    //  "requiredJumpsRoom": 5,
-    //  "requiredBouncesRoom": 2,
-    //  "requiredDashesRoom": 3,
-    //  "roomTime": 18
-    //}
+    },
+    {
+      "roomName": "Room5",
+      "requiredJumpsRoom": 1,
+      "requiredBouncesRoom": 2,
+      "requiredDashesRoom": 3,
+      "roomTime": 18
+    },
+    {
+      "roomName": "Room6",
+      "requiredJumpsRoom": 1,
+      "requiredBouncesRoom": 2,
+      "requiredDashesRoom": 3,
+      "roomTime": 18
+    },
+    {
+      "roomName": "Room7",
+      "requiredJumpsRoom": 1,
+      "requiredBouncesRoom": 2,
+      "requiredDashesRoom": 3,
+      "roomTime": 18
+    },
+    {
+      "roomName": "Room8",
+      "requiredJumpsRoom": 1,
+      "requiredBouncesRoom": 2,
+      "requiredDashesRoom": 3,
+      "roomTime": 18
+    }
   ]
 }

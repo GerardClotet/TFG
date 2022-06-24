@@ -52,10 +52,6 @@ public class GameManager : MonoBehaviour
         if (!containedAll)
         {
             currentSceneMode = ReportGatherer.Instance.ComputeLevelData();
-            if(currentSceneMode == MODE.AGRESSIVE)
-            {
-                ReportGatherer.Instance.SendInfoJSON();
-            }
             currentSceneMode = MODE.AGRESSIVE;//TODO QUIT
             modeList.Add(currentSceneMode);
             switch (currentSceneMode)

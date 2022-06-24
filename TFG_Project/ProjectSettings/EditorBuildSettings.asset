@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/what.unity
+    path: Assets/Scenes/InitialScene.unity
     guid: 00d305010299205478990ecdf73b3276
   - enabled: 1
     path: Assets/Scenes/AgressiveScene.unity

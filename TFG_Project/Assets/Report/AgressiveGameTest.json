@@ -9,7 +9,7 @@
       ]
     },
     {
-      "question": "Has notat canvis en el moviment del jugador",// #condicionat a canviar el respawn time, coyote jump etc
+      "question": "Has notat canvis en el moviment del jugador", // #condicionat a canviar el respawn time, coyote jump etc
       "answers": [
         "Si",
         "No"
@@ -37,17 +37,17 @@
       ]
     },
     {
-      "question": "Trobaves a faltar els coleccionables?", //#Si achiever = false
-      "answers": [
-        "Si",
-        "No"     
-      ]
-    },
-    {
       "question": "Creus que els coleccionables afegien una capa de dificultat al nivell, o t'eren igual?", //#Si achiever = true
       "answers": [
         "Si, més dificultat",
-        "No, no en feia cas"     
+        "No, no en feia cas"
+      ]
+    },
+    {
+      "question": "Trobaves a faltar els coleccionables?", //#Si achiever = false
+      "answers": [
+        "Si",
+        "No"
       ]
     }
   ]

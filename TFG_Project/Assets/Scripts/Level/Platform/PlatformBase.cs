@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider2D))]
 public abstract class PlatformBase : MonoBehaviour
 {
     [Tooltip("If false goes vertical")]
@@ -18,13 +19,6 @@ public abstract class PlatformBase : MonoBehaviour
     protected float startTime = 0;
     protected Vector3 startPosition;
 
-
-
     protected abstract void OnCollisionExit2D(Collision2D collision);
-    
 
-    //private class template<T>
-    //{
-
-    //}
 }

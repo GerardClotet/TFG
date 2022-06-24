@@ -366,7 +366,10 @@ public class Player : MonoBehaviour
         if (collision.gameObject.layer == s_DieLayer)
         {
             dieAction.Invoke();
-            FindObjectOfType<UIManager>().FadeFromToBlack(1.3f);
+            if (GameManager.Instance.currentSceneMode != MODE.AGRESSIVE)
+            {
+                FindObjectOfType<UIManager>().FadeFromToBlack(1.3f);
+            }
         }
         else if(collision.gameObject.layer == s_FinishLayer )
         {
@@ -583,7 +586,10 @@ public class Player : MonoBehaviour
     private IEnumerator GoToStart()
     {
         GetComponent<Collider2D>().enabled = false;
-        yield return new WaitForSeconds(1.3f);
+        if (GameManager.Instance.currentSceneMode != MODE.AGRESSIVE)
+        {
+            yield return new WaitForSeconds(1.3f);
+        }
         Vector3 origin = transform.position;
         float t = 0;
         while (transform.position != spawnPos)

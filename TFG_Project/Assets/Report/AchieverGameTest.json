@@ -1,0 +1,19 @@
+{
+  "questions": [
+    {
+      "question": "Creus que els coleccionables afegien una capa de dificultat al nivell, o t'eren igual?", //#Si achiever = true
+      "answers": [
+        "Si, més dificultat",
+        "No, no en feia cas"
+      ]
+    },
+    {
+      "question": "Trobaves a faltar els coleccionables?", //#Si achiever = false
+      "answers": [
+        "Si",
+        "No"
+      ]
+    }
+  ]
+}
+

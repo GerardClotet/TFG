@@ -11,7 +11,16 @@ public class QuestionHandler : MonoBehaviour
         for (int i = 0; i < buttonsList.Count(); i++)
         {
             var textAnswer = buttonsList[i].GetComponentInChildren<Text>().text;
-            buttonsList[i].onClick.AddListener(delegate {GetComponentInParent<UIManager>().TestButtonCallback(textAnswer, gameObject);});
+            buttonsList[i].onClick.AddListener(delegate { UnableButtons(); GetComponentInParent<UIManager>().TestButtonCallback(textAnswer, gameObject);});
+        }
+    }
+
+    private void UnableButtons()
+    {
+        List<Button> buttonsList = GetComponentsInChildren<Button>().ToList();
+        for (int i = 0; i < buttonsList.Count(); i++)
+        {
+            buttonsList[i].interactable = false;
         }
     }
 }

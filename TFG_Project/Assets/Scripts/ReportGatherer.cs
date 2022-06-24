@@ -100,9 +100,9 @@ public class ReportGatherer : MonoBehaviour
         Explorer = false;
         Achiever = false;
         //Temportal TODO QUIT
-        Explorer = true;
-        Achiever = true;
-        ///
+        //Explorer = true;
+        //Achiever = true;
+        /////
 
         lvlCounter++;
         dataGathering.levels[lvlCounter] = new Level();
@@ -308,12 +308,16 @@ public class ReportGatherer : MonoBehaviour
             }
         }
         ///Percentage of collectables
-        float collectibleDiference = LevelData.totalCollectibles - collectibles;
-        float collectiblePercentage = (100 * collectibles) / LevelData.totalCollectibles;
-        if (collectiblePercentage > 50f)
+        ///
+        if (LevelData.totalCollectibles != 0)
         {
-            //Tends to be more achiever.
-            Achiever = true;
+            float collectibleDiference = LevelData.totalCollectibles - collectibles;
+            float collectiblePercentage = (100 * collectibles) / LevelData.totalCollectibles;
+            if (collectiblePercentage > 50f)
+            {
+                //Tends to be more achiever.
+                Achiever = true;
+            }
         }
         /// 
         ///Optional Zones

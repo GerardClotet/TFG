@@ -30,8 +30,7 @@ public class PlatformMoveOnTouch : PlatformBase
         if (collision.gameObject.GetComponent<Player>())
         {
             collision.gameObject.GetComponent<Player>().transform.parent = transform;
-
-            if (!coroutineActive && collision.GetContact(0).normal.y == -1)
+            if (!coroutineActive && collision.GetContact(0).normal.y <= -0.9f)
                 StartCoroutine(MovePlatform());
         }
     }

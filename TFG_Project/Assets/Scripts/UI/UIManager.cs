@@ -28,7 +28,6 @@ public class UIManager : MonoBehaviour
         Player.Instance.endGame += PostGameState;
         UserInputManager.Instance.openMenu += context => OpenMenu();
         UserInputManager.Instance.closeMenu += OnResumeButtonClicked;
-
         SceneManager.activeSceneChanged += NewLevelLoaded;
 
         InputSystem.onDeviceChange += (device, change) =>
@@ -52,7 +51,6 @@ public class UIManager : MonoBehaviour
             }
         };
 
-        //questions = JSONManager.ReadTests();
         questionButtonPrefab = Resources.Load<GameObject>("QuestionButton");
         questionsPrefab = Resources.Load<GameObject>("Question");
         menuButtonList = PausePanel.GetComponentsInChildren<Button>().ToList();
@@ -164,14 +162,14 @@ public class UIManager : MonoBehaviour
 
     private void CreateQuestionAnswer()
     {
-        if(questionCounter < questions.questions.Length)
+        if (questionCounter < questions.questions.Length)
         {
             var currQuestion = Instantiate(questionsPrefab, gameObject.transform);
             currQuestion.GetComponent<Text>().text = questions.questions[questionCounter].question;
-            int achiever = ReportGatherer.Instance.Achiever ? questions.questions.Length - 2 : questions.questions.Length -3;
-            for(int i = 0; i < questions.questions[questionCounter].answers.Length; i++ )
+            int achiever = ReportGatherer.Instance.Achiever ? questions.questions.Length - 2 : questions.questions.Length - 3;
+            for (int i = 0; i < questions.questions[questionCounter].answers.Length; i++)
             {
-                if(i ==0)
+                if (i == 0)
                 {
                     currQuestion.GetComponentInChildren<Button>().GetComponentInChildren<Text>().text = questions.questions[questionCounter].answers[i];
                     currQuestion.GetComponentInChildren<Button>().Select();
@@ -187,6 +185,7 @@ public class UIManager : MonoBehaviour
             return;
         }
         FadeFromToBlack(1, true);
+        return;
     }
 
     public void FadeFromToBlack(float time = 1, bool endGame = false)
