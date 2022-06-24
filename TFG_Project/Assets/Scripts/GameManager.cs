@@ -52,18 +52,37 @@ public class GameManager : MonoBehaviour
         if (!containedAll)
         {
             currentSceneMode = ReportGatherer.Instance.ComputeLevelData();
-            currentSceneMode = MODE.AGRESSIVE;//TODO QUIT
-            modeList.Add(currentSceneMode);
-            switch (currentSceneMode)
+            if (!modeList.Contains(currentSceneMode))
             {
-                case MODE.AGRESSIVE:
-                    DontDestroyOnLoad(FindObjectOfType<Player>());
-                    StartCoroutine(LoadAsyncScene(agressiveScene));
-                    break;
-                case MODE.PASSIVE:
+                modeList.Add(currentSceneMode);
+                switch (currentSceneMode)
+                {
+                    case MODE.AGRESSIVE:
+                        DontDestroyOnLoad(FindObjectOfType<Player>());
+                        StartCoroutine(LoadAsyncScene(agressiveScene));
+                        break;
+                    case MODE.PASSIVE:
+                        DontDestroyOnLoad(FindObjectOfType<Player>());
+                        StartCoroutine(LoadAsyncScene(passiveScene));
+                        break;
+                }
+            }
+            else
+            {
+                if(currentSceneMode == MODE.AGRESSIVE)
+                {
+                    currentSceneMode = MODE.PASSIVE;
+                    modeList.Add(currentSceneMode);
                     DontDestroyOnLoad(FindObjectOfType<Player>());
                     StartCoroutine(LoadAsyncScene(passiveScene));
-                    break;
+                }
+                else
+                {
+                    currentSceneMode = MODE.AGRESSIVE;
+                    modeList.Add(currentSceneMode);
+                    DontDestroyOnLoad(FindObjectOfType<Player>());
+                    StartCoroutine(LoadAsyncScene(agressiveScene));
+                }
             }
         }
         else

@@ -38,6 +38,7 @@ public class RoomChange : MonoBehaviour
             for (int i = 0; i < collectibles.Length; i++)
             {
                 collectibles[i].StartCollectible();
+                collectibles[i].GetComponent<Animator>().SetTrigger("DoAnimation");
             }
 
             KeyCollectible key = GetComponentInChildren<KeyCollectible>();
@@ -73,6 +74,7 @@ public class RoomChange : MonoBehaviour
             MultiplierCollectible[] collectibles = GetComponentsInChildren<MultiplierCollectible>();
             for(int i = 0; i < collectibles.Length; i++)
             {
+                collectibles[i].GetComponent<Animator>().StopPlayback();
                 collectibles[i].EndRoom();
             }
 
