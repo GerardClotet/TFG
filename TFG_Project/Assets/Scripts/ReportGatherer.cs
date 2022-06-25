@@ -100,8 +100,8 @@ public class ReportGatherer : MonoBehaviour
         Explorer = false;
         Achiever = false;
         //Temportal TODO QUIT
-        //Explorer = true;
-        //Achiever = true;
+        Explorer = true;
+        Achiever = true;
         /////
 
         lvlCounter++;
@@ -313,7 +313,7 @@ public class ReportGatherer : MonoBehaviour
         {
             float collectibleDiference = LevelData.totalCollectibles - collectibles;
             float collectiblePercentage = (100 * collectibles) / LevelData.totalCollectibles;
-            if (collectiblePercentage > 50f)
+            if (collectiblePercentage >= 50f)
             {
                 //Tends to be more achiever.
                 Achiever = true;
@@ -325,7 +325,7 @@ public class ReportGatherer : MonoBehaviour
         if (LevelData.optionalRooms != 0)
         {
             float optionalPercentage = (100 * optionalRoomsEntered) / LevelData.optionalRooms;
-            if (optionalPercentage > 50)
+            if (optionalPercentage >= 50)
             {
                 Explorer = true;
             }

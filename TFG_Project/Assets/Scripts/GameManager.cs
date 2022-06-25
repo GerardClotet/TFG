@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
         if (!containedAll)
         {
             currentSceneMode = ReportGatherer.Instance.ComputeLevelData();
+            currentSceneMode = MODE.PASSIVE;
             if (!modeList.Contains(currentSceneMode))
             {
                 modeList.Add(currentSceneMode);
@@ -114,6 +115,17 @@ public class GameManager : MonoBehaviour
             for(int i =0; i < b.Length; i++)
             {
                 b[i].gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            var b = FindObjectsOfType<MultiplierCollectible>(true);
+            for (int i = 0; i < b.Length; i++)
+            {
+                if (b[i].transform.parent.GetComponent<RoomChange>().GetRoomStatus() && !ReportGatherer.Instance.Explorer)
+                {
+                    b[i].gameObject.SetActive(false);
+                }
             }
         }
         ReportGatherer.Instance.GetNewLevel(currentSceneMode);

@@ -51,7 +51,7 @@ public class PlatformMoveOnTouch : PlatformBase
                 v.y = vel;
             }
 
-            if (goingDown && !horizontal && startLeftOrBottom && Player.Instance.jumping)
+            if (goingDown && !horizontal && startLeftOrBottom && Player.Instance.jumping)//TODO FIX THIS
             {
                 Player.Instance.AddRBVel(-v * 1.5f);
             }

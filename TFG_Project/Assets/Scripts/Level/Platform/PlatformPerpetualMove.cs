@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlatformPerpetualMove : PlatformBase
 {
     // Start is called before the first frame update
-
+    [SerializeField] float holdTime = 0f;
     private float origin = 0f;
     private float destination = 0f;
 
@@ -16,12 +16,6 @@ public class PlatformPerpetualMove : PlatformBase
         destination = horizontal ? transform.position.x + sign * distance : transform.position.y + sign * distance;
         origin = horizontal ? transform.position.x : transform.position.y;
     }
-
-
-    //private void Start()
-    //{
-    //    Player.Instance.dieAction += ResetPlatform;
-    //}
 
     public void StartMoving()
     {
@@ -53,6 +47,8 @@ public class PlatformPerpetualMove : PlatformBase
 
     private IEnumerator MoveX()
     {
+        yield return new WaitForSeconds(holdTime);
+
         Vector3 vec = transform.position;
         float t;
         float maybeback = increaseStep;
@@ -92,6 +88,7 @@ public class PlatformPerpetualMove : PlatformBase
 
     private IEnumerator MoveY()
     {
+        yield return new WaitForSeconds(holdTime);
         Vector3 vec = transform.position;
         float t;
         float maybeback = increaseStep;

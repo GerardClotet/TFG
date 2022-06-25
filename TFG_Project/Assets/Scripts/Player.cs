@@ -620,8 +620,10 @@ public class Player : MonoBehaviour
     }
     public void ResetDashCollectable()
     {
-        canDash = true;
-        //Todo SpawnParticles or something
+        if (playerState != PLAYER_STATE.HOLD_DASH)
+        {
+            canDash = true;
+        }
     }
 
     public PLAYER_STATE GetPlayerState() => playerState;
