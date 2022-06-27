@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         if (!containedAll)
         {
             currentSceneMode = ReportGatherer.Instance.ComputeLevelData();
-            currentSceneMode = MODE.PASSIVE;
+            currentSceneMode = MODE.AGRESSIVE;
             if (!modeList.Contains(currentSceneMode))
             {
                 modeList.Add(currentSceneMode);

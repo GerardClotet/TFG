@@ -51,18 +51,19 @@ public class PlatformMoveOnTouch : PlatformBase
                 v.y = vel;
             }
 
-            if (goingDown && !horizontal && startLeftOrBottom && Player.Instance.jumping)//TODO FIX THIS
+            if (goingDown && !horizontal && startLeftOrBottom && Player.Instance.jumping)
             {
                 Player.Instance.AddRBVel(-v * 1.5f);
+            }
+            else if(!horizontal && !startLeftOrBottom && !goingDown)
+            {
+                Player.Instance.AddRBVel(-v);
+
             }
             else if (v != Vector2.zero)
             {
                 Player.Instance.AddRBVel(v * 1.5f);
             }
-            //else if (v != Vector2.zero && !goingDown && Player.Instance.jumping)
-            //{
-            //    Debug.Log("Down " + Player.Instance.GetPlayerState());
-            //}
         }
 
         if(collision.gameObject.GetComponent<Player>())

@@ -256,7 +256,7 @@ public class UIManager : MonoBehaviour
 
     public void OnControlsButtonClicked()
     {
-        Debug.Log("Controls button pressed");
+        //Debug.Log("Controls button pressed");
         GameManager.Instance.EndScene();//TODO QUIT
     }
 }

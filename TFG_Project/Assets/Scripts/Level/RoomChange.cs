@@ -88,7 +88,7 @@ public class RoomChange : MonoBehaviour
                 p.StopPlatform();
             }
 
-            KeyCollectible key = GetComponentInChildren<KeyCollectible>(); //TODO improve key way to open door
+            KeyCollectible key = GetComponentInChildren<KeyCollectible>();
             if (key && key.taken && !key.isOpening)
             {
                 Debug.Log("KeyCouroutineStart");

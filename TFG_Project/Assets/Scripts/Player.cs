@@ -531,6 +531,7 @@ public class Player : MonoBehaviour
             case PLAYER_STATE.HOLD_DASH:
                 if (playerState != PLAYER_STATE.HOLD_DASH && canDash == true)
                 {
+                    transform.parent = null;
                     holdDash.Play();
                     canDash = false;
                     playerState = state;
@@ -554,7 +555,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    IEnumerator StopPlayerHorizontalMovement() //TODO
+    IEnumerator StopPlayerHorizontalMovement() 
     {
         stopCoroutineActive = true;
         float startVel = rigidBody2D.velocity.x;

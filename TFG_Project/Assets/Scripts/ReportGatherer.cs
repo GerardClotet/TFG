@@ -18,7 +18,6 @@ public class ReportGatherer : MonoBehaviour
     }
     public class Level
     {
-        //TODO save test answers here
         public MODE mode { get; set; }
         public int jumps = 0;
         public int deaths = 0;
@@ -99,10 +98,6 @@ public class ReportGatherer : MonoBehaviour
     {
         Explorer = false;
         Achiever = false;
-        ////Temportal TODO QUIT
-        //Explorer = true;
-        //Achiever = true;
-        ///////
 
         lvlCounter++;
         dataGathering.levels[lvlCounter] = new Level();
