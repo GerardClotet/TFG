@@ -33,15 +33,17 @@
       "question": "Trobaves a faltar els coleccionables?", //#Si achiever = false
       "answers": [
         "Si",
-        "No"     
-      ]
+        "No"
+      ],
+      "achiever": 0
     },
     {
       "question": "Creus que els coleccionables afegien una capa de dificultat al nivell, o t'eren igual?", //#Si achiever = true
       "answers": [
         "Si, més dificultat",
-        "No, no en feia cas"     
-      ]
+        "No, no en feia cas"
+      ],
+      "achiever": 1
     },
     {
       "question": "T'ha semblat massa lineal el nivell", //#Independentment de si explorer es true o no

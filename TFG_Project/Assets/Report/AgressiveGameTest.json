@@ -41,14 +41,16 @@
       "answers": [
         "Si, més dificultat",
         "No, no en feia cas"
-      ]
+      ],
+      "achiever": 1
     },
     {
       "question": "Trobaves a faltar els coleccionables?", //#Si achiever = false
       "answers": [
         "Si",
         "No"
-      ]
+      ],
+      "achiever": 0
     }
   ]
 }

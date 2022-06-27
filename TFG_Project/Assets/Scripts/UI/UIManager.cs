@@ -167,7 +167,7 @@ public class UIManager : MonoBehaviour
         {
             var currQuestion = Instantiate(questionsPrefab, gameObject.transform);
             currQuestion.GetComponent<Text>().text = questions.questions[questionCounter].question;
-            int achiever = ReportGatherer.Instance.Achiever ? questions.questions.Length - 2 : questions.questions.Length - 3;
+            int achiever = ReportGatherer.Instance.Achiever ? 1 : 0;
             for (int i = 0; i < questions.questions[questionCounter].answers.Length; i++)
             {
                 if (i == 0)
@@ -177,9 +177,12 @@ public class UIManager : MonoBehaviour
                 }
                 else
                 {
-                    var currButton = Instantiate(questionButtonPrefab, currQuestion.transform);
-                    currButton.GetComponentInChildren<Text>().text = questions.questions[questionCounter].answers[i];
-                    currButton.gameObject.transform.position += new Vector3(0, -70f * i, 0);
+                    if (questions.questions[questionCounter].achiever == -1 || questions.questions[questionCounter].achiever == achiever)
+                    {
+                        var currButton = Instantiate(questionButtonPrefab, currQuestion.transform);
+                        currButton.GetComponentInChildren<Text>().text = questions.questions[questionCounter].answers[i];
+                        currButton.gameObject.transform.position += new Vector3(0, -70f * i, 0);
+                    }
                 }
             }
             currQuestion.GetComponent<QuestionHandler>().SetDelegates();
@@ -212,7 +215,6 @@ public class UIManager : MonoBehaviour
                 });
             });
     }
-
 
     public void TestButtonCallback(string answer, GameObject go)
     {
@@ -257,6 +259,6 @@ public class UIManager : MonoBehaviour
     public void OnControlsButtonClicked()
     {
         //Debug.Log("Controls button pressed");
-        GameManager.Instance.EndScene();//TODO QUIT
+        //GameManager.Instance.EndScene();//TODO QUIT
     }
 }

@@ -28,6 +28,8 @@ public class ReportGatherer : MonoBehaviour
         public int optionalRooms = 0;
         public Room[] rooms;
         public QuestionAnswer[] questionAnswers;
+        public float LevelAchieverPercentage = 0f;
+        public float LevelExplorerPercentage = 0f;
     }
     public class Room
     {
@@ -81,7 +83,7 @@ public class ReportGatherer : MonoBehaviour
     {
         Instance = this;
         startLevelTime = Time.time;
-        dataGathering.levels = new Level[5];
+        dataGathering.levels = new Level[3];
         Explorer = false;
         Achiever = false;
 
@@ -316,6 +318,7 @@ public class ReportGatherer : MonoBehaviour
                 //Tends to be more achiever.
                 Achiever = true;
             }
+            LevelData.LevelAchieverPercentage = collectiblePercentage;
         }
         /// 
         ///Optional Zones
@@ -327,6 +330,7 @@ public class ReportGatherer : MonoBehaviour
             {
                 Explorer = true;
             }
+            LevelData.LevelExplorerPercentage = optionalPercentage;
         }
 
         ////Jumps
