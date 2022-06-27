@@ -9,6 +9,7 @@ public class DashCollectible : Collectible
     private void Awake()
     {
         p = GetComponentsInChildren<ParticleSystem>();
+        GetComponent<MeshRenderer>().material.SetColor("_Color", Color.blue);
     }
     public override void GetMat()
     {

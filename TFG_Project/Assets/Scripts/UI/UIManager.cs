@@ -108,6 +108,7 @@ public class UIManager : MonoBehaviour
         if (postGamePanel.activeInHierarchy)
             return;
 
+        AudioManager.Instance.OnResumeMenu();
         UserInputManager.Instance.DisableUiInput();
 
         LeanTween.move(menuButtonList[2].GetComponent<RectTransform>(), new Vector3(-301f, menuButtonList[2].transform.localPosition.y, 0), 0.1f).setIgnoreTimeScale(true).setEaseOutCirc().setOnComplete(

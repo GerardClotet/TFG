@@ -99,10 +99,10 @@ public class ReportGatherer : MonoBehaviour
     {
         Explorer = false;
         Achiever = false;
-        //Temportal TODO QUIT
-        Explorer = true;
-        Achiever = true;
-        /////
+        ////Temportal TODO QUIT
+        //Explorer = true;
+        //Achiever = true;
+        ///////
 
         lvlCounter++;
         dataGathering.levels[lvlCounter] = new Level();
@@ -331,33 +331,33 @@ public class ReportGatherer : MonoBehaviour
             }
         }
 
-        //Jumps
-        float difJumps = nJumpsLevel - LevelData.jumps;
-        if( difJumps <= nJumpsLevel)
-        {
-            Debug.Log("Less than a double"); //Probably Assegurador 
-            Agressive_Passive = 1;
-        }
-        else if(difJumps > nJumpsLevel)
-        {
-            Debug.Log("More than double"); //Probably an Agressive
-            Agressive_Passive += -1;
-        }
+        ////Jumps
+        //float difJumps = nJumpsLevel - LevelData.jumps;
+        //if( difJumps <= nJumpsLevel)
+        //{
+        //    Debug.Log("Less than a double"); //Probably Assegurador 
+        //    Agressive_Passive = 1;
+        //}
+        //else if(difJumps > nJumpsLevel)
+        //{
+        //    Debug.Log("More than double"); //Probably an Agressive
+        //    Agressive_Passive += -1;
+        //}
 
-        ///Dashes
-        ///
-        float difDash = nDashesLevel - LevelData.dashes;
-        if (difDash <= nDashesLevel)
-        {
-            Debug.Log("Less than a double"); //Probably Assegurador 
-            Agressive_Passive += 1;
+        /////Dashes
+        /////
+        //float difDash = nDashesLevel - LevelData.dashes;
+        //if (difDash <= nDashesLevel)
+        //{
+        //    Debug.Log("Less than a double"); //Probably Assegurador 
+        //    Agressive_Passive += 1;
 
-        }
-        else if (difDash > nDashesLevel)
-        {
-            Debug.Log("More than double"); //Probably an Agressive
-            Agressive_Passive += -1;
-        }
+        //}
+        //else if (difDash > nDashesLevel)
+        //{
+        //    Debug.Log("More than double"); //Probably an Agressive
+        //    Agressive_Passive += -1;
+        //}
 
 
         for (int k = 0; k < LevelData.rooms.Length; k++)

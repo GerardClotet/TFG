@@ -55,6 +55,10 @@ public class PlatformMoveOnTouch : PlatformBase
             {
                 Player.Instance.AddRBVel(-v * 1.5f);
             }
+            else if (v != Vector2.zero)
+            {
+                Player.Instance.AddRBVel(v * 1.5f);
+            }
             //else if (v != Vector2.zero && !goingDown && Player.Instance.jumping)
             //{
             //    Debug.Log("Down " + Player.Instance.GetPlayerState());
