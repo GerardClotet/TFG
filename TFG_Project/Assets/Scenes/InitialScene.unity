@@ -2046,7 +2046,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   virtualCam: {fileID: 1957137658}
   spawnPoint: {fileID: 718562161}
-  startPlayer: 1
+  startPlayer: 0
   optionalRoom: 0
 --- !u!60 &151179013
 PolygonCollider2D:
@@ -3725,6 +3725,7 @@ MonoBehaviour:
   distance: 5.5
   increaseStep: 0.03
   acceleration: 0
+  holdTime: 0
 --- !u!61 &292014192
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5476,6 +5477,7 @@ MonoBehaviour:
   distance: 5.5
   increaseStep: 0.03
   acceleration: 0
+  holdTime: 0
 --- !u!61 &453230622
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6569,6 +6571,7 @@ MonoBehaviour:
   distance: 5.5
   increaseStep: 0.03
   acceleration: 0
+  holdTime: 0
 --- !u!61 &600353136
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -18296,6 +18299,7 @@ MonoBehaviour:
   distance: 8
   increaseStep: 0.03
   acceleration: 0
+  holdTime: 0
 --- !u!61 &1764246474
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -19939,7 +19943,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   virtualCam: {fileID: 1001936921}
   spawnPoint: {fileID: 80580211}
-  startPlayer: 0
+  startPlayer: 1
   optionalRoom: 0
 --- !u!1 &1945833198
 GameObject:
