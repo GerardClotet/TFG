@@ -98,6 +98,9 @@ public class ReportGatherer : MonoBehaviour
     {
         Explorer = false;
         Achiever = false;
+        //TODO QUIT
+        Explorer = true;
+        Achiever = true;
 
         lvlCounter++;
         dataGathering.levels[lvlCounter] = new Level();
@@ -357,7 +360,7 @@ public class ReportGatherer : MonoBehaviour
 
         for (int k = 0; k < LevelData.rooms.Length; k++)
         {
-            if (LevelData.rooms[k] != null )
+            if (LevelData.rooms[k] != null && !stats.room[k].avoidRoom)
             {
                 float dBounce = LevelData.rooms[k].lastTryWallJump - stats.room[k].requiredBouncesRoom;
                 float dJumps = LevelData.rooms[k].lastTryJumps - stats.room[k].requiredJumpsRoom;
@@ -382,14 +385,12 @@ public class ReportGatherer : MonoBehaviour
                     }
                 }
 
-
                 if (LevelData.rooms[k].roomDeaths != 0)
                 {
                     float avgJumps = LevelData.rooms[k].roomJumps / LevelData.rooms[k].roomDeaths;
                     float avgDash = LevelData.rooms[k].roomDashes / LevelData.rooms[k].roomDeaths;
                     float avgWallJump = LevelData.rooms[k].roomWallJump / LevelData.rooms[k].roomDeaths;
                     float avgTime = LevelData.rooms[k].totalRoomTime / LevelData.rooms[k].roomDeaths;
-
                     if (avgWallJump <= stats.room[k].requiredBouncesRoom)
                     {
                         Agressive_Passive -= 1;
@@ -450,6 +451,14 @@ public class ReportGatherer : MonoBehaviour
                         Agressive_Passive -= 1;
                     }
                     else
+                    {
+                        Agressive_Passive += 1;
+                    }
+                    if(LevelData.rooms[k].lastTryTime < stats.room[k].roomTime)
+                    {
+                        Agressive_Passive -= 1;
+                    }
+                    else 
                     {
                         Agressive_Passive += 1;
                     }

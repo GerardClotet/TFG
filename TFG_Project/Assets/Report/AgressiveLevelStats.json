@@ -2,45 +2,45 @@
   "room": [
     {
       "roomName": "Room1",
-      "requiredJumpsRoom": 6,
-      "requiredBouncesRoom": 2,
-      "requiredDashesRoom": 2,
-      "roomTime": 14
+      "requiredJumpsRoom": 5,
+      "requiredBouncesRoom": 0,
+      "requiredDashesRoom": 3,
+      "roomTime": 8
     },
     {
       "roomName": "Room2",
       "requiredJumpsRoom": 10,
-      "requiredBouncesRoom": 4,
-      "requiredDashesRoom": 5,
-      "roomTime": 18
-    },
-    {
-      "roomName": "Room3",
-      "requiredJumpsRoom": 4,
-      "requiredBouncesRoom": 6,
-      "requiredDashesRoom": 3,
+      "requiredBouncesRoom": 3,
+      "requiredDashesRoom": 10,
       "roomTime": 12
     },
     {
-      "roomName": "Room4",
-      "requiredJumpsRoom": 1,
-      "requiredBouncesRoom": 2,
+      "roomName": "Room3",
+      "requiredJumpsRoom": 7,
+      "requiredBouncesRoom": 5,
       "requiredDashesRoom": 3,
-      "roomTime": 18
+      "roomTime": 9
+    },
+    {
+      "roomName": "Room4",
+      "requiredJumpsRoom": 8,
+      "requiredBouncesRoom": 10,
+      "requiredDashesRoom": 5,
+      "roomTime": 11
     },
     {
       "roomName": "Room5",
-      "requiredJumpsRoom": 1,
-      "requiredBouncesRoom": 2,
-      "requiredDashesRoom": 3,
-      "roomTime": 18
+      "requiredJumpsRoom": 10,
+      "requiredBouncesRoom": 0,
+      "requiredDashesRoom": 4,
+      "roomTime": 9
     },
     {
       "roomName": "Room6",
-      "requiredJumpsRoom": 1,
-      "requiredBouncesRoom": 2,
-      "requiredDashesRoom": 3,
-      "roomTime": 18
+      "requiredJumpsRoom": 6,
+      "requiredBouncesRoom": 1,
+      "requiredDashesRoom": 6,
+      "roomTime": 8
     },
     {
       "roomName": "Room7",
@@ -51,10 +51,10 @@
     },
     {
       "roomName": "Room8",
-      "requiredJumpsRoom": 1,
-      "requiredBouncesRoom": 2,
-      "requiredDashesRoom": 3,
-      "roomTime": 18
+      "requiredJumpsRoom": 8,
+      "requiredBouncesRoom": 1,
+      "requiredDashesRoom": 1,
+      "roomTime": 7
     }
   ]
 }

@@ -10197,7 +10197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   virtualCam: {fileID: 1226376392}
   spawnPoint: {fileID: 657612990}
-  startPlayer: 1
+  startPlayer: 0
   optionalRoom: 0
 --- !u!60 &1162642911
 PolygonCollider2D:

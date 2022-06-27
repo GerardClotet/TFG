@@ -16,7 +16,7 @@
     },
     {
       "roomName": "Room3",
-      "requiredJumpsRoom": 4,
+      "requiredJumpsRoom": 5,
       "requiredBouncesRoom": 6,
       "requiredDashesRoom": 3,
       "roomTime": 12
@@ -26,28 +26,29 @@
       "requiredJumpsRoom": 1,
       "requiredBouncesRoom": 2,
       "requiredDashesRoom": 3,
-      "roomTime": 18
+      "roomTime": 18,
+      "avoidRoom" : true 
     },
     {
       "roomName": "Room5",
       "requiredJumpsRoom": 1,
       "requiredBouncesRoom": 2,
-      "requiredDashesRoom": 3,
-      "roomTime": 18
+      "requiredDashesRoom": 5,
+      "roomTime": 8 
     },
     {
       "roomName": "Room6",
-      "requiredJumpsRoom": 1,
-      "requiredBouncesRoom": 2,
+      "requiredJumpsRoom": 4,
+      "requiredBouncesRoom": 0,
       "requiredDashesRoom": 3,
-      "roomTime": 18
+      "roomTime": 8
     },
     {
       "roomName": "Room7",
-      "requiredJumpsRoom": 1,
+      "requiredJumpsRoom": 6,
       "requiredBouncesRoom": 2,
       "requiredDashesRoom": 3,
-      "roomTime": 18
+      "roomTime": 14
     },
     {
       "roomName": "Room8",
@@ -58,10 +59,10 @@
     },
     {
       "roomName": "Room9",
-      "requiredJumpsRoom": 5,
-      "requiredBouncesRoom": 2,
-      "requiredDashesRoom": 3,
-      "roomTime": 18
+      "requiredJumpsRoom": 10,
+      "requiredBouncesRoom": 7,
+      "requiredDashesRoom": 4,
+      "roomTime": 13
     }
   ]
 }

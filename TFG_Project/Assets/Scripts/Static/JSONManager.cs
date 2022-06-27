@@ -20,6 +20,7 @@ public class RoomStats
     public int requiredBouncesRoom { get; set; }
     public int requiredDashesRoom { get; set; }
     public float roomTime { get; set; }
+    public bool avoidRoom { get; set; } = false;
 }
 
 public class LevelStats

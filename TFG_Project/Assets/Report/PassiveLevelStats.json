@@ -2,59 +2,59 @@
   "room": [
     {
       "roomName": "Room1",
-      "requiredJumpsRoom": 6,
-      "requiredBouncesRoom": 2,
-      "requiredDashesRoom": 2,
-      "roomTime": 14
+      "requiredJumpsRoom": 10,
+      "requiredBouncesRoom": 4,
+      "requiredDashesRoom": 7,
+      "roomTime": 16
     },
     {
       "roomName": "Room2",
-      "requiredJumpsRoom": 10,
-      "requiredBouncesRoom": 4,
+      "requiredJumpsRoom": 6,
+      "requiredBouncesRoom": 0,
       "requiredDashesRoom": 5,
-      "roomTime": 18
-    },
-    {
-      "roomName": "Room3",
-      "requiredJumpsRoom": 4,
-      "requiredBouncesRoom": 6,
-      "requiredDashesRoom": 3,
       "roomTime": 12
     },
     {
+      "roomName": "Room3",
+      "requiredJumpsRoom": 8,
+      "requiredBouncesRoom": 3,
+      "requiredDashesRoom": 5,
+      "roomTime": 11
+    },
+    {
       "roomName": "Room4",
-      "requiredJumpsRoom": 1,
-      "requiredBouncesRoom": 2,
-      "requiredDashesRoom": 3,
-      "roomTime": 18
+      "requiredJumpsRoom": 5,
+      "requiredBouncesRoom": 10,
+      "requiredDashesRoom": 2,
+      "roomTime": 8
     },
     {
       "roomName": "Room5",
-      "requiredJumpsRoom": 1,
-      "requiredBouncesRoom": 2,
-      "requiredDashesRoom": 3,
-      "roomTime": 18
+      "requiredJumpsRoom": 4,
+      "requiredBouncesRoom": 0,
+      "requiredDashesRoom": 6,
+      "roomTime": 11
     },
     {
       "roomName": "Room6",
-      "requiredJumpsRoom": 1,
-      "requiredBouncesRoom": 2,
-      "requiredDashesRoom": 3,
-      "roomTime": 18
+      "requiredJumpsRoom": 10,
+      "requiredBouncesRoom": 0,
+      "requiredDashesRoom": 5,
+      "roomTime": 21
     },
     {
       "roomName": "Room7",
-      "requiredJumpsRoom": 1,
-      "requiredBouncesRoom": 2,
-      "requiredDashesRoom": 3,
-      "roomTime": 18
+      "requiredJumpsRoom": 0,
+      "requiredBouncesRoom": 0,
+      "requiredDashesRoom": 7,
+      "roomTime": 6
     },
     {
       "roomName": "Room8",
-      "requiredJumpsRoom": 1,
-      "requiredBouncesRoom": 2,
-      "requiredDashesRoom": 3,
-      "roomTime": 18
+      "requiredJumpsRoom": 5,
+      "requiredBouncesRoom": 0,
+      "requiredDashesRoom": 0,
+      "roomTime": 9
     }
   ]
 }
