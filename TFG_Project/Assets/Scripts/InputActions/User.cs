@@ -70,7 +70,7 @@ public partial class @User : IInputActionCollection2, IDisposable
                     ""id"": ""978bfe49-cc26-4a3d-ab7b-7d7a29327403"",
                     ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
-                    ""processors"": ""StickDeadzone(min=0.3,max=0.6)"",
+                    ""processors"": ""StickDeadzone(min=0.2,max=0.7)"",
                     ""groups"": ""Joystick;Gamepad"",
                     ""action"": ""Move"",
                     ""isComposite"": false,
