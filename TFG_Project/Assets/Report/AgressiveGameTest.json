@@ -30,7 +30,7 @@
       ]
     },
     {
-      "question": "T'ha semblat massa lineal el nivell", //#Independentment de si explorer es true o no
+      "question": "T'ha semblat massa lineal el nivell?", //#Independentment de si explorer es true o no
       "answers": [
         "Si",
         "No"

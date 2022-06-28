@@ -9,7 +9,7 @@
       ]
     },
     {
-      "question": "Has notat canvis en el moviment del jugador", //#condicionat a canviar el respawn time, coyote jump etc
+      "question": "Has notat canvis en el moviment del jugador?", //#condicionat a canviar el respawn time, coyote jump etc
       "answers": [
         "Si",
         "No"
