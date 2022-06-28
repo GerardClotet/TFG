@@ -113,7 +113,8 @@ public class GameManager : MonoBehaviour
             var b = FindObjectsOfType<MultiplierCollectible>(true);
             for(int i =0; i < b.Length; i++)
             {
-                b[i].gameObject.SetActive(false);
+                if(!b[i].transform.parent.GetComponent<RoomChange>().GetRoomStatus() || !ReportGatherer.Instance.Explorer)
+                    b[i].gameObject.SetActive(false);
             }
         }
         else
