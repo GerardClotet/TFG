@@ -236,21 +236,26 @@ public class UIManager : MonoBehaviour
         RoomChange[] rooms = FindObjectsOfType<RoomChange>();
         totalCollectibles = 0;
         currentCollectibles = 0;
-        for(int i = 0; i < rooms.Length; i++)
+        for (int i = 0; i < rooms.Length; i++)
         {
-            if(rooms[i].GetComponentInChildren<MultiplierCollectible>())
+            if (rooms[i].GetComponentInChildren<MultiplierCollectible>())
             {
                 totalCollectibles += 1;
             }
         }
         collectiblesCounter.GetComponentInChildren<Text>().text = $"0/{totalCollectibles}";
-
         Time.timeScale = 1f;
         UserInputManager.Instance.DisableUiInput();
         UserInputManager.Instance.EnablePlayerInput();
         postGamePanel.SetActive(false);
     }
 
+    public void UpdateCollectiblesList()
+    {
+        var obj = FindObjectsOfType<MultiplierCollectible>();
+        totalCollectibles = obj.Length;
+        collectiblesCounter.GetComponentInChildren<Text>().text = $"0/{totalCollectibles}";
+    }
     public void OnQuitButtonClicked()
     {
         Application.Quit();

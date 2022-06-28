@@ -128,6 +128,8 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+        var obj = FindObjectOfType<UIManager>();
+        obj.UpdateCollectiblesList();
         ReportGatherer.Instance.GetNewLevel(currentSceneMode);
     }
 }
