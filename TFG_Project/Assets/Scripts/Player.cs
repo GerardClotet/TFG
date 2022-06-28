@@ -263,7 +263,6 @@ public class Player : MonoBehaviour
                 break;
 
             case PLAYER_STATE.DASH:
-                holdDash.Play();
                 rigidBody2D.AddForce(leftStick.normalized * dashImpulse, ForceMode2D.Impulse);
                 dashAction.Invoke();
                 RequestChangePlayerState(PLAYER_STATE.ON_AIR_DASH);
@@ -532,6 +531,7 @@ public class Player : MonoBehaviour
             case PLAYER_STATE.HOLD_DASH:
                 if (playerState != PLAYER_STATE.HOLD_DASH && canDash == true)
                 {
+                    holdDash.Play();
                     transform.parent = null;
                     canDash = false;
                     playerState = state;

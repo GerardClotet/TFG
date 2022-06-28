@@ -100,9 +100,6 @@ public class ReportGatherer : MonoBehaviour
     {
         Explorer = false;
         Achiever = false;
-        //TODO QUIT
-        Explorer = true;
-        Achiever = true;
 
         lvlCounter++;
         dataGathering.levels[lvlCounter] = new Level();
@@ -119,7 +116,6 @@ public class ReportGatherer : MonoBehaviour
                 dataGathering.levels[lvlCounter].optionalRooms += 1;
             }
         }
-
         dataGathering.levels[lvlCounter].totalCollectibles = FindObjectsOfType<MultiplierCollectible>().Length;
         startLevelTime = Time.time;
     }
