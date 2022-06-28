@@ -165,28 +165,28 @@ public class UIManager : MonoBehaviour
     {
         if (questionCounter < questions.questions.Length)
         {
-            var currQuestion = Instantiate(questionsPrefab, gameObject.transform);
-            currQuestion.GetComponent<Text>().text = questions.questions[questionCounter].question;
             int achiever = ReportGatherer.Instance.Achiever ? 1 : 0;
-            for (int i = 0; i < questions.questions[questionCounter].answers.Length; i++)
+            if (questions.questions[questionCounter].achiever == -1 || questions.questions[questionCounter].achiever == achiever)
             {
-                if (i == 0)
+                var currQuestion = Instantiate(questionsPrefab, gameObject.transform);
+                currQuestion.GetComponent<Text>().text = questions.questions[questionCounter].question;
+                for (int i = 0; i < questions.questions[questionCounter].answers.Length; i++)
                 {
-                    currQuestion.GetComponentInChildren<Button>().GetComponentInChildren<Text>().text = questions.questions[questionCounter].answers[i];
-                    currQuestion.GetComponentInChildren<Button>().Select();
-                }
-                else
-                {
-                    if (questions.questions[questionCounter].achiever == -1 || questions.questions[questionCounter].achiever == achiever)
+                    if (i == 0)
+                    {
+                        currQuestion.GetComponentInChildren<Button>().GetComponentInChildren<Text>().text = questions.questions[questionCounter].answers[i];
+                        currQuestion.GetComponentInChildren<Button>().Select();
+                    }
+                    else
                     {
                         var currButton = Instantiate(questionButtonPrefab, currQuestion.transform);
                         currButton.GetComponentInChildren<Text>().text = questions.questions[questionCounter].answers[i];
                         currButton.gameObject.transform.position += new Vector3(0, -70f * i, 0);
                     }
                 }
+                currQuestion.GetComponent<QuestionHandler>().SetDelegates();
+                return;
             }
-            currQuestion.GetComponent<QuestionHandler>().SetDelegates();
-            return;
         }
         FadeFromToBlack(1, true);
         return;
