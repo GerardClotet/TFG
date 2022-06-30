@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
         modeList.Add(currentSceneMode);
 
         Instance = this;
-        QualitySettings.vSyncCount = 0;
+        QualitySettings.vSyncCount = 1;
         Application.targetFrameRate = 60;
         List<GameObject> objs = GameObject.FindGameObjectsWithTag("Preserve").ToList();
         objs.Add(Camera.main.gameObject);

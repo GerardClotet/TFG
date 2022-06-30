@@ -18,7 +18,7 @@ public class ReportGatherer : MonoBehaviour
     }
     public class Level
     {
-        public MODE mode { get; set; }
+        public int mode { get; set; }
         public int jumps = 0;
         public int deaths = 0;
         public int dashes = 0;
@@ -26,14 +26,14 @@ public class ReportGatherer : MonoBehaviour
         public int totalCollectibles = 0;
         public float totalTime = 0f;
         public int optionalRooms = 0;
-        public Room[] rooms;
-        public QuestionAnswer[] questionAnswers;
+        public Room[] rooms { get; set; }
+        public QuestionAnswer[] questionAnswers { get; set; }
         public float LevelAchieverPercentage = 0f;
         public float LevelExplorerPercentage = 0f;
     }
     public class Room
     {
-        public string roomName;
+        public string roomName = string.Empty;
         public bool optional = false;
         public int collectiblesGot = 0;
         public int roomDashes = 0;
@@ -61,8 +61,8 @@ public class ReportGatherer : MonoBehaviour
     }
     public class QuestionAnswer
     {
-        public string question;
-        public string answer;
+        public string question { get; set; }
+        public string answer { get; set; }
     }
     public static ReportGatherer Instance { get; private set; }
 
@@ -103,7 +103,7 @@ public class ReportGatherer : MonoBehaviour
 
         lvlCounter++;
         dataGathering.levels[lvlCounter] = new Level();
-        dataGathering.levels[lvlCounter].mode = lvlMode;
+        dataGathering.levels[lvlCounter].mode = (int)lvlMode;
 
         RoomChange[] rmch = FindObjectsOfType<RoomChange>();
         dataGathering.levels[lvlCounter].rooms = new Room[rmch.Length];
@@ -182,7 +182,6 @@ public class ReportGatherer : MonoBehaviour
     {
         dataGathering.levels[lvlCounter].deaths += 1;
         dataGathering.levels[lvlCounter].rooms[roomCounter].roomDeaths += 1;
-        dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryCollectibles = 0;
         dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryDashes = 0;
         dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryJumps = 0;
         dataGathering.levels[lvlCounter].rooms[roomCounter].lastTryWallJump = 0;

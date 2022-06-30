@@ -40,6 +40,7 @@ public static class JSONManager
     public static TestClass ReadTests(string filename) => JsonConvert.DeserializeObject<TestClass>(File.ReadAllText(GetFilePath(filename), Encoding.GetEncoding("Windows-1252")));
 
     public static LevelStats ReadLevelStats() => JsonConvert.DeserializeObject<LevelStats>(File.ReadAllText(GetFilePath(statsFileName[(int)GameManager.Instance.currentSceneMode])));
+    public static LevelStats ReadLevelStats(int mode) => JsonConvert.DeserializeObject<LevelStats>(File.ReadAllText(GetFilePath(statsFileName[mode])));
 
     private static string GetFilePath(string filename) => Application.dataPath + "/" + reportDirectoryName + "/" + filename;
 }
